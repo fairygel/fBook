@@ -12,7 +12,7 @@ import java.util.List;
 public class Book {
     private Long id;
     private String name;
-    private Base64 cover;
+    // private Base64 cover;
     private Author author;
     private List<Genre> genres;
     private BookStatus bookStatus;

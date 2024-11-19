@@ -19,6 +19,14 @@ public class GenreDAO {
         return genres.stream().filter(g -> g.getId() == id).findAny().orElse(null);
     }
 
+    public List<Genre> readAll(List<Long> ids) {
+        List<Genre> foundGenres = new ArrayList<>();
+
+        ids.forEach(id -> foundGenres.add(read(id)));
+
+        return foundGenres;
+    }
+
     public Genre update(long id, Genre genre) {
         Genre existingGenre = read(id);
 

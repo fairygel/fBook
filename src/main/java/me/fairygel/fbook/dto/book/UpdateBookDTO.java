@@ -15,6 +15,7 @@ public class UpdateBookDTO {
     private String endedReadDate;
     private String annotation;
     private Long bookTypeId;
+    private Long gradeId;
     private Byte gradeRating;
     private String gradeComment;
 }
