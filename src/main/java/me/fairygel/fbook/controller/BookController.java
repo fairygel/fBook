@@ -1,12 +1,13 @@
 package me.fairygel.fbook.controller;
 
 import lombok.AllArgsConstructor;
-import me.fairygel.fbook.dao.AuthorDAO;
 import me.fairygel.fbook.dto.book.BookFullViewDTO;
 import me.fairygel.fbook.dto.book.CreateBookDTO;
 import me.fairygel.fbook.dto.book.IndexBookViewDTO;
 import me.fairygel.fbook.dto.book.UpdateBookDTO;
+import me.fairygel.fbook.service.AuthorService;
 import me.fairygel.fbook.service.BookService;
+import me.fairygel.fbook.service.GenreService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,8 @@ import java.util.List;
 @AllArgsConstructor
 public class BookController {
     private final BookService bookService;
-    private final AuthorDAO authorDAO;
+    private final AuthorService authorService;
+    private final GenreService genreService;
 
     private static final String REDIRECT_TO_INDEX = "redirect:/";
 
@@ -28,8 +30,13 @@ public class BookController {
     }
     @GetMapping("/new")
     public String newBookFrom(Model model) {
+        // main model
         model.addAttribute("createBookDTO", new CreateBookDTO());
-        model.addAttribute("authors", authorDAO.index());
+
+        // dependencies
+        model.addAttribute("authors", authorService.index());
+        model.addAttribute("genres", genreService.index());
+
         return "book/new-book";
     }
     @GetMapping(value = {"/{id}/", "/{id}"})
@@ -39,6 +46,7 @@ public class BookController {
         if (bookDTO == null) {return REDIRECT_TO_INDEX;}
 
         model.addAttribute("bookFullView", bookDTO);
+
         return "book/book-view";
     }
     @PatchMapping(value = {"/{id}/", "/{id}"})

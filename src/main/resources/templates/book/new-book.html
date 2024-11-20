@@ -17,18 +17,39 @@
 
     <label for="author">choose author: </label>
     <select th:field="*{authorId}" id="author">
-    <option value="" disabled selected>choose author:</option>
-    <option th:each="author : ${authors}"
-            th:value="${author.getId()}"
-            th:text="${author.getFirstName()} + ' ' + ${author.getLastName()}">
-    </option>
+        <option value="" disabled selected>choose author:</option>
+        <option th:each="author : ${authors}"
+                th:value="${author.getId()}"
+                th:text="${author.getFirstName()} + ' ' + ${author.getLastName()}">
+        </option>
     </select>
-    <br />
 
     <a href="/authors/create">new author</a>
 
+    <br />
+
+    <label>genres:</label>
+    <div th:each="genre : ${genres}">
+        <input type="checkbox"
+               th:id="'genre' + ${genre.id}"
+               th:value="${genre.id}"
+               th:field="*{genreIds}" />
+        <label th:for="'genre' + ${genre.id}" th:text="${genre.name}"></label>
+    </div>
+
+    <a href="/genres/create">new genre</a>
+
+    <br />
+
+    <label for="annotation">enter annotation: </label>
+    <input th:field="*{annotation}" type="text" id="annotation" />
+    <br />
+
     <input type="submit" value="create!" />
 </form>
+
+<br />
+<a href="/">go back</a>
 
 </body>
 </html>

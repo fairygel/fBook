@@ -11,6 +11,15 @@ import java.util.List;
 public class GenreDAO {
     private final List<Genre> genres = new ArrayList<>();
 
+    public GenreDAO() {
+        Genre genre = new Genre();
+
+        genre.setId(0L);
+        genre.setName("no genre");
+
+        genres.add(genre);
+    }
+
     public void create(Genre genre) {
         genres.add(genre);
     }
