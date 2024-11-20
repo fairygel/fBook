@@ -11,6 +11,7 @@ public class BookTypeReadOnlyDAO {
     private final List<BookType> bookTypes = new ArrayList<>();
 
     public BookTypeReadOnlyDAO() {
+        bookTypes.add(new BookType(0L, "unknown"));
         bookTypes.add(new BookType(1L, "kindle"));
         bookTypes.add(new BookType(2L, "hardcover"));
         bookTypes.add(new BookType(3L, "paperback"));

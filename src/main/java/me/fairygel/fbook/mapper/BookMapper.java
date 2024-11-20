@@ -27,7 +27,7 @@ public class BookMapper {
 
         Author author = authorDAO.read(bookDTO.getAuthorId());
         List<Genre> genres = genreDAO.readAll(bookDTO.getGenreIds());
-        BookStatus bookStatus = bookStatusDAO.read(1L);
+        BookStatus bookStatus = bookStatusDAO.read(0L);
         BookType bookType = bookTypeDAO.read(bookDTO.getBookTypeId());
 
         book.setId(bookDTO.getId());
@@ -37,6 +37,7 @@ public class BookMapper {
         book.setBookStatus(bookStatus);
         book.setAnnotation(bookDTO.getAnnotation());
         book.setBookType(bookType);
+        book.setGrade(new Grade());
 
         return book;
     }
@@ -46,7 +47,7 @@ public class BookMapper {
 
         Author author = authorDAO.read(bookDTO.getAuthorId());
         List<Genre> genres = genreDAO.readAll(bookDTO.getGenreIds());
-        BookStatus bookStatus = bookStatusDAO.read(1L);
+        BookStatus bookStatus = bookStatusDAO.read(0L);
         BookType bookType = bookTypeDAO.read(bookDTO.getBookTypeId());
         Date startedDate = stringToDate(bookDTO.getStartedReadDate());
         Date endedDate = stringToDate(bookDTO.getEndedReadDate());
@@ -89,8 +90,8 @@ public class BookMapper {
         bookDTO.setAuthorLastName(book.getAuthor().getLastName());
         bookDTO.setGenres(book.getGenres().stream().map(Genre::getName).toList());
         bookDTO.setBookStatus(book.getBookStatus().getStatus());
-        bookDTO.setStartedReadDate(book.getStartedReadDate().toString());
-        bookDTO.setEndedReadDate(book.getEndedReadDate().toString());
+        bookDTO.setStartedReadDate(dateToString(book.getStartedReadDate()));
+        bookDTO.setEndedReadDate(dateToString(book.getEndedReadDate()));
         bookDTO.setAnnotation(book.getAnnotation());
         bookDTO.setBookType(book.getBookType().getType());
         bookDTO.setGradeRating(book.getGrade().getRating());
@@ -99,7 +100,10 @@ public class BookMapper {
         return bookDTO;
     }
 
-
+    private String dateToString(Date date) {
+        if (date == null) return "";
+        return date.toString();
+    }
 
     public IndexBookViewDTO bookToIndexBookViewDto(Book book) {
         IndexBookViewDTO bookDTO = new IndexBookViewDTO();

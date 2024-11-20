@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>book info</title>
+</head>
+<body>
+
+<h1 th:text="${bookFullView.getName()}"></h1>
+<p th:text="'Author: ' + ${bookFullView.getAuthorFirstName()} + ' ' + ${bookFullView.getAuthorLastName()}"></p>
+<p th:text="'Annotation: ' + ${bookFullView.getAnnotation()}"></p>
+<p th:text="'Status: ' + ${bookFullView.getBookStatus()}"></p>
+<p th:text="'Type: ' + ${bookFullView.getBookType()}"></p>
+<p th:text="'Ended date: ' + ${bookFullView.getEndedReadDate()}"></p>
+<p th:text="'Started date: ' + ${bookFullView.getStartedReadDate()}"></p>
+
+</body>
+</html>

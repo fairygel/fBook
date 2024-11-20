@@ -24,6 +24,7 @@ public class BookService {
     }
     public BookFullViewDTO read(long id) {
         Book book = dao.read(id);
+        if (book == null) return null;
         return mapper.bookToBookFullViewDto(book);
     }
     public BookFullViewDTO update(long id, UpdateBookDTO bookDTO) {

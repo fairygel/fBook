@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>all books</title>
+</head>
+<body>
+
+<h1>your books:</h1>
+
+<ul>
+    <li th:each="book : ${indexBookView}">
+        <a th:href="@{/{id}(id=${book.getId()})}" th:text="${book.getName()}"></a>
+    </li>
+</ul>
+
+<hr>
+
+<a href="/new">create new book</a>
+<a href="/authors/">see authors</a>
+
+</body>
+</html>
