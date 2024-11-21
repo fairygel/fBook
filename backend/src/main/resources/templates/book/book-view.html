@@ -11,7 +11,7 @@
 <p>
     <span>genres: </span>
     <span th:each="genre, iterStat : ${bookFullView.getGenres()}"
-          th:text="${genre} + (!iterStat.last ? ', ' : '')"></span>
+          th:text="${genre} + (iterStat.last ? '' : ', ')"></span>
 </p>
 <p th:text="'annotation: ' + ${bookFullView.getAnnotation()}"></p>
 <p th:text="'status: ' + ${bookFullView.getBookStatus()}"></p>
