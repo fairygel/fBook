@@ -3,13 +3,11 @@ package me.fairygel.fbook.controller;
 import lombok.AllArgsConstructor;
 import me.fairygel.fbook.entity.Genre;
 import me.fairygel.fbook.service.GenreService;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @AllArgsConstructor
 @RequestMapping("/api/genres")
 public class GenreController {

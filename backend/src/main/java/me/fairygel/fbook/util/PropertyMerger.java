@@ -2,7 +2,9 @@ package me.fairygel.fbook.util;
 
 import lombok.SneakyThrows;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 
 public class PropertyMerger {
 
@@ -13,6 +15,10 @@ public class PropertyMerger {
         Field[] fields = source.getClass().getDeclaredFields();
 
         for (Field field : fields) {
+            if (Arrays.asList(field.getClass().getInterfaces()).contains(Serializable.class)) {
+                merge(field, destination.getClass().getField(field.getName()));
+            }
+
             field.setAccessible(true);
 
             Object value = field.get(source);

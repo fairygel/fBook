@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class Grade {
     private Long id;
+    private Long bookId;
     private Byte rating;
     private String comment;
 }

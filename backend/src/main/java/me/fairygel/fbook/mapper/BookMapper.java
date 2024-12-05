@@ -45,17 +45,12 @@ public class BookMapper {
     public Book updateBookDtoToBook(UpdateBookDTO bookDTO) {
         Book book = new Book();
 
-        Author author = authorDAO.read(bookDTO.getAuthorId());
-        List<Genre> genres = genreDAO.readAll(bookDTO.getGenreIds());
-        BookStatus bookStatus = bookStatusDAO.read(0L);
-        BookType bookType = bookTypeDAO.read(bookDTO.getBookTypeId());
+        Author author = getAuthor(bookDTO);
+        List<Genre> genres = getGenres(bookDTO);
+        BookStatus bookStatus = getBookStatus(bookDTO);
+        BookType bookType = getBookType(bookDTO);
         Date startedDate = stringToDate(bookDTO.getStartedReadDate());
         Date endedDate = stringToDate(bookDTO.getEndedReadDate());
-
-        Grade grade = new Grade();
-        grade.setId(bookDTO.getGradeId());
-        grade.setComment(bookDTO.getGradeComment());
-        grade.setRating(bookDTO.getGradeRating());
 
         book.setId(bookDTO.getId());
         book.setName(bookDTO.getName());
@@ -66,9 +61,28 @@ public class BookMapper {
         book.setEndedReadDate(endedDate);
         book.setAnnotation(bookDTO.getAnnotation());
         book.setBookType(bookType);
-        book.setGrade(grade);
 
         return book;
+    }
+
+    private Author getAuthor(UpdateBookDTO bookDTO) {
+        if (bookDTO.getAuthorId() == null) return null;
+        else return authorDAO.read(bookDTO.getAuthorId());
+    }
+
+    private List<Genre> getGenres(UpdateBookDTO bookDTO) {
+        if (bookDTO.getGenreIds() == null) return null;
+        else return genreDAO.readAll(bookDTO.getGenreIds());
+    }
+
+    private BookStatus getBookStatus(UpdateBookDTO bookDTO) {
+        if (bookDTO.getBookStatusId() == null) return null;
+        else return bookStatusDAO.read(bookDTO.getBookStatusId());
+    }
+
+    private BookType getBookType(UpdateBookDTO bookDTO) {
+        if (bookDTO.getBookTypeId() == null) return null;
+        else return bookTypeDAO.read(bookDTO.getBookTypeId());
     }
 
     private Date stringToDate(String str) {
