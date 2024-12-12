@@ -12,3 +12,7 @@ spring:
 
   flyway:
     schemas: fbook
+
+  jpa:
+    hibernate:
+      ddl-auto: update

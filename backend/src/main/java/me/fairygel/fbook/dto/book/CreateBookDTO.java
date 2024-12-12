@@ -2,15 +2,15 @@ package me.fairygel.fbook.dto.book;
 
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class CreateBookDTO {
     private Long id = 0L;
     private String name = "";
     private Long authorId = 0L;
-    private List<Long> genreIds = new ArrayList<>();
+    private Set<Long> genreIds = new HashSet<>();
     private String annotation = "";
     private Long bookTypeId = 0L;
 }

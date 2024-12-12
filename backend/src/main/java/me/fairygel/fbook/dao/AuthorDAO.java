@@ -11,16 +11,6 @@ import java.util.List;
 public class AuthorDAO {
     private final List<Author> authors = new ArrayList<>();
 
-    public AuthorDAO() {
-        Author author = new Author();
-
-        author.setId(0L);
-        author.setFirstName("no");
-        author.setLastName("author");
-
-        authors.add(author);
-    }
-
     public void create(Author author) {
         authors.add(author);
     }

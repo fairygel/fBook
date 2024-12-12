@@ -5,7 +5,9 @@ import me.fairygel.fbook.util.PropertyMerger;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class GenreDAO {
@@ -28,8 +30,8 @@ public class GenreDAO {
         return genres.stream().filter(g -> g.getId() == id).findAny().orElse(null);
     }
 
-    public List<Genre> readAll(List<Long> ids) {
-        List<Genre> foundGenres = new ArrayList<>();
+    public Set<Genre> readAll(Set<Long> ids) {
+        Set<Genre> foundGenres = new HashSet<>();
 
         ids.forEach(id -> foundGenres.add(read(id)));
 

@@ -2,7 +2,10 @@ package me.fairygel.fbook.mapper;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.fairygel.fbook.dao.*;
+import me.fairygel.fbook.dao.AuthorDAO;
+import me.fairygel.fbook.dao.BookStatusReadOnlyDAO;
+import me.fairygel.fbook.dao.BookTypeReadOnlyDAO;
+import me.fairygel.fbook.dao.GenreDAO;
 import me.fairygel.fbook.dto.book.BookFullViewDTO;
 import me.fairygel.fbook.dto.book.CreateBookDTO;
 import me.fairygel.fbook.dto.book.IndexBookViewDTO;
@@ -10,8 +13,9 @@ import me.fairygel.fbook.dto.book.UpdateBookDTO;
 import me.fairygel.fbook.entity.*;
 import org.springframework.stereotype.Component;
 
-import java.sql.Date;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -26,7 +30,7 @@ public class BookMapper {
         Book book = new Book();
 
         Author author = authorDAO.read(bookDTO.getAuthorId());
-        List<Genre> genres = genreDAO.readAll(bookDTO.getGenreIds());
+        Set<Genre> genres = genreDAO.readAll(bookDTO.getGenreIds());
         BookStatus bookStatus = bookStatusDAO.read(0L);
         BookType bookType = bookTypeDAO.read(bookDTO.getBookTypeId());
 
@@ -46,11 +50,11 @@ public class BookMapper {
         Book book = new Book();
 
         Author author = getAuthor(bookDTO);
-        List<Genre> genres = getGenres(bookDTO);
+        Set<Genre> genres = getGenres(bookDTO);
         BookStatus bookStatus = getBookStatus(bookDTO);
         BookType bookType = getBookType(bookDTO);
-        Date startedDate = stringToDate(bookDTO.getStartedReadDate());
-        Date endedDate = stringToDate(bookDTO.getEndedReadDate());
+        LocalDate startedDate = stringToDate(bookDTO.getStartedReadDate());
+        LocalDate endedDate = stringToDate(bookDTO.getEndedReadDate());
 
         book.setId(bookDTO.getId());
         book.setName(bookDTO.getName());
@@ -70,7 +74,7 @@ public class BookMapper {
         else return authorDAO.read(bookDTO.getAuthorId());
     }
 
-    private List<Genre> getGenres(UpdateBookDTO bookDTO) {
+    private Set<Genre> getGenres(UpdateBookDTO bookDTO) {
         if (bookDTO.getGenreIds() == null) return null;
         else return genreDAO.readAll(bookDTO.getGenreIds());
     }
@@ -85,10 +89,10 @@ public class BookMapper {
         else return bookTypeDAO.read(bookDTO.getBookTypeId());
     }
 
-    private Date stringToDate(String str) {
+    private LocalDate stringToDate(String str) {
         if (str.isEmpty()) return null;
         try {
-            return Date.valueOf(str);
+            return LocalDate.parse(str);
         } catch (Exception e) {
             log.warn(e.getMessage());
             return null;
@@ -102,19 +106,19 @@ public class BookMapper {
         bookDTO.setName(book.getName());
         bookDTO.setAuthorFirstName(book.getAuthor().getFirstName());
         bookDTO.setAuthorLastName(book.getAuthor().getLastName());
-        bookDTO.setGenres(book.getGenres().stream().map(Genre::getName).toList());
-        bookDTO.setBookStatus(book.getBookStatus().getStatus());
+        bookDTO.setGenres(book.getGenres().stream().map(Genre::getName).collect(Collectors.toSet()));
+        bookDTO.setBookStatus(book.getBookStatus().getName());
         bookDTO.setStartedReadDate(dateToString(book.getStartedReadDate()));
         bookDTO.setEndedReadDate(dateToString(book.getEndedReadDate()));
         bookDTO.setAnnotation(book.getAnnotation());
-        bookDTO.setBookType(book.getBookType().getType());
+        bookDTO.setBookType(book.getBookType().getName());
         bookDTO.setGradeRating(book.getGrade().getRating());
         bookDTO.setGradeComment(book.getGrade().getComment());
 
         return bookDTO;
     }
 
-    private String dateToString(Date date) {
+    private String dateToString(LocalDate date) {
         if (date == null) return "";
         return date.toString();
     }
