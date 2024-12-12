@@ -1,0 +1,2 @@
+INSERT INTO authors
+VALUES (0, 'NO', 'AUTHOR')

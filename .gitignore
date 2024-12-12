@@ -19,6 +19,7 @@ backend/bin/
 
 ### IntelliJ IDEA ###
 backend/.idea
+.settings
 .idea
 *.iml
 backend/*.iws
