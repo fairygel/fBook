@@ -10,9 +10,9 @@ public class UpdateBookDTO {
     private String name;
     private Long authorId;
     private Set<Long> genreIds;
-    private Long bookStatusId;
+    private Short bookStatusId;
     private String startedReadDate;
     private String endedReadDate;
     private String annotation;
-    private Long bookTypeId;
+    private Short bookTypeId;
 }

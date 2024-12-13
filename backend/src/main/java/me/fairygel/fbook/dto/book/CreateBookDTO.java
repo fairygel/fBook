@@ -12,5 +12,5 @@ public class CreateBookDTO {
     private Long authorId = 0L;
     private Set<Long> genreIds = new HashSet<>();
     private String annotation = "";
-    private Long bookTypeId = 0L;
+    private Short bookTypeId = 0;
 }

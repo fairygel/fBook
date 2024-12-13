@@ -14,7 +14,7 @@ public class BookStatusController {
     private final BookStatusService bookStatusService;
 
     @GetMapping(value = {"/{id}", "/{id}/"})
-    public BookStatus read(@PathVariable Long id) {
+    public BookStatus read(@PathVariable Short id) {
         return bookStatusService.read(id);
     }
 

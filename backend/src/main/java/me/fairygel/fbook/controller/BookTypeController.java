@@ -17,7 +17,7 @@ public class BookTypeController {
     private final BookTypeService bookTypeService;
 
     @GetMapping(value = {"/{id}", "/{id}/"})
-    public BookType read(@PathVariable Long id) {
+    public BookType read(@PathVariable Short id) {
         return bookTypeService.read(id);
     }
     @GetMapping(value = {"/", ""})
