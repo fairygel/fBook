@@ -8,6 +8,5 @@ CREATE TABLE books
     started_read_date date,
     annotation        TEXT,
     book_type_id      SMALLINT NOT NULL,
-    grade_id          BIGINT,
     CONSTRAINT books_pkey PRIMARY KEY (id)
 );

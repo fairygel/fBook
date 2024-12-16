@@ -43,9 +43,8 @@ public class Book {
     @JoinColumn(name = "book_type_id", nullable = false)
     private BookType bookType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "grade_id")
-    private Grade grade;
+    @OneToMany(mappedBy = "book")
+    private Set<Grade> grades = new LinkedHashSet<>();
 
     @ManyToMany
     @JoinTable(joinColumns = @JoinColumn(name = "book_id"),

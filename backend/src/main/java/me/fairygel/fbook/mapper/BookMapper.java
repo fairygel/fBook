@@ -131,10 +131,6 @@ public class BookMapper {
         bookDTO.setEndedReadDate(dateToString(book.getEndedReadDate()));
         bookDTO.setAnnotation(book.getAnnotation());
         bookDTO.setBookType(book.getBookType().getName());
-        if (book.getGrade() != null) {
-            bookDTO.setGradeRating(book.getGrade().getRating());
-            bookDTO.setGradeComment(book.getGrade().getComment());
-        }
 
         return bookDTO;
     }

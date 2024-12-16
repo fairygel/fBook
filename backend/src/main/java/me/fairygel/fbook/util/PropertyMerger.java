@@ -11,6 +11,7 @@ public class PropertyMerger {
     @SneakyThrows
     public static void merge(Object source, Object destination) {
         if (source == null || destination == null) return;
+        if (source.getClass() != destination.getClass()) return;
 
         Field[] fields = source.getClass().getDeclaredFields();
 

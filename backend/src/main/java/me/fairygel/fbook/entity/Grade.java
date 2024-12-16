@@ -4,9 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 @Getter
 @Setter
 @Entity
@@ -18,16 +15,14 @@ public class Grade {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "book_id", nullable = false)
-    private Long bookId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "book_id", nullable = false)
+    private Book book;
 
     @Column(name = "rating", nullable = false)
     private Short rating;
 
     @Column(name = "comment", length = Integer.MAX_VALUE)
     private String comment;
-
-    @OneToMany(mappedBy = "grade")
-    private Set<Book> books = new LinkedHashSet<>();
 
 }
