@@ -165,6 +165,7 @@ this will create a new author with your data.
 the request body needs to be in JSON format, it can include the following properties:
 * `firstName` - string, required
 * `lastName` - string, not required
+
 <br/>
 for example:
 ```json
