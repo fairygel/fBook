@@ -3,7 +3,7 @@ version: '3.8'
 services:
   app:
     build: backend/
-    container_name: fBook-backend
+    container_name: fBook-api
     ports:
       - "8080:8080"
     environment:
@@ -16,7 +16,7 @@ services:
 
   db:
     image: postgres:14.15-alpine
-    container_name: postgres-db-fBook-backend
+    container_name: postgres-db-fBook-api
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres

@@ -45,7 +45,6 @@ public class BookMapper {
         BookType bookType = bookTypeRepository.findById(bookDTO.getBookTypeId())
                 .orElse(bookTypeRepository.findById((short) 0).orElseThrow(IllegalAccessError::new));
 
-        book.setId(bookDTO.getId());
         book.setName(bookDTO.getName());
         book.setAuthor(author);
         book.setGenres(genres);
@@ -66,7 +65,6 @@ public class BookMapper {
         LocalDate startedDate = stringToDate(bookDTO.getStartedReadDate());
         LocalDate endedDate = stringToDate(bookDTO.getEndedReadDate());
 
-        book.setId(bookDTO.getId());
         book.setName(bookDTO.getName());
         book.setAuthor(author);
         book.setGenres(genres);
