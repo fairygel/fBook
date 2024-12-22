@@ -166,8 +166,8 @@ the request body needs to be in JSON format, it can include the following proper
 * `firstName` - string, required
 * `lastName` - string, not required
 
-<br/>
 for example:
+
 ```json
 {
   "firstName": "Stephen",
