@@ -165,8 +165,8 @@ this will create a new author with your data.
 the request body needs to be in JSON format, it can include the following properties:
 * `firstName` - string, required
 * `lastName` - string, not required
-  <br/>
-  for example:
+<br/>
+for example:
 ```json
 {
   "firstName": "Stephen",
@@ -208,13 +208,15 @@ this will create a new genre with your data.
 <br/>
 the request body needs to be in JSON format, it can include the following properties:
 * `name` - string, required
-  <br/>
-  for example:
+<br/>
+for example:
+
 ```json
 {
     "name": "detective"
 }
 ```
+
 ### delete genre:
 DELETE `/genres/{id}`
 <br/>
@@ -226,6 +228,7 @@ will update the genre and return updated result. you can update genre using next
 * `name` - string
 <br/>
 example:
+
 ```json
 {
     "name": "horror"
