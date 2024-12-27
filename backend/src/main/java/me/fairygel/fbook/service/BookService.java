@@ -6,7 +6,7 @@ import me.fairygel.fbook.dto.book.CreateBookDTO;
 import me.fairygel.fbook.dto.book.IndexBookViewDTO;
 import me.fairygel.fbook.dto.book.UpdateBookDTO;
 import me.fairygel.fbook.entity.Book;
-import me.fairygel.fbook.mapper.BookMapper;
+import me.fairygel.fbook.mapper.impl.BookMapperImpl;
 import me.fairygel.fbook.repository.BookCrudRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class BookService {
-    private final BookMapper mapper;
+    private final BookMapperImpl mapper;
     private final BookCrudRepository bookRepository;
 
     public void create(CreateBookDTO bookDTO) {
