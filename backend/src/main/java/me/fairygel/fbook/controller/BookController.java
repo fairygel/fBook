@@ -8,7 +8,7 @@ import me.fairygel.fbook.dto.book.UpdateBookDTO;
 import me.fairygel.fbook.service.BookService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Set;
 
 @RestController
 @AllArgsConstructor
@@ -33,7 +33,7 @@ public class BookController {
         bookService.delete(id);
     }
     @GetMapping(value = {"", "/"})
-    public List<IndexBookViewDTO> index() {
+    public Set<IndexBookViewDTO> index() {
         return bookService.index();
     }
 }

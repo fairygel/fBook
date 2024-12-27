@@ -10,8 +10,8 @@ import me.fairygel.fbook.mapper.impl.BookMapperImpl;
 import me.fairygel.fbook.repository.BookCrudRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -38,8 +38,8 @@ public class BookService {
     public void delete(long id) {
         bookRepository.deleteById(id);
     }
-    public List<IndexBookViewDTO> index() {
-        List<IndexBookViewDTO> books = new ArrayList<>();
+    public Set<IndexBookViewDTO> index() {
+        Set<IndexBookViewDTO> books = new HashSet<>();
 
         bookRepository.findAll().forEach(book -> books.add(mapper.bookToIndexBookViewDto(book)));
         return books;
