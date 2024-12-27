@@ -22,6 +22,8 @@ public class AuthorService {
         authorRepository.save(author);
     }
 
+    // we will try to find author with id, then, if it doesn't exist, we will try to get empty author
+    // if he also isn't exists, throw an error
     public AuthorDTO read(Long id) {
         Author author = authorRepository
                 .findById(id).orElse(

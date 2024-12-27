@@ -22,6 +22,8 @@ public class GenreService {
         genreCrudRepository.save(genre);
     }
 
+    // we will try to find genre with id, then, if it doesn't exist, we will try to get empty genre
+    // if he also isn't exists, throw an error
     public GenreDTO read(Long id) {
         Genre genre = genreCrudRepository
                 .findById(id).orElse(

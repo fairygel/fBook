@@ -28,6 +28,9 @@ public class BookMapperImpl implements BookMapper {
     private BookTypeReadOnlyRepository bookTypeRepository;
     private GenreCrudRepository genreRepository;
 
+    // --- DTO To Book ---
+
+    @Override
     public Book createBookDtoToBook(CreateBookDTO bookDTO) {
         Book book = new Book();
 
@@ -56,6 +59,7 @@ public class BookMapperImpl implements BookMapper {
         return book;
     }
 
+    @Override
     public Book updateBookDtoToBook(UpdateBookDTO bookDTO) {
         Book book = new Book();
 
@@ -77,6 +81,37 @@ public class BookMapperImpl implements BookMapper {
 
         return book;
     }
+
+    // --- Book To DTO ---
+
+    @Override
+    public BookFullViewDTO bookToBookFullViewDto(Book book) {
+        BookFullViewDTO bookDTO = new BookFullViewDTO();
+
+        bookDTO.setId(book.getId());
+        bookDTO.setName(book.getName());
+        bookDTO.setAuthorFirstName(book.getAuthor().getFirstName());
+        bookDTO.setAuthorLastName(book.getAuthor().getLastName());
+        bookDTO.setGenres(book.getGenres().stream().map(Genre::getName).collect(Collectors.toSet()));
+        bookDTO.setBookStatus(book.getBookStatus().getName());
+        bookDTO.setStartedReadDate(dateToString(book.getStartedReadDate()));
+        bookDTO.setEndedReadDate(dateToString(book.getEndedReadDate()));
+        bookDTO.setAnnotation(book.getAnnotation());
+        bookDTO.setBookType(book.getBookType().getName());
+
+        return bookDTO;
+    }
+    @Override
+    public IndexBookViewDTO bookToIndexBookViewDto(Book book) {
+        IndexBookViewDTO bookDTO = new IndexBookViewDTO();
+
+        bookDTO.setId(book.getId());
+        bookDTO.setName(book.getName());
+
+        return bookDTO;
+    }
+
+    // --- Helpful Stuff ---
 
     private Author getAuthor(UpdateBookDTO bookDTO) {
         if (bookDTO.getAuthorId() == null) return null;
@@ -116,35 +151,8 @@ public class BookMapperImpl implements BookMapper {
             return null;
         }
     }
-
-    public BookFullViewDTO bookToBookFullViewDto(Book book) {
-        BookFullViewDTO bookDTO = new BookFullViewDTO();
-
-        bookDTO.setId(book.getId());
-        bookDTO.setName(book.getName());
-        bookDTO.setAuthorFirstName(book.getAuthor().getFirstName());
-        bookDTO.setAuthorLastName(book.getAuthor().getLastName());
-        bookDTO.setGenres(book.getGenres().stream().map(Genre::getName).collect(Collectors.toSet()));
-        bookDTO.setBookStatus(book.getBookStatus().getName());
-        bookDTO.setStartedReadDate(dateToString(book.getStartedReadDate()));
-        bookDTO.setEndedReadDate(dateToString(book.getEndedReadDate()));
-        bookDTO.setAnnotation(book.getAnnotation());
-        bookDTO.setBookType(book.getBookType().getName());
-
-        return bookDTO;
-    }
-
     private String dateToString(LocalDate date) {
         if (date == null) return "";
         return date.toString();
-    }
-
-    public IndexBookViewDTO bookToIndexBookViewDto(Book book) {
-        IndexBookViewDTO bookDTO = new IndexBookViewDTO();
-
-        bookDTO.setId(book.getId());
-        bookDTO.setName(book.getName());
-
-        return bookDTO;
     }
 }
