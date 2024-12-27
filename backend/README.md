@@ -212,7 +212,7 @@ the request body needs to be in JSON format, it can include the following proper
   for example:
 ```json
 {
-    "name": "detective"
+    "genre": "detective"
 }
 ```
 ### delete genre:
@@ -228,7 +228,7 @@ will update the genre and return updated result. you can update genre using next
 example:
 ```json
 {
-    "name": "horror"
+    "genre": "horror"
 }
 ```
 ### get book types:

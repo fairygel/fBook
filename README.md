@@ -26,4 +26,4 @@ or else, you can build everything manually:
 pull requests are welcome. for major changes, please open an issue first to discuss what you would like to change.
 
 ## License:
-
+[MIT](LICENSE)
