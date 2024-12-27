@@ -15,6 +15,7 @@ import me.fairygel.fbook.repository.GenreCrudRepository;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -72,7 +73,7 @@ public class BookMapperImpl implements BookMapper {
 
         book.setName(bookDTO.getName());
         book.setAuthor(author);
-        book.setGenres(genres);
+        book.setGenres(genres.isEmpty() ? null : genres);
         book.setBookStatus(bookStatus);
         book.setStartedReadDate(startedDate);
         book.setEndedReadDate(endedDate);
@@ -119,7 +120,7 @@ public class BookMapperImpl implements BookMapper {
     }
 
     private Set<Genre> getGenres(UpdateBookDTO bookDTO) {
-        if (bookDTO.getGenreIds() == null) return null;
+        if (bookDTO.getGenreIds() == null) return Collections.emptySet();
 
         Set<Genre> genres = new HashSet<>();
 

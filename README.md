@@ -17,10 +17,11 @@ or else, you can build everything manually:
 
 
 
-## Roadmap:
+## To-Do:
 - [ ] backend rest api service
 - [ ] frontend
 - [ ] login/register feature's
+- [ ] tests
 
 ## Contributing:
 pull requests are welcome. for major changes, please open an issue first to discuss what you would like to change.

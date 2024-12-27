@@ -1,5 +1,7 @@
 package me.fairygel.fbook.dto.book;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.HashSet;
@@ -7,9 +9,18 @@ import java.util.Set;
 
 @Data
 public class CreateBookDTO {
-    private String name = "";
-    private Long authorId = 0L;
+    @NotNull
+    @NotBlank
+    private String name;
+
+    @NotNull
+    private Long authorId;
+
+    @NotNull
     private Set<Long> genreIds = new HashSet<>();
+
     private String annotation = "";
-    private Short bookTypeId = 0;
+
+    @NotNull
+    private Short bookTypeId;
 }
