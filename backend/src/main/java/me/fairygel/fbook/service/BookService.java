@@ -7,6 +7,7 @@ import me.fairygel.fbook.dto.book.CreateBookDTO;
 import me.fairygel.fbook.dto.book.IndexBookViewDTO;
 import me.fairygel.fbook.dto.book.UpdateBookDTO;
 import me.fairygel.fbook.entity.Book;
+import me.fairygel.fbook.util.BookAutomation;
 import me.fairygel.fbook.util.mapper.impl.BookMapperImpl;
 import me.fairygel.fbook.repository.BookCrudRepository;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class BookService {
     private final BookMapperImpl mapper;
+    private final BookAutomation bookAutomation;
     private final BookCrudRepository bookRepository;
 
     public void create(CreateBookDTO bookDTO) {
@@ -33,6 +35,9 @@ public class BookService {
     }
     public BookFullViewDTO update(long id, UpdateBookDTO bookDTO) {
         Book book = mapper.updateBookDtoToBook(bookDTO);
+
+        bookAutomation.automate(book);
+
         Book updatedBook = bookRepository.updateById(id, book)
                 .orElseThrow(() -> new EntityNotFoundException("No book with id = " + id));
 
