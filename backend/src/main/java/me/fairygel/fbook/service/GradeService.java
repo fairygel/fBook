@@ -1,5 +1,6 @@
 package me.fairygel.fbook.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import me.fairygel.fbook.dto.grade.CreateGradeDTO;
 import me.fairygel.fbook.dto.grade.GradePreviewDTO;
@@ -24,15 +25,16 @@ public class GradeService {
     }
 
     public GradePreviewDTO read(Long id) {
-        Grade grade = gradeCrudRepository
-                .findById(id).orElseThrow(IllegalAccessError::new);
+        Grade grade = gradeCrudRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No grade with id = " + id));
         return mapper.gradeToGradePreviewDto(grade);
     }
 
     public GradePreviewDTO update(Long id, UpdateGradeDTO updateGradeDTO) {
         Grade grade = mapper.updateGradeDtoToGrade(updateGradeDTO);
 
-        Grade updatedGrade = gradeCrudRepository.updateById(id, grade).orElseThrow(IllegalAccessError::new);
+        Grade updatedGrade = gradeCrudRepository.updateById(id, grade)
+                .orElseThrow(() -> new EntityNotFoundException("No grade with id = " + id));
 
         return mapper.gradeToGradePreviewDto(updatedGrade);
     }

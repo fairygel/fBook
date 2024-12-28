@@ -1,5 +1,6 @@
 package me.fairygel.fbook.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import me.fairygel.fbook.dto.book.BookFullViewDTO;
 import me.fairygel.fbook.dto.book.CreateBookDTO;
@@ -25,13 +26,15 @@ public class BookService {
         bookRepository.save(book);
     }
     public BookFullViewDTO read(long id) {
-        Book book = bookRepository.findById(id).orElseThrow(IllegalAccessError::new);
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No book with id = " + id));
 
         return mapper.bookToBookFullViewDto(book);
     }
     public BookFullViewDTO update(long id, UpdateBookDTO bookDTO) {
         Book book = mapper.updateBookDtoToBook(bookDTO);
-        Book updatedBook = bookRepository.updateById(id, book).orElseThrow(IllegalAccessError::new);
+        Book updatedBook = bookRepository.updateById(id, book)
+                .orElseThrow(() -> new EntityNotFoundException("No book with id = " + id));
 
         return mapper.bookToBookFullViewDto(updatedBook);
     }

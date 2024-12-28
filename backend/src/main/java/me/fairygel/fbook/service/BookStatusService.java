@@ -1,5 +1,6 @@
 package me.fairygel.fbook.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import me.fairygel.fbook.dto.book.status.BookStatusDTO;
 import me.fairygel.fbook.dto.book.status.BookStatusIndexViewDTO;
@@ -18,7 +19,8 @@ public class BookStatusService {
     private final BookStatusMapper mapper;
 
     public BookStatusDTO read(Short id) {
-        BookStatus bookStatus = bookStatusRepository.findById(id).orElseThrow(IllegalAccessError::new);
+        BookStatus bookStatus = bookStatusRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No book status with id = " + id));
         return mapper.bookStatusToBookStatusDto(bookStatus);
     }
 

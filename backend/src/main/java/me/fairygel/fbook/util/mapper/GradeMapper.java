@@ -1,6 +1,8 @@
 package me.fairygel.fbook.util.mapper;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.Setter;
+import me.fairygel.fbook.dto.book.IndexBookViewDTO;
 import me.fairygel.fbook.dto.grade.CreateGradeDTO;
 import me.fairygel.fbook.dto.grade.GradePreviewDTO;
 import me.fairygel.fbook.dto.grade.UpdateGradeDTO;
@@ -27,13 +29,23 @@ public abstract class GradeMapper {
     @Mapping(target = "book", ignore = true)
     public abstract Grade updateGradeDtoToGrade(UpdateGradeDTO updateGradeDTO);
 
-    @Mapping(target = "bookName", expression = "java(grade.getBook().getName())")
-    @Mapping(target = "bookId", expression = "java(grade.getBook().getId())")
+    @Mapping(target = "book", expression =
+            "java(mapBook(grade.getBook()))")
     public abstract GradePreviewDTO gradeToGradePreviewDto(Grade grade);
 
     public abstract Set<GradePreviewDTO> gradesToGradePreviews(Set<Grade> grades);
 
     protected Book getBookFromRepository(Long id) {
-        return bookRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No book with id = " + id));
+    }
+
+    protected IndexBookViewDTO mapBook(Book book) {
+        IndexBookViewDTO bookDTO = new IndexBookViewDTO();
+
+        bookDTO.setId(book.getId());
+        bookDTO.setName(book.getName());
+
+        return bookDTO;
     }
 }

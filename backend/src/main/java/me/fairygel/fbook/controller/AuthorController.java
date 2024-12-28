@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
+@Validated
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/authors")
@@ -18,7 +19,7 @@ public class AuthorController {
     private final AuthorService authorService;
 
     @PostMapping(value = {"/", ""})
-    public void create(@RequestBody @Validated(value = OnCreateGroup.class) AuthorDTO authorDTO) {
+    public void create(@RequestBody @Validated(OnCreateGroup.class) AuthorDTO authorDTO) {
         authorService.create(authorDTO);
     }
     @GetMapping(value = {"/{id}/", "/{id}"})
@@ -26,7 +27,7 @@ public class AuthorController {
         return authorService.read(id);
     }
     @PatchMapping(value = {"/{id}/", "/{id}"})
-    public AuthorDTO update(@PathVariable Long id, @RequestBody @Validated(value = OnUpdateGroup.class) AuthorDTO authorDTO) {
+    public AuthorDTO update(@PathVariable Long id, @RequestBody @Validated(OnUpdateGroup.class) AuthorDTO authorDTO) {
         return authorService.update(id, authorDTO);
     }
     @DeleteMapping(value = {"/{id}/", "/{id}"})

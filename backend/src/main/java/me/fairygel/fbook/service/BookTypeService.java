@@ -1,5 +1,6 @@
 package me.fairygel.fbook.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import me.fairygel.fbook.dto.book.type.BookTypeDTO;
 import me.fairygel.fbook.dto.book.type.BookTypeIndexViewDTO;
@@ -17,7 +18,8 @@ public class BookTypeService {
     private final BookTypeMapper mapper;
 
     public BookTypeDTO read(Short id) {
-        BookType bookType = bookTypeRepository.findById(id).orElseThrow(IllegalAccessError::new);
+        BookType bookType = bookTypeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No book type with id = " + id));
         return mapper.bookTypeToBookTypeDto(bookType);
     }
 

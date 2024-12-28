@@ -1,6 +1,8 @@
 package me.fairygel.fbook.util.mapper.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import me.fairygel.fbook.dto.book.BookFullViewDTO;
 import me.fairygel.fbook.dto.book.CreateBookDTO;
@@ -15,10 +17,12 @@ import me.fairygel.fbook.repository.GenreCrudRepository;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.zip.DataFormatException;
 
 @Slf4j
 @Component
@@ -36,19 +40,19 @@ public class BookMapperImpl implements BookMapper {
         Book book = new Book();
 
         Author author = authorRepository.findById(bookDTO.getAuthorId())
-                .orElse(authorRepository.findById(0L).orElseThrow(IllegalAccessError::new));
+                .orElseThrow(() -> new EntityNotFoundException("No author with id = " + bookDTO.getAuthorId()));
 
         Set<Genre> genres = new HashSet<>();
 
         for (Long genreId : bookDTO.getGenreIds()) {
             Genre genre = genreRepository.findById(genreId)
-                   .orElse(genreRepository.findById(0L).orElseThrow(IllegalAccessError::new));
+                    .orElseThrow(() -> new EntityNotFoundException("No genre with id = " + genreId));
             genres.add(genre);
         }
 
         BookStatus bookStatus = bookStatusRepository.findById((short) 0).orElseThrow(IllegalAccessError::new);
         BookType bookType = bookTypeRepository.findById(bookDTO.getBookTypeId())
-                .orElse(bookTypeRepository.findById((short) 0).orElseThrow(IllegalAccessError::new));
+                .orElseThrow(() -> new EntityNotFoundException("No book type with id = " + bookDTO.getBookTypeId()));
 
         book.setName(bookDTO.getName());
         book.setAuthor(author);
@@ -115,8 +119,12 @@ public class BookMapperImpl implements BookMapper {
     // --- Helpful Stuff ---
 
     private Author getAuthor(UpdateBookDTO bookDTO) {
-        if (bookDTO.getAuthorId() == null) return null;
-        else return authorRepository.findById(bookDTO.getAuthorId()).orElseThrow(IllegalAccessError::new);
+        Long authorId = bookDTO.getAuthorId();
+
+        if (authorId == null) return null;
+
+        else return authorRepository.findById(authorId)
+                .orElseThrow(() -> new EntityNotFoundException("No author with id = " + authorId));
     }
 
     private Set<Genre> getGenres(UpdateBookDTO bookDTO) {
@@ -126,7 +134,7 @@ public class BookMapperImpl implements BookMapper {
 
         for (Long genreId : bookDTO.getGenreIds()) {
             Genre genre = genreRepository.findById(genreId)
-                    .orElseThrow(IllegalAccessError::new);
+                    .orElseThrow(() -> new EntityNotFoundException("No genre with id = " + genreId));
             genres.add(genre);
         }
 
@@ -134,22 +142,30 @@ public class BookMapperImpl implements BookMapper {
     }
 
     private BookStatus getBookStatus(UpdateBookDTO bookDTO) {
-        if (bookDTO.getBookStatusId() == null) return null;
-        else return bookStatusRepository.findById(bookDTO.getBookStatusId()).orElseThrow(IllegalAccessError::new);
+        Short statusId = bookDTO.getBookStatusId();
+
+        if (statusId == null) return null;
+
+        else return bookStatusRepository.findById(statusId)
+                .orElseThrow(() -> new EntityNotFoundException("No book status with id = " + statusId));
     }
 
     private BookType getBookType(UpdateBookDTO bookDTO) {
-        if (bookDTO.getBookTypeId() == null) return null;
-        else return bookTypeRepository.findById(bookDTO.getBookTypeId()).orElseThrow(IllegalAccessError::new);
+        Short typeId = bookDTO.getBookTypeId();
+
+        if (typeId == null) return null;
+
+        else return bookTypeRepository.findById(typeId)
+                .orElseThrow(() -> new EntityNotFoundException("No book type with id = " + typeId));
     }
 
+    @SneakyThrows
     private LocalDate stringToDate(String str) {
         if (str == null || str.isEmpty()) return null;
         try {
             return LocalDate.parse(str);
-        } catch (Exception e) {
-            log.warn(e.getMessage());
-            return null;
+        } catch (DateTimeParseException e) {
+            throw new DataFormatException(e.getMessage());
         }
     }
     private String dateToString(LocalDate date) {
