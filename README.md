@@ -18,7 +18,7 @@ or else, you can build everything manually:
 
 
 ## To-Do:
-- [ ] backend rest api service
+- [x] backend rest api service
 - [ ] frontend
 - [ ] login/register feature's
 - [ ] tests
