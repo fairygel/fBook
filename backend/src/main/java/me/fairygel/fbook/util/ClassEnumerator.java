@@ -2,14 +2,12 @@ package me.fairygel.fbook.util;
 
 import com.sun.jdi.ClassNotPreparedException;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 // TODO: make method, that will transform class to enum, using data from repository
-@Component
 public class ClassEnumerator {
     public <T, U extends CrudRepository<T, Short>> void initializeFromRepository(
             U repository, T entity) {
