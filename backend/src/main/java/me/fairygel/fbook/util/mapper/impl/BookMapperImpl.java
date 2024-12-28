@@ -103,9 +103,11 @@ public class BookMapperImpl implements BookMapper {
         bookDTO.setEndedReadDate(dateToString(book.getEndedReadDate()));
         bookDTO.setAnnotation(book.getAnnotation());
         bookDTO.setBookType(book.getBookType().getName());
+        setRating(book, bookDTO);
 
         return bookDTO;
     }
+
     @Override
     public IndexBookViewDTO bookToIndexBookViewDto(Book book) {
         IndexBookViewDTO bookDTO = new IndexBookViewDTO();
@@ -118,6 +120,14 @@ public class BookMapperImpl implements BookMapper {
 
     // --- Helpful Stuff ---
 
+    private void setRating(Book book, BookFullViewDTO bookDTO) {
+        if (book.getGrades().isEmpty()) return;
+
+        Grade grade = book.getGrades().stream().toList().getFirst();
+
+        bookDTO.setGradeRating(grade.getRating());
+        bookDTO.setGradeComment(grade.getComment());
+    }
     private Author getAuthor(UpdateBookDTO bookDTO) {
         Long authorId = bookDTO.getAuthorId();
 
@@ -136,6 +146,10 @@ public class BookMapperImpl implements BookMapper {
             Genre genre = genreRepository.findById(genreId)
                     .orElseThrow(() -> new EntityNotFoundException("No genre with id = " + genreId));
             genres.add(genre);
+        }
+
+        if (genres.size() > 1) {
+            genres.removeIf(g -> g.getId() == 0);
         }
 
         return genres;

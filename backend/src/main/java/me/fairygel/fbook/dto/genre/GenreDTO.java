@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 public class GenreDTO {
-    @Size(min = 1)
+    @Size(min = 1, message = "genre name must have at least one character")
     private String genre;
 }

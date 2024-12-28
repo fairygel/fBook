@@ -2,6 +2,7 @@ package me.fairygel.fbook.util.mapper;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import me.fairygel.fbook.dto.book.IndexBookViewDTO;
 import me.fairygel.fbook.dto.grade.CreateGradeDTO;
 import me.fairygel.fbook.dto.grade.GradePreviewDTO;
@@ -35,9 +36,13 @@ public abstract class GradeMapper {
 
     public abstract Set<GradePreviewDTO> gradesToGradePreviews(Set<Grade> grades);
 
+    @SneakyThrows
     protected Book getBookFromRepository(Long id) {
-        return bookRepository.findById(id)
+        Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("No book with id = " + id));
+
+        if (book.getGrades().isEmpty()) return book;
+        else throw new IllegalAccessException("book with id = " + id + " already have grade.");
     }
 
     protected IndexBookViewDTO mapBook(Book book) {

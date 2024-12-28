@@ -9,6 +9,8 @@ import java.util.Objects;
 @Component
 public class BookAutomation {
     public void automate(Book book) {
+        if (book.getBookStatus() == null) return;
+
         if (Objects.equals(book.getBookStatus().getName(), "reading")) {
             book.setStartedReadDate(LocalDate.now());
         } else if (Objects.equals(book.getBookStatus().getName(), "finished")) {
