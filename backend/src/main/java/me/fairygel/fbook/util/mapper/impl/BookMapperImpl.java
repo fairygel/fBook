@@ -1,4 +1,4 @@
-package me.fairygel.fbook.mapper.impl;
+package me.fairygel.fbook.util.mapper.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,7 +7,7 @@ import me.fairygel.fbook.dto.book.CreateBookDTO;
 import me.fairygel.fbook.dto.book.IndexBookViewDTO;
 import me.fairygel.fbook.dto.book.UpdateBookDTO;
 import me.fairygel.fbook.entity.*;
-import me.fairygel.fbook.mapper.BookMapper;
+import me.fairygel.fbook.util.mapper.BookMapper;
 import me.fairygel.fbook.repository.AuthorCrudRepository;
 import me.fairygel.fbook.repository.BookStatusReadOnlyRepository;
 import me.fairygel.fbook.repository.BookTypeReadOnlyRepository;

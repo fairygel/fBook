@@ -1,4 +1,4 @@
-package me.fairygel.fbook.mapper;
+package me.fairygel.fbook.util.mapper;
 
 import lombok.Setter;
 import me.fairygel.fbook.dto.grade.CreateGradeDTO;
@@ -33,7 +33,7 @@ public abstract class GradeMapper {
 
     public abstract Set<GradePreviewDTO> gradesToGradePreviews(Set<Grade> grades);
 
-    private Book getBookFromRepository(Long id) {
+    protected Book getBookFromRepository(Long id) {
         return bookRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 }

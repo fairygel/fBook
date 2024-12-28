@@ -5,7 +5,7 @@ import me.fairygel.fbook.dto.grade.CreateGradeDTO;
 import me.fairygel.fbook.dto.grade.GradePreviewDTO;
 import me.fairygel.fbook.dto.grade.UpdateGradeDTO;
 import me.fairygel.fbook.entity.Grade;
-import me.fairygel.fbook.mapper.GradeMapper;
+import me.fairygel.fbook.util.mapper.GradeMapper;
 import me.fairygel.fbook.repository.GradeCrudRepository;
 import org.springframework.stereotype.Service;
 

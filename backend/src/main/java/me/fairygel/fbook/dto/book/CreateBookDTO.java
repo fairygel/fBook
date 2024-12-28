@@ -1,7 +1,7 @@
 package me.fairygel.fbook.dto.book;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.util.HashSet;
@@ -10,7 +10,7 @@ import java.util.Set;
 @Data
 public class CreateBookDTO {
     @NotNull
-    @NotBlank
+    @Size(min = 1)
     private String name;
 
     @NotNull

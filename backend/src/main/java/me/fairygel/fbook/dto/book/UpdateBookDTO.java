@@ -1,14 +1,14 @@
 package me.fairygel.fbook.dto.book;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.util.Set;
 
 @Data
 public class UpdateBookDTO {
-    @NotBlank
+    @Size(min = 1)
     private String name;
 
     private Long authorId;
@@ -23,7 +23,7 @@ public class UpdateBookDTO {
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$")
     private String endedReadDate;
 
-    @NotBlank
+    @Size(min = 1)
     private String annotation;
 
     private Short bookTypeId;

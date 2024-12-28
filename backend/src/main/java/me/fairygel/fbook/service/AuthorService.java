@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import me.fairygel.fbook.dto.author.AuthorDTO;
 import me.fairygel.fbook.dto.author.AuthorIndexViewDTO;
 import me.fairygel.fbook.entity.Author;
-import me.fairygel.fbook.mapper.AuthorMapper;
+import me.fairygel.fbook.util.mapper.AuthorMapper;
 import me.fairygel.fbook.repository.AuthorCrudRepository;
 import org.springframework.stereotype.Service;
 

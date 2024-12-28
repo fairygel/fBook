@@ -1,4 +1,4 @@
-package me.fairygel.fbook.mapper;
+package me.fairygel.fbook.util.mapper;
 
 import me.fairygel.fbook.dto.author.AuthorDTO;
 import me.fairygel.fbook.dto.author.AuthorIndexViewDTO;
@@ -17,7 +17,10 @@ public interface AuthorMapper {
     @Mapping(target = "books", ignore = true)
     Author authorDtoToAuthor(AuthorDTO authorDTO);
 
-    @Mapping(target = "fullName", expression = "java(author.getLastName() + \" \" + author.getFirstName())")
+    // if lastname is null, then we will replace it with blank line
+    // else, we will place it with the space at the end
+    @Mapping(target = "fullName", expression =
+            "java((author.getLastName() == null?\"\":author.getLastName() + \" \").concat(author.getFirstName()))")
     AuthorIndexViewDTO authorToAuthorIndexDto(Author author);
 
     Set<AuthorIndexViewDTO> authorsToIndexDto(Set<Author> authors);

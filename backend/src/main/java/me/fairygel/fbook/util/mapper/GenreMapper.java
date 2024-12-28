@@ -1,4 +1,4 @@
-package me.fairygel.fbook.mapper;
+package me.fairygel.fbook.util.mapper;
 
 import me.fairygel.fbook.dto.genre.GenreDTO;
 import me.fairygel.fbook.dto.genre.GenreIndexViewDTO;

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import me.fairygel.fbook.dto.genre.GenreDTO;
 import me.fairygel.fbook.dto.genre.GenreIndexViewDTO;
 import me.fairygel.fbook.entity.Genre;
-import me.fairygel.fbook.mapper.GenreMapper;
+import me.fairygel.fbook.util.mapper.GenreMapper;
 import me.fairygel.fbook.repository.GenreCrudRepository;
 import org.springframework.stereotype.Service;
 

@@ -1,5 +1,6 @@
 package me.fairygel.fbook.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import me.fairygel.fbook.dto.grade.CreateGradeDTO;
 import me.fairygel.fbook.dto.grade.GradePreviewDTO;
@@ -16,7 +17,7 @@ public class GradeController {
     private final GradeService gradeService;
 
     @PostMapping(value = {"/", ""})
-    public void create(@RequestBody CreateGradeDTO gradeDTO) {
+    public void create(@RequestBody @Valid CreateGradeDTO gradeDTO) {
         gradeService.create(gradeDTO);
     }
 
@@ -26,7 +27,7 @@ public class GradeController {
     }
 
     @PatchMapping(value = {"/{id}/", "/{id}"})
-    public GradePreviewDTO update(@PathVariable Long id, @RequestBody UpdateGradeDTO gradeDTO) {
+    public GradePreviewDTO update(@PathVariable Long id, @RequestBody @Valid UpdateGradeDTO gradeDTO) {
         return gradeService.update(id, gradeDTO);
     }
 

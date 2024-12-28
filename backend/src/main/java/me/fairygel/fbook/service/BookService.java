@@ -6,7 +6,7 @@ import me.fairygel.fbook.dto.book.CreateBookDTO;
 import me.fairygel.fbook.dto.book.IndexBookViewDTO;
 import me.fairygel.fbook.dto.book.UpdateBookDTO;
 import me.fairygel.fbook.entity.Book;
-import me.fairygel.fbook.mapper.impl.BookMapperImpl;
+import me.fairygel.fbook.util.mapper.impl.BookMapperImpl;
 import me.fairygel.fbook.repository.BookCrudRepository;
 import org.springframework.stereotype.Service;
 

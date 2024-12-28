@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import me.fairygel.fbook.dto.author.AuthorDTO;
 import me.fairygel.fbook.dto.author.AuthorIndexViewDTO;
 import me.fairygel.fbook.service.AuthorService;
+import me.fairygel.fbook.util.validation.OnCreateGroup;
+import me.fairygel.fbook.util.validation.OnUpdateGroup;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -15,7 +18,7 @@ public class AuthorController {
     private final AuthorService authorService;
 
     @PostMapping(value = {"/", ""})
-    public void create(@RequestBody AuthorDTO authorDTO) {
+    public void create(@RequestBody @Validated(value = OnCreateGroup.class) AuthorDTO authorDTO) {
         authorService.create(authorDTO);
     }
     @GetMapping(value = {"/{id}/", "/{id}"})
@@ -23,7 +26,7 @@ public class AuthorController {
         return authorService.read(id);
     }
     @PatchMapping(value = {"/{id}/", "/{id}"})
-    public AuthorDTO update(@PathVariable Long id, @RequestBody AuthorDTO authorDTO) {
+    public AuthorDTO update(@PathVariable Long id, @RequestBody @Validated(value = OnUpdateGroup.class) AuthorDTO authorDTO) {
         return authorService.update(id, authorDTO);
     }
     @DeleteMapping(value = {"/{id}/", "/{id}"})
