@@ -214,7 +214,7 @@ for example:
 
 ```json
 {
-    "name": "detective"
+    "genre": "detective"
 }
 ```
 
@@ -232,7 +232,7 @@ example:
 
 ```json
 {
-    "name": "horror"
+    "genre": "horror"
 }
 ```
 ### get book types:

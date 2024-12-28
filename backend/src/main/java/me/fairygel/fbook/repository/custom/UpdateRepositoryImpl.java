@@ -11,6 +11,12 @@ public class UpdateRepositoryImpl<T> implements UpdateRepository<T> {
     @PersistenceContext
     private EntityManager entityManager;
 
+    /*
+     * Method that updates entity in repository.
+     * at first, we will find entity in database.
+     * if it not exists, we will send and do nothing
+     * if it exists, we will merge all fields from our entity, to existing and then save it
+     */
     @Override
     @Transactional
     @SuppressWarnings("unchecked")

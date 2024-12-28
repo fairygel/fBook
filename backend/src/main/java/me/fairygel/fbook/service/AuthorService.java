@@ -1,41 +1,59 @@
 package me.fairygel.fbook.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import me.fairygel.fbook.dto.author.AuthorDTO;
+import me.fairygel.fbook.dto.author.AuthorIndexViewDTO;
 import me.fairygel.fbook.entity.Author;
 import me.fairygel.fbook.repository.AuthorCrudRepository;
+import me.fairygel.fbook.util.mapper.AuthorMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
 public class AuthorService {
     private final AuthorCrudRepository authorRepository;
+    private final AuthorMapper mapper;
 
-    public void create(Author author) {
+    private static final String NO_AUTHOR = "No author with id = ";
+
+    public void create(AuthorDTO authorDTO) {
+        Author author = mapper.authorDtoToAuthor(authorDTO);
         authorRepository.save(author);
     }
 
-    public Author read(Long id) {
-        return authorRepository
-                .findById(id).orElse(
-                        authorRepository.findById(0L)
-                                .orElseThrow(IllegalStateException::new)
-                );
+    public AuthorDTO read(Long id) {
+        if (id == 0L) throw new EntityNotFoundException(NO_AUTHOR + id);
+
+        Author author = authorRepository
+                .findById(id).orElseThrow(() -> new EntityNotFoundException(NO_AUTHOR + id));
+        return mapper.authorToAuthorDto(author);
     }
 
-    public Author update(Long id, Author author) {
-        return authorRepository.updateById(id, author).orElseThrow(IllegalAccessError::new);
+    public AuthorDTO update(Long id, AuthorDTO authorDTO) {
+        if (id == 0L) throw new EntityNotFoundException(NO_AUTHOR + id);
+
+        Author author = mapper.authorDtoToAuthor(authorDTO);
+
+        Author updatedAuthor = authorRepository.updateById(id, author)
+                .orElseThrow(() -> new EntityNotFoundException(NO_AUTHOR + id));
+
+        return mapper.authorToAuthorDto(updatedAuthor);
     }
 
     public void delete(Long id) {
+        if (id == 0L) throw new EntityNotFoundException(NO_AUTHOR + id);
+
         authorRepository.deleteById(id);
     }
 
-    public List<Author> index() {
-        List<Author> authors = new ArrayList<>();
-        authorRepository.findAll().forEach(authors::add);
-        return authors;
+    public Set<AuthorIndexViewDTO> index() {
+        Set<Author> authors = new HashSet<>();
+        authorRepository.findAll().forEach(a -> {if (a.getId() != 0L) authors.add(a);});
+
+        return mapper.authorsToIndexDto(authors);
     }
 }

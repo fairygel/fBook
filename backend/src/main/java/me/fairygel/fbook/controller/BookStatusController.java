@@ -1,11 +1,15 @@
 package me.fairygel.fbook.controller;
 
 import lombok.AllArgsConstructor;
-import me.fairygel.fbook.entity.BookStatus;
+import me.fairygel.fbook.dto.book.status.BookStatusDTO;
+import me.fairygel.fbook.dto.book.status.BookStatusIndexViewDTO;
 import me.fairygel.fbook.service.BookStatusService;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.Set;
 
 @RestController
 @AllArgsConstructor
@@ -14,12 +18,12 @@ public class BookStatusController {
     private final BookStatusService bookStatusService;
 
     @GetMapping(value = {"/{id}", "/{id}/"})
-    public BookStatus read(@PathVariable Short id) {
+    public BookStatusDTO read(@PathVariable Short id) {
         return bookStatusService.read(id);
     }
 
     @GetMapping(value = {"/", ""})
-    public List<BookStatus> index() {
+    public Set<BookStatusIndexViewDTO> index() {
         return bookStatusService.index();
     }
 }

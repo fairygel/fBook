@@ -1,11 +1,14 @@
 package me.fairygel.fbook.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import me.fairygel.fbook.entity.Grade;
+import me.fairygel.fbook.dto.grade.CreateGradeDTO;
+import me.fairygel.fbook.dto.grade.GradePreviewDTO;
+import me.fairygel.fbook.dto.grade.UpdateGradeDTO;
 import me.fairygel.fbook.service.GradeService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Set;
 
 @RestController
 @AllArgsConstructor
@@ -14,18 +17,18 @@ public class GradeController {
     private final GradeService gradeService;
 
     @PostMapping(value = {"/", ""})
-    public void create(@RequestBody Grade grade) {
-        gradeService.create(grade);
+    public void create(@RequestBody @Valid CreateGradeDTO gradeDTO) {
+        gradeService.create(gradeDTO);
     }
 
     @GetMapping(value = {"/{id}/", "/{id}"})
-    public Grade read(@PathVariable Long id) {
+    public GradePreviewDTO read(@PathVariable Long id) {
         return gradeService.read(id);
     }
 
     @PatchMapping(value = {"/{id}/", "/{id}"})
-    public Grade update(@PathVariable Long id, @RequestBody Grade grade) {
-        return gradeService.update(id, grade);
+    public GradePreviewDTO update(@PathVariable Long id, @RequestBody @Valid UpdateGradeDTO gradeDTO) {
+        return gradeService.update(id, gradeDTO);
     }
 
     @DeleteMapping(value = {"/{id}/", "/{id}"})
@@ -34,7 +37,7 @@ public class GradeController {
     }
 
     @GetMapping(value = {"/", ""})
-    public List<Grade> index() {
+    public Set<GradePreviewDTO> index() {
         return gradeService.index();
     }
 }
