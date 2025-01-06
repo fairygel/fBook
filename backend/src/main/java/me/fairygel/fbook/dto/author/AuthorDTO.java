@@ -7,7 +7,7 @@ import me.fairygel.fbook.util.validation.OnCreateGroup;
 import me.fairygel.fbook.util.validation.OnUpdateGroup;
 
 @Data
-public class AuthorDTO {
+public class AuthorIndexViewDTO {
     @NotNull(groups = OnCreateGroup.class, message = "when creating, author first name must exist")
     @Size(min = 1, groups = {OnCreateGroup.class, OnUpdateGroup.class}, message = "author first name should have at least one character")
     private String firstName;

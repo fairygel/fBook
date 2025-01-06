@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthorService} from "../../service/author.service";
-import {AuthorDTO} from "../../dto/authorDTO";
+import {AuthorIndexViewDTO} from "../../dto/author/authorIndexViewDTO";
 
 @Component({
   selector: 'authors-root',
@@ -21,7 +21,7 @@ import {AuthorDTO} from "../../dto/authorDTO";
   styles: ``
 })
 export class AuthorComponent implements OnInit {
-  authors: AuthorDTO[] = [];
+  authors: AuthorIndexViewDTO[] = [];
 
   constructor(private readonly authorService: AuthorService) { }
 
