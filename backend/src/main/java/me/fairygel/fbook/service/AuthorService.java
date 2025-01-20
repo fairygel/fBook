@@ -2,7 +2,7 @@ package me.fairygel.fbook.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import me.fairygel.fbook.dto.author.AuthorIndexViewDTO;
+import me.fairygel.fbook.dto.author.AuthorDTO;
 import me.fairygel.fbook.dto.author.AuthorIndexViewDTO;
 import me.fairygel.fbook.entity.Author;
 import me.fairygel.fbook.repository.AuthorCrudRepository;
@@ -20,12 +20,12 @@ public class AuthorService {
 
     private static final String NO_AUTHOR = "No author with id = ";
 
-    public void create(AuthorIndexViewDTO authorDTO) {
+    public void create(AuthorDTO authorDTO) {
         Author author = mapper.authorDtoToAuthor(authorDTO);
         authorRepository.save(author);
     }
 
-    public AuthorIndexViewDTO read(Long id) {
+    public AuthorDTO read(Long id) {
         if (id == 0L) throw new EntityNotFoundException(NO_AUTHOR + id);
 
         Author author = authorRepository
@@ -33,7 +33,7 @@ public class AuthorService {
         return mapper.authorToAuthorDto(author);
     }
 
-    public AuthorIndexViewDTO update(Long id, AuthorIndexViewDTO authorDTO) {
+    public AuthorDTO update(Long id, AuthorDTO authorDTO) {
         if (id == 0L) throw new EntityNotFoundException(NO_AUTHOR + id);
 
         Author author = mapper.authorDtoToAuthor(authorDTO);

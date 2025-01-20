@@ -1,7 +1,7 @@
 package me.fairygel.fbook.controller;
 
 import lombok.AllArgsConstructor;
-import me.fairygel.fbook.dto.author.AuthorIndexViewDTO;
+import me.fairygel.fbook.dto.author.AuthorDTO;
 import me.fairygel.fbook.dto.author.AuthorIndexViewDTO;
 import me.fairygel.fbook.service.AuthorService;
 import me.fairygel.fbook.util.validation.OnCreateGroup;
@@ -19,15 +19,15 @@ public class AuthorController {
     private final AuthorService authorService;
 
     @PostMapping(value = {"/", ""})
-    public void create(@RequestBody @Validated(OnCreateGroup.class) AuthorIndexViewDTO authorDTO) {
+    public void create(@RequestBody @Validated(OnCreateGroup.class) AuthorDTO authorDTO) {
         authorService.create(authorDTO);
     }
     @GetMapping(value = {"/{id}/", "/{id}"})
-    public AuthorIndexViewDTO read(@PathVariable Long id) {
+    public AuthorDTO read(@PathVariable Long id) {
         return authorService.read(id);
     }
     @PatchMapping(value = {"/{id}/", "/{id}"})
-    public AuthorIndexViewDTO update(@PathVariable Long id, @RequestBody @Validated(OnUpdateGroup.class) AuthorIndexViewDTO authorDTO) {
+    public AuthorDTO update(@PathVariable Long id, @RequestBody @Validated(OnUpdateGroup.class) AuthorDTO authorDTO) {
         return authorService.update(id, authorDTO);
     }
     @DeleteMapping(value = {"/{id}/", "/{id}"})
