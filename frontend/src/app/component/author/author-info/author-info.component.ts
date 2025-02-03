@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthorDTO} from "../../../dto/author/authorDTO";
-import {AuthorService} from "../../../service/author.service";
+import {AuthorService} from "../../../service/author/author.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
 
 @Component({

@@ -1,8 +1,8 @@
 import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
-import {AuthorIndexViewDTO} from "../dto/author/authorIndexViewDTO";
-import {AuthorDTO} from "../dto/author/authorDTO";
+import {AuthorIndexViewDTO} from "../../dto/author/authorIndexViewDTO";
+import {AuthorDTO} from "../../dto/author/authorDTO";
 
 @Injectable({
   providedIn: 'root'

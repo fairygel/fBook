@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthorService} from "../../service/author.service";
-import {AuthorIndexViewDTO} from "../../dto/author/authorIndexViewDTO";
+import {AuthorService} from "../../../service/author/author.service";
+import {AuthorIndexViewDTO} from "../../../dto/author/authorIndexViewDTO";
 import {RouterLink} from "@angular/router";
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 
@@ -31,6 +31,7 @@ import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 })
 export class AuthorComponent implements OnInit {
   authors: AuthorIndexViewDTO[] = [];
+
   authorForm = new FormGroup({
     name: new FormControl('')
   })
