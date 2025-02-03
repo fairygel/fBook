@@ -3,7 +3,7 @@ export interface BookFullViewDTO {
   name: string;
   authorFirstName: string;
   authorLastName: string;
-  genres: Set<string>;
+  genres: string[];
   bookStatus: string;
   startedReadDate: string;
   endedReadDate: string;

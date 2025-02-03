@@ -1,0 +1,89 @@
+@if (isLoading) {
+    <p>loading data..</p>
+} @else if (book) {
+    <form [formGroup]="bookForm" (ngSubmit)="handleSubmit()">
+        <label for="name">Name:</label>
+        <input type="text" formControlName="name" id="name" [disabled]="isLoading">
+        <br />
+
+        <label for="annotation">Annotation:</label>
+        <input type="text" formControlName="annotation" id="annotation" [disabled]="isLoading">
+        <br />
+
+        <label for="author">Author:</label>
+        <select formControlName="author" id="author" [disabled]="isLoading">
+            <option [value]="null">{{ book.authorLastName + ' ' + book.authorFirstName }}</option>
+
+            @for(author of authors; track author.id) {
+                @if ((book.authorLastName + ' ' + book.authorFirstName) !== author.fullName) {
+                    <option [value]="author.id">{{author.fullName}}</option>
+                }
+            }
+        </select>
+
+        <form [formGroup]="authorForm" (ngSubmit)="createAuthor()">
+            <label for="fullName">author name:</label>
+            <input type="text" id="fullName" formControlName="fullName" [disabled]="isLoading">
+            <button type="submit" [disabled]="isLoading">create</button>
+            <br />
+        </form>
+
+        <label for="bookType">book type:</label>
+        <select formControlName="bookType" id="bookType" [disabled]="isLoading">
+            <option [value]="null">{{book.bookType}}</option>
+
+            @for(bookType of bookTypes; track bookType.id) {
+                @if (bookType.type !== book.bookType && bookType.id !== 0) {
+                    <option [value]="bookType.id">{{bookType.type}}</option>
+                }
+            }
+        </select>
+        <br />
+
+        <label for="bookStatus">book status:</label>
+        <select formControlName="bookStatus" id="bookStatus" [disabled]="isLoading">
+            <option [value]="null">{{book.bookStatus}}</option>
+
+            @for(bookStatus of bookStatuses; track bookStatus.id) {
+                @if (bookStatus.status !== book.bookStatus) {
+                    <option [value]="bookStatus.id">{{bookStatus.status}}</option>
+                }
+            }
+        </select>
+        <br />
+
+        <label for="genres">genres:</label>
+        @for(genre of book.genres; track genre) {
+            <span>{{genre.toLowerCase()}}{{$last?'':', '}}</span>
+        }
+        <select formControlName="genres" id="genres" [disabled]="isLoading" multiple>
+            @for(genre of genres; track genre.id) {
+                <option [value]="genre.id">{{genre.genre}}</option>
+            }
+        </select>
+        <br />
+
+        <form [formGroup]="genreForm" (ngSubmit)="createGenre()">
+            <label for="genre">genre:</label>
+            <input id="genre" type="text" formControlName="genre" [disabled]="isLoading">
+            <button type="submit" [disabled]="isLoading">create</button>
+            <br/>
+        </form>
+
+        <label for="startedReadDate">started reading:</label>
+        <input type="date" formControlName="startedReadDate" id="startedReadDate" [disabled]="isLoading">
+        <br />
+
+        <label for="endedReadDate">ended reading:</label>
+        <input type="date" formControlName="endedReadDate" id="endedReadDate" [disabled]="isLoading">
+        <br />
+
+        <button type="submit" [disabled]="isLoading">edit book</button>
+    </form>
+    <button (click)="deleteBook()" [disabled]="isLoading">delete book</button>
+} @else {
+    <h1>no book found:(</h1>
+}
+<hr />
+<a routerLink="/">see your books..</a>
+

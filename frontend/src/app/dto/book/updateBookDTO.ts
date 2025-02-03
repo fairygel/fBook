@@ -1,10 +1,10 @@
 export interface UpdateBookDTO {
-  name: string;
-  authorId: number;
-  genreIds: Set<number>;
-  bookStatusId: number;
-  startedReadDate: string;
-  endedReadDate: string;
-  annotation: string;
-  bookTypeId: number;
+  name: string|null;
+  authorId: number|null;
+  genreIds: number[];
+  bookStatusId: number|null;
+  startedReadDate: string|null;
+  endedReadDate: string|null;
+  annotation: string|null;
+  bookTypeId: number|null;
 }

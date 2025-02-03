@@ -4,6 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {IndexBookViewDTO} from "../../dto/book/indexBookViewDTO";
 import {BookFullViewDTO} from "../../dto/book/bookFulViewDTO";
 import {CreateBookDTO} from "../../dto/book/createBookDTO";
+import {UpdateBookDTO} from "../../dto/book/updateBookDTO";
 
 @Injectable({
   providedIn: 'root'
@@ -26,5 +27,9 @@ export class BookService {
 
   deleteBook(id: number) {
     return this.http.delete(`/api/books/${id}`);
+  }
+
+  updateBook(id: number, book: UpdateBookDTO) {
+    return this.http.patch(`/api/books/${id}`, book)
   }
 }
