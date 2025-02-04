@@ -7,9 +7,7 @@
 } @else {
     <select id="bookType" [formControl]="bookTypeControl" [disabled]="isLoading">
         @for (bookType of allBookTypes; track bookType.id) {
-            @if (bookType.id !== 0) {
-                <option [value]="bookType.id">{{ bookType.type }}</option>
-            }
+            <option [value]="bookType.id">{{ bookType.type }}</option>
         }
     </select>
 }

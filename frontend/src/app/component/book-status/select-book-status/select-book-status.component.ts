@@ -16,7 +16,7 @@ export class SelectBookStatusComponent implements OnInit {
     isLoading = true;
     allBookStatuses: BookStatusIndexViewDTO[] = [];
 
-    bookStatusControl = new FormControl<number>(0);
+    bookStatusControl = new FormControl<number>(-1);
 
     @Input() bookStatusToShow: string = "";
     @Output() onBookStatusSelected = new EventEmitter<number>();

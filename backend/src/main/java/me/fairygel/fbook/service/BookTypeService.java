@@ -26,7 +26,7 @@ public class BookTypeService {
     public Set<BookTypeIndexViewDTO> index() {
         Set<BookType> bookTypes = new HashSet<>();
 
-        bookTypeRepository.findAll().forEach(bookTypes::add);
+        bookTypeRepository.findAll().forEach(bt -> {if (bt.getId() != 0L) bookTypes.add(bt);});
         return mapper.bookTypesToIndex(bookTypes);
     }
 }
