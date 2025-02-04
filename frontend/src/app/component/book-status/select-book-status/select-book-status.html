@@ -1,0 +1,16 @@
+<label for="bookType">book status:</label>
+<span>{{ bookStatusToShow }}</span>
+@if (isLoading) {
+    <span>loading..</span>
+} @else if (allBookStatuses.length === 0) {
+    <span>no book statuses found:(</span>
+} @else {
+    <select id="bookType" [formControl]="bookStatusControl" [disabled]="isLoading">
+        @for (bookStatus of allBookStatuses; track bookStatus.id) {
+            @if (bookStatus.id !== 0) {
+                <option [value]="bookStatus.id">{{ bookStatus.status }}</option>
+            }
+        }
+    </select>
+}
+<br/>

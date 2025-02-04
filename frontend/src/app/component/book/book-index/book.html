@@ -1,0 +1,20 @@
+@if (isLoading) {
+    <p>loading your books...</p>
+}
+@else if (books && books.length > 0) {
+    <ul>
+        @for (book of books; track book.id) {
+            <a routerLink="/books/{{book.id}}">{{ book.name }}</a>
+            <br />
+        }
+    </ul>
+} @else {
+    <p>no books found :(</p>
+}
+
+@if (!isMenuOpened) {
+    <button (click)="openMenu()">+</button>
+} @else {
+    <button (click)="closeMenu()">x</button>
+    <app-create-book (onBookCreated)="createBook()"/>
+}

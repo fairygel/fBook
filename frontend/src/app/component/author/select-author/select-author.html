@@ -1,0 +1,16 @@
+<label for="author">Author: </label>
+<span>{{authorToShow}}</span>
+@if (isLoading) {
+    <span>loading..</span>
+} @else if (allAuthors.length === 0) {
+    <span>no authors found:(</span>
+} @else {
+<select id="author" [formControl]="authorControl" [disabled]="isLoading">
+    @for (author of allAuthors; track author.id) {
+        <option [value]="author.id">{{ author.fullName }}</option>
+    }
+</select>
+}
+<br />
+
+<app-create-author (authorCreatedEvent)="handleAuthorCreation()" />

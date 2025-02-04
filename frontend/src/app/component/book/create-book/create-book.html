@@ -1,0 +1,19 @@
+<hr/>
+
+<form [formGroup]="bookForm" (ngSubmit)="handleSubmit()">
+    <label for="name">Name:</label>
+    <input id="name" type="text" formControlName="name" [disabled]="isLoading">
+    <br/>
+
+    <label for="annotation">Annotation:</label>
+    <input id="annotation" type="text" formControlName="annotation" [disabled]="isLoading">
+    <br/>
+
+    <app-select-author (onAuthorSelected)="handleSelectedAuthor($event)" />
+
+    <app-select-book-type (onBookTypeSelected)="handleSelectedBookType($event)" />
+
+    <app-select-genre (onGenreSelected)="handleSelectedGenres($event)" />
+
+    <button type="submit" [disabled]="isLoading">create book</button>
+</form>

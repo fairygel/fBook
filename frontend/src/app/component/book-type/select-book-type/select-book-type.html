@@ -1,0 +1,16 @@
+<label for="bookType">book type:</label>
+<span>{{ bookTypeToShow }}</span>
+@if (isLoading) {
+    <span>loading..</span>
+} @else if (allBookTypes.length === 0) {
+    <span>no authors found:(</span>
+} @else {
+    <select id="bookType" [formControl]="bookTypeControl" [disabled]="isLoading">
+        @for (bookType of allBookTypes; track bookType.id) {
+            @if (bookType.id !== 0) {
+                <option [value]="bookType.id">{{ bookType.type }}</option>
+            }
+        }
+    </select>
+}
+<br/>

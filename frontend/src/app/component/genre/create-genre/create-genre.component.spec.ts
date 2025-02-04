@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AuthorInfoComponent } from './author-info.component';
+import { CreateGenreComponent } from './create-genre.component';
 
-describe('AuthorInfoComponent', () => {
-  let component: AuthorInfoComponent;
-  let fixture: ComponentFixture<AuthorInfoComponent>;
+describe('CreateGenreComponent', () => {
+  let component: CreateGenreComponent;
+  let fixture: ComponentFixture<CreateGenreComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AuthorInfoComponent]
+      imports: [CreateGenreComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(AuthorInfoComponent);
+    fixture = TestBed.createComponent(CreateGenreComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

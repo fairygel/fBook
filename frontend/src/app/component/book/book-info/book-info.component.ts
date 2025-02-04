@@ -4,19 +4,14 @@ import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {ApiError} from "../../../error/api-error";
-
+import {BookService} from "../../../service/book/book.service";
 import {UpdateBookDTO} from "../../../dto/book/updateBookDTO";
 import {BookFullViewDTO} from "../../../dto/book/bookFulViewDTO";
-import {GenreIndexViewDTO} from "../../../dto/genre/genreIndexViewDTO";
-import {AuthorIndexViewDTO} from "../../../dto/author/authorIndexViewDTO";
-import {BookTypeIndexViewDTO} from "../../../dto/book/type/bookTypeIndexViewDTO";
-import {BookStatusIndexViewDTO} from "../../../dto/book/status/bookStatusIndexViewDTO";
 
-import {BookService} from "../../../service/book/book.service";
-import {GenreService} from "../../../service/genre/genre.service";
-import {AuthorService} from "../../../service/author/author.service";
-import {BookTypeService} from "../../../service/book-type/book-type.service";
-import {BookStatusService} from "../../../service/book-status/book-status.service";
+import {SelectGenreComponent} from "../../genre/select-genre/select-genre.component";
+import {SelectAuthorComponent} from "../../author/select-author/select-author.component";
+import {SelectBookTypeComponent} from "../../book-type/select-book-type/select-book-type.component";
+import {SelectBookStatusComponent} from "../../book-status/select-book-status/select-book-status.component";
 
 @Component({
     selector: 'app-book-info',
@@ -24,7 +19,11 @@ import {BookStatusService} from "../../../service/book-status/book-status.servic
     imports: [
         RouterLink,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        SelectGenreComponent,
+        SelectAuthorComponent,
+        SelectBookTypeComponent,
+        SelectBookStatusComponent
     ],
     templateUrl: 'book-info.html',
     styles: ``
@@ -33,83 +32,28 @@ export class BookInfoComponent implements OnInit {
     isLoading: boolean = true;
     id: number = -1;
 
-    book: BookFullViewDTO | null = null;
+    genresToUpdate: number[] = [];
+    authorToUpdate: number|null = null;
+    bookTypeToUpdate: number|null = null;
+    bookStatusToUpdate: number|null = null;
 
-    genres: GenreIndexViewDTO[] = [];
-    authors: AuthorIndexViewDTO[] = [];
-    bookTypes: BookTypeIndexViewDTO[] = [];
-    bookStatuses: BookStatusIndexViewDTO[] = [];
+    book: BookFullViewDTO|null = null;
+
+    bookGenres: string[] = [];
+    author = "";
+    bookType = "";
+    bookStatus = "";
 
     bookForm = new FormGroup({
         name: new FormControl(''),
         annotation: new FormControl(''),
-        author: new FormControl(null),
-        bookType: new FormControl(null),
-        bookStatus: new FormControl(null),
         startedReadDate: new FormControl<string|null>(null),
-        endedReadDate: new FormControl<string|null>(null),
-        genres: new FormControl([])
-    });
-
-    authorForm = new FormGroup({
-        fullName: new FormControl('')
-    });
-
-    genreForm = new FormGroup({
-        genre: new FormControl('')
+        endedReadDate: new FormControl<string|null>(null)
     });
 
     constructor(private readonly bookService: BookService,
-                private readonly genreService: GenreService,
-                private readonly authorService: AuthorService,
-                private readonly bookTypeService: BookTypeService,
-                private readonly bookStatusService: BookStatusService,
                 private readonly route: ActivatedRoute,
                 private readonly router: Router) {
-    }
-
-    fetchAuthors() {
-        this.authorService.getAuthors().subscribe({
-            next: (response) => {
-                this.authors = response;
-            },
-            error: (error) => {
-                console.error(error);
-            }
-        });
-    }
-
-    fetchBookTypes() {
-        this.bookTypeService.getBookTypes().subscribe({
-            next: (response) => {
-                this.bookTypes = response;
-            },
-            error: (error) => {
-                console.error(error);
-            }
-        });
-    }
-
-    fetchBookStatuses() {
-        this.bookStatusService.getBookStatuses().subscribe({
-            next: (response) => {
-                this.bookStatuses = response;
-            },
-            error: (error) => {
-                console.error(error);
-            }
-        });
-    }
-
-    fetchGenres() {
-        this.genreService.getGenres().subscribe({
-            next: (response) => {
-                this.genres = response;
-            },
-            error: (error) => {
-                console.error(error);
-            }
-        });
     }
 
     fetchBook(id: number) {
@@ -118,19 +62,7 @@ export class BookInfoComponent implements OnInit {
         this.bookService.getBook(id)
             .subscribe({
                 next: (response) => {
-                    this.book = response;
-
-                    this.bookForm.patchValue({
-                        name: response.name,
-                        annotation: response.annotation,
-                        genres: [],
-                        author: null,
-                        bookType: null,
-                        bookStatus: null,
-                        startedReadDate: response.startedReadDate,
-                        endedReadDate: response.endedReadDate
-                    })
-
+                    this.fillBookWithData(response);
                     this.isLoading = false;
                 },
                 error: (error) => {
@@ -143,10 +75,6 @@ export class BookInfoComponent implements OnInit {
     ngOnInit() {
         const bookId = +this.route.snapshot.paramMap.get('id')!;
         this.fetchBook(bookId);
-        this.fetchAuthors();
-        this.fetchBookTypes();
-        this.fetchBookStatuses();
-        this.fetchGenres();
     }
 
     deleteBook() {
@@ -171,16 +99,7 @@ export class BookInfoComponent implements OnInit {
 
         this.isLoading = true;
 
-        const book: UpdateBookDTO = {
-            name: this.bookForm.get('name')?.value ?? '',
-            annotation: this.bookForm.get('annotation')?.value ?? null,
-            authorId: Number(this.bookForm.get('author')?.value) || null,
-            genreIds: this.bookForm.get('genres')?.value ?? [],
-            bookTypeId: Number(this.bookForm.get('bookType')?.value) || null,
-            bookStatusId: Number(this.bookForm.get('bookStatus')?.value ?? null),
-            startedReadDate: this.bookForm.get('startedReadDate')?.value || null,
-            endedReadDate: this.bookForm.get('endedReadDate')?.value || null,
-        }
+        const book = this.parseBookFromForm();
 
         this.bookService.updateBook(this.id, book).subscribe({
             next: () => {
@@ -196,44 +115,49 @@ export class BookInfoComponent implements OnInit {
 
     }
 
-    createAuthor() {
-        if (this.isLoading) return;
+    private fillBookWithData(response: BookFullViewDTO) {
+        this.book = response;
 
-        this.isLoading = true;
+        this.bookGenres = response.genres;
+        this.author = `${response.authorFirstName} ${response.authorLastName}`;
+        this.bookType = response.bookType;
+        this.bookStatus = response.bookStatus;
 
-        this.authorService.createAuthor(this.authorForm.get('fullName')?.value ?? '').subscribe(
-            {
-                next: () => {
-                    this.authorForm.reset();
-                    this.fetchAuthors();
-                    this.isLoading = false;
-                },
-                error: (error: HttpErrorResponse) => {
-                    const apiError: ApiError = error.error;
-                    alert(apiError.description);
-                    this.isLoading = false;
-                }
-            }
-        )
+        this.bookForm.patchValue({
+            name: response.name,
+            annotation: response.annotation,
+            startedReadDate: response.startedReadDate,
+            endedReadDate: response.endedReadDate
+        })
     }
-    createGenre() {
-        if (this.isLoading) return;
 
-        this.isLoading = true;
+    private parseBookFromForm() : UpdateBookDTO {
+        return {
+            name: this.bookForm.get('name')?.value ?? '',
+            annotation: this.bookForm.get('annotation')?.value ?? null,
+            endedReadDate: this.bookForm.get('endedReadDate')?.value || null,
+            startedReadDate: this.bookForm.get('startedReadDate')?.value || null,
 
-        this.genreService.createGenre(this.genreForm.get('genre')?.value?? '').subscribe(
-            {
-                next: () => {
-                    this.genreForm.reset();
-                    this.fetchGenres();
-                    this.isLoading = false;
-                },
-                error: (error: HttpErrorResponse) => {
-                    const apiError: ApiError = error.error;
-                    alert(apiError.description);
-                    this.isLoading = false;
-                }
-            }
-        )
+            authorId: this.authorToUpdate,
+            genreIds: this.genresToUpdate,
+            bookTypeId: this.bookTypeToUpdate,
+            bookStatusId: this.bookStatusToUpdate,
+        }
+    }
+
+    handleSelectedGenres(selectedGenres: number[]) {
+        this.genresToUpdate = selectedGenres;
+    }
+
+    handleSelectedAuthor(selectedAuthor: number) {
+        this.authorToUpdate = selectedAuthor;
+    }
+
+    handleSelectedBookType(selectedBookType: number) {
+        this.bookTypeToUpdate = selectedBookType;
+    }
+
+    handleSelectedBookStatus(selectedBookStatus: number) {
+        this.bookStatusToUpdate = selectedBookStatus;
     }
 }

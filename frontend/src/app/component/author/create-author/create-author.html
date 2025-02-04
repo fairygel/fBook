@@ -1,0 +1,6 @@
+<form [formGroup]="authorForm" (ngSubmit)="createAuthor()">
+    <label for="fullName">author name:</label>
+    <input id="fullName" type="text" formControlName="fullName" [disabled]="isLoading">
+    <button type="submit" [disabled]="isLoading">create</button>
+    <br/>
+</form>

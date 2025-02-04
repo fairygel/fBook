@@ -11,28 +11,7 @@ import {CreateBookComponent} from "../create-book/create-book.component";
         RouterLink,
         CreateBookComponent
     ],
-    template: `
-        @if (isLoading) {
-            <p>loading your books...</p>
-        }
-        @else if (books && books.length > 0) {
-            <ul>
-                @for (book of books; track book.id) {
-                    <a routerLink="/books/{{book.id}}">{{ book.name }}</a>
-                    <br />
-                }
-            </ul>
-        } @else {
-            <p>no books found :(</p>
-        }
-
-        @if (!isMenuOpened) {
-            <button (click)="openMenu()">+</button>
-        } @else {
-            <button (click)="closeMenu()">x</button>
-            <app-create-book (onBookCreated)="createBook()"/>
-        }
-    `,
+    templateUrl: 'book.html',
     styles: ``
 })
 export class BookComponent implements OnInit {
