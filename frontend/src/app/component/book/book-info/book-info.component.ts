@@ -16,6 +16,7 @@ import {GenreIndexViewDTO} from "../../../dto/genre/genreIndexViewDTO";
 import {AuthorIndexViewDTO} from "../../../dto/author/authorIndexViewDTO";
 import {BookTypeIndexViewDTO} from "../../../dto/book/type/bookTypeIndexViewDTO";
 import {BookStatusIndexViewDTO} from "../../../dto/book/status/bookStatusIndexViewDTO";
+import {Title} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-book-info',
@@ -57,7 +58,9 @@ export class BookInfoComponent implements OnInit {
 
     constructor(private readonly bookService: BookService,
                 private readonly route: ActivatedRoute,
-                private readonly router: Router) {
+                private readonly router: Router,
+                private readonly pageTitle: Title) {
+        this.pageTitle.setTitle('loading..');
     }
 
     fetchBook(id: number) {
@@ -66,6 +69,7 @@ export class BookInfoComponent implements OnInit {
         this.bookService.getBook(id)
             .subscribe({
                 next: (response) => {
+                    this.pageTitle.setTitle(response.name);
                     this.fillBookWithData(response);
                     this.isLoading = false;
                 },
@@ -101,6 +105,7 @@ export class BookInfoComponent implements OnInit {
     handleUpdateBookSubmit() {
         if (this.isLoading) return;
 
+        this.pageTitle.setTitle('loading..');
         this.isLoading = true;
 
         const book = this.parseBookFromForm();

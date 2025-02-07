@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {Title} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-not-found',
@@ -12,5 +13,7 @@ import { Component } from '@angular/core';
   styles: ``
 })
 export class NotFoundComponent {
-
+  constructor(private readonly pageTitle: Title) {
+    this.pageTitle.setTitle("404 :(");
+  }
 }

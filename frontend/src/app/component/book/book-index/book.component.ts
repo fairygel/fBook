@@ -3,6 +3,7 @@ import {BookService} from "../../../service/book/book.service";
 import {IndexBookViewDTO} from "../../../dto/book/indexBookViewDTO";
 import {RouterLink} from "@angular/router";
 import {CreateBookComponent} from "../create-book/create-book.component";
+import {Title} from "@angular/platform-browser";
 
 @Component({
     selector: 'books-root',
@@ -19,7 +20,9 @@ export class BookComponent implements OnInit {
     isMenuOpened: boolean = false;
     isLoading: boolean = true;
 
-    constructor(private readonly bookService: BookService) {
+    constructor(private readonly bookService: BookService,
+                private readonly pageTitle: Title) {
+        this.pageTitle.setTitle('fBook');
     }
 
     openMenu() {
