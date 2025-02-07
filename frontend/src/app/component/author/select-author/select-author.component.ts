@@ -21,7 +21,7 @@ export class SelectAuthorComponent implements OnInit {
 
     authorControl = new FormControl<number>(0);
 
-    @Input() authorToShow: string = "";
+    @Input() authorToShow: AuthorIndexViewDTO|null = null;
     @Output() onAuthorSelected = new EventEmitter<number>();
 
     constructor(private readonly authorService: AuthorService) {

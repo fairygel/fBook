@@ -1,5 +1,5 @@
 <label for="bookType">book type:</label>
-<span>{{ bookTypeToShow }}</span>
+<span>{{ bookTypeToShow?.type }}</span>
 @if (isLoading) {
     <span>loading..</span>
 } @else if (allBookTypes.length === 0) {
@@ -7,7 +7,9 @@
 } @else {
     <select id="bookType" [formControl]="bookTypeControl" [disabled]="isLoading">
         @for (bookType of allBookTypes; track bookType.id) {
-            <option [value]="bookType.id">{{ bookType.type }}</option>
+            @if (bookTypeToShow?.id !== bookType.id) {
+                <option [value]="bookType.id">{{ bookType.type }}</option>
+            }
         }
     </select>
 }

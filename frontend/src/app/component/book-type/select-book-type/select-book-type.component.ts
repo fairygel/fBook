@@ -19,7 +19,7 @@ export class SelectBookTypeComponent implements OnInit {
 
     bookTypeControl = new FormControl<number>(0);
 
-    @Input() bookTypeToShow: string = "";
+    @Input() bookTypeToShow: BookTypeIndexViewDTO|null = null;
     @Output() onBookTypeSelected = new EventEmitter<number>();
 
     constructor(private readonly bookTypeService: BookTypeService) {

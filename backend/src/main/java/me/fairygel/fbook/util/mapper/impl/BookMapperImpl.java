@@ -4,12 +4,17 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import me.fairygel.fbook.dto.author.AuthorIndexViewDTO;
 import me.fairygel.fbook.dto.book.BookFullViewDTO;
 import me.fairygel.fbook.dto.book.CreateBookDTO;
 import me.fairygel.fbook.dto.book.IndexBookViewDTO;
 import me.fairygel.fbook.dto.book.UpdateBookDTO;
+import me.fairygel.fbook.dto.book.status.BookStatusIndexViewDTO;
+import me.fairygel.fbook.dto.book.type.BookTypeIndexViewDTO;
+import me.fairygel.fbook.dto.genre.GenreIndexViewDTO;
+import me.fairygel.fbook.dto.grade.GradePreviewDTO;
 import me.fairygel.fbook.entity.*;
-import me.fairygel.fbook.util.mapper.BookMapper;
+import me.fairygel.fbook.util.mapper.*;
 import me.fairygel.fbook.repository.AuthorCrudRepository;
 import me.fairygel.fbook.repository.BookStatusReadOnlyRepository;
 import me.fairygel.fbook.repository.BookTypeReadOnlyRepository;
@@ -21,13 +26,18 @@ import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.zip.DataFormatException;
 
 @Slf4j
 @Component
 @AllArgsConstructor
 public class BookMapperImpl implements BookMapper {
+    private final AuthorMapper authorMapper;
+    private final GenreMapper genreMapper;
+    private final BookStatusMapper bookStatusMapper;
+    private final BookTypeMapper bookTypeMapper;
+    private final GradeMapper gradeMapper;
+
     private AuthorCrudRepository authorRepository;
     private BookStatusReadOnlyRepository bookStatusRepository;
     private BookTypeReadOnlyRepository bookTypeRepository;
@@ -93,17 +103,24 @@ public class BookMapperImpl implements BookMapper {
     public BookFullViewDTO bookToBookFullViewDto(Book book) {
         BookFullViewDTO bookDTO = new BookFullViewDTO();
 
+        Grade bookGrade = getSingleGrade(book.getGrades());
+
+        AuthorIndexViewDTO authorDTO = authorMapper.authorToAuthorIndexDto(book.getAuthor());
+        Set<GenreIndexViewDTO> genreDTOs = genreMapper.genresToIndex(book.getGenres());
+        BookStatusIndexViewDTO bookStatusDTO = bookStatusMapper.bookStatusToBookStatusIndexDto(book.getBookStatus());
+        BookTypeIndexViewDTO bookTypeDTO = bookTypeMapper.bookTypeToBookTypeIndexDto(book.getBookType());
+        GradePreviewDTO gradeDTO = gradeMapper.gradeToGradePreviewDTO(bookGrade);
+
         bookDTO.setId(book.getId());
         bookDTO.setName(book.getName());
-        bookDTO.setAuthorFirstName(book.getAuthor().getFirstName());
-        bookDTO.setAuthorLastName(book.getAuthor().getLastName());
-        bookDTO.setGenres(book.getGenres().stream().map(Genre::getName).collect(Collectors.toSet()));
-        bookDTO.setBookStatus(book.getBookStatus().getName());
+        bookDTO.setAuthor(authorDTO);
+        bookDTO.setGenres(genreDTOs);
+        bookDTO.setBookStatus(bookStatusDTO);
+        bookDTO.setBookType(bookTypeDTO);
         bookDTO.setStartedReadDate(dateToString(book.getStartedReadDate()));
         bookDTO.setEndedReadDate(dateToString(book.getEndedReadDate()));
         bookDTO.setAnnotation(book.getAnnotation());
-        bookDTO.setBookType(book.getBookType().getName());
-        setRating(book, bookDTO);
+        bookDTO.setGrade(gradeDTO);
 
         return bookDTO;
     }
@@ -119,15 +136,12 @@ public class BookMapperImpl implements BookMapper {
     }
 
     // --- Helpful Stuff ---
+    private Grade getSingleGrade(Set<Grade> grades) {
+        if (grades.isEmpty()) return null;
 
-    private void setRating(Book book, BookFullViewDTO bookDTO) {
-        if (book.getGrades().isEmpty()) return;
-
-        Grade grade = book.getGrades().stream().toList().getFirst();
-
-        bookDTO.setGradeRating(grade.getRating());
-        bookDTO.setGradeComment(grade.getComment());
+        return grades.iterator().next();
     }
+
     private Author getAuthor(UpdateBookDTO bookDTO) {
         Long authorId = bookDTO.getAuthorId();
 

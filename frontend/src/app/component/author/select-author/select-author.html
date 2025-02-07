@@ -1,5 +1,5 @@
 <label for="author">Author: </label>
-<span>{{authorToShow}}</span>
+<span>{{authorToShow?.fullName}}</span>
 @if (isLoading) {
     <span>loading..</span>
 } @else if (allAuthors.length === 0) {
@@ -7,7 +7,9 @@
 } @else {
 <select id="author" [formControl]="authorControl" [disabled]="isLoading">
     @for (author of allAuthors; track author.id) {
-        <option [value]="author.id">{{ author.fullName }}</option>
+        @if (authorToShow?.id !== author.id) {
+            <option [value]="author.id">{{ author.fullName }}</option>
+        }
     }
 </select>
 }

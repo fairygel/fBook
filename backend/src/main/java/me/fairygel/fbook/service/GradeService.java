@@ -3,7 +3,7 @@ package me.fairygel.fbook.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import me.fairygel.fbook.dto.grade.CreateGradeDTO;
-import me.fairygel.fbook.dto.grade.GradePreviewDTO;
+import me.fairygel.fbook.dto.grade.GradeFullViewDTO;
 import me.fairygel.fbook.dto.grade.UpdateGradeDTO;
 import me.fairygel.fbook.entity.Grade;
 import me.fairygel.fbook.util.mapper.GradeMapper;
@@ -24,29 +24,29 @@ public class GradeService {
         gradeCrudRepository.save(grade);
     }
 
-    public GradePreviewDTO read(Long id) {
+    public GradeFullViewDTO read(Long id) {
         Grade grade = gradeCrudRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("No grade with id = " + id));
-        return mapper.gradeToGradePreviewDto(grade);
+        return mapper.gradeToGradeFullViewDTO(grade);
     }
 
-    public GradePreviewDTO update(Long id, UpdateGradeDTO updateGradeDTO) {
+    public GradeFullViewDTO update(Long id, UpdateGradeDTO updateGradeDTO) {
         Grade grade = mapper.updateGradeDtoToGrade(updateGradeDTO);
 
         Grade updatedGrade = gradeCrudRepository.updateById(id, grade)
                 .orElseThrow(() -> new EntityNotFoundException("No grade with id = " + id));
 
-        return mapper.gradeToGradePreviewDto(updatedGrade);
+        return mapper.gradeToGradeFullViewDTO(updatedGrade);
     }
 
     public void delete(Long id) {
         gradeCrudRepository.deleteById(id);
     }
 
-    public Set<GradePreviewDTO> index() {
+    public Set<GradeFullViewDTO> index() {
         Set<Grade> grades = new HashSet<>();
         gradeCrudRepository.findAll().forEach(grades::add);
 
-        return mapper.gradesToGradePreviews(grades);
+        return mapper.gradesToGradeFullViews(grades);
     }
 }

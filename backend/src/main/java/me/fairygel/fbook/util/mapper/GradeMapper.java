@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import me.fairygel.fbook.dto.book.IndexBookViewDTO;
 import me.fairygel.fbook.dto.grade.CreateGradeDTO;
+import me.fairygel.fbook.dto.grade.GradeFullViewDTO;
 import me.fairygel.fbook.dto.grade.GradePreviewDTO;
 import me.fairygel.fbook.dto.grade.UpdateGradeDTO;
 import me.fairygel.fbook.entity.Book;
@@ -30,11 +31,13 @@ public abstract class GradeMapper {
     @Mapping(target = "book", ignore = true)
     public abstract Grade updateGradeDtoToGrade(UpdateGradeDTO updateGradeDTO);
 
+    public abstract GradePreviewDTO gradeToGradePreviewDTO(Grade grade);
+
     @Mapping(target = "book", expression =
             "java(mapBook(grade.getBook()))")
-    public abstract GradePreviewDTO gradeToGradePreviewDto(Grade grade);
+    public abstract GradeFullViewDTO gradeToGradeFullViewDTO(Grade grade);
 
-    public abstract Set<GradePreviewDTO> gradesToGradePreviews(Set<Grade> grades);
+    public abstract Set<GradeFullViewDTO> gradesToGradeFullViews(Set<Grade> grades);
 
     @SneakyThrows
     protected Book getBookFromRepository(Long id) {

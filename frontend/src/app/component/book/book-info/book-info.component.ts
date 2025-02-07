@@ -12,6 +12,10 @@ import {SelectGenreComponent} from "../../genre/select-genre/select-genre.compon
 import {SelectAuthorComponent} from "../../author/select-author/select-author.component";
 import {SelectBookTypeComponent} from "../../book-type/select-book-type/select-book-type.component";
 import {SelectBookStatusComponent} from "../../book-status/select-book-status/select-book-status.component";
+import {GenreIndexViewDTO} from "../../../dto/genre/genreIndexViewDTO";
+import {AuthorIndexViewDTO} from "../../../dto/author/authorIndexViewDTO";
+import {BookTypeIndexViewDTO} from "../../../dto/book/type/bookTypeIndexViewDTO";
+import {BookStatusIndexViewDTO} from "../../../dto/book/status/bookStatusIndexViewDTO";
 
 @Component({
     selector: 'app-book-info',
@@ -39,10 +43,10 @@ export class BookInfoComponent implements OnInit {
 
     book: BookFullViewDTO|null = null;
 
-    bookGenres: string[] = [];
-    author = "";
-    bookType = "";
-    bookStatus = "";
+    bookGenres: GenreIndexViewDTO[] = [];
+    author: AuthorIndexViewDTO|null = null;
+    bookType: BookTypeIndexViewDTO|null = null;
+    bookStatus: BookStatusIndexViewDTO|null = null;
 
     bookForm = new FormGroup({
         name: new FormControl(''),
@@ -94,7 +98,7 @@ export class BookInfoComponent implements OnInit {
             })
     }
 
-    handleSubmit() {
+    handleUpdateBookSubmit() {
         if (this.isLoading) return;
 
         this.isLoading = true;
@@ -119,7 +123,7 @@ export class BookInfoComponent implements OnInit {
         this.book = response;
 
         this.bookGenres = response.genres;
-        this.author = `${response.authorFirstName} ${response.authorLastName}`;
+        this.author = response.author;
         this.bookType = response.bookType;
         this.bookStatus = response.bookStatus;
 

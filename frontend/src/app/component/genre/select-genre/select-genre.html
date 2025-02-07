@@ -1,5 +1,8 @@
 <label for="genres">genres: </label>
-<span>{{genresToShow}}</span>
+@for (genre of genresToShow; track genre.id) {
+    <span>{{ genre.genre }}</span>
+    <span>{{$last?'':', '}}</span>
+}
 @if (isLoading) {
     <span>loading..</span>
 } @else if (allGenres.length === 0) {

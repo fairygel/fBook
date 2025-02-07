@@ -3,7 +3,7 @@ package me.fairygel.fbook.controller;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import me.fairygel.fbook.dto.grade.CreateGradeDTO;
-import me.fairygel.fbook.dto.grade.GradePreviewDTO;
+import me.fairygel.fbook.dto.grade.GradeFullViewDTO;
 import me.fairygel.fbook.dto.grade.UpdateGradeDTO;
 import me.fairygel.fbook.service.GradeService;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +22,12 @@ public class GradeController {
     }
 
     @GetMapping(value = {"/{id}/", "/{id}"})
-    public GradePreviewDTO read(@PathVariable Long id) {
+    public GradeFullViewDTO read(@PathVariable Long id) {
         return gradeService.read(id);
     }
 
     @PatchMapping(value = {"/{id}/", "/{id}"})
-    public GradePreviewDTO update(@PathVariable Long id, @RequestBody @Valid UpdateGradeDTO gradeDTO) {
+    public GradeFullViewDTO update(@PathVariable Long id, @RequestBody @Valid UpdateGradeDTO gradeDTO) {
         return gradeService.update(id, gradeDTO);
     }
 
@@ -37,7 +37,7 @@ public class GradeController {
     }
 
     @GetMapping(value = {"/", ""})
-    public Set<GradePreviewDTO> index() {
+    public Set<GradeFullViewDTO> index() {
         return gradeService.index();
     }
 }

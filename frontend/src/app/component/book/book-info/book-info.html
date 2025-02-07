@@ -1,7 +1,7 @@
 @if (isLoading) {
     <p>loading data..</p>
 } @else if (book) {
-    <form [formGroup]="bookForm" (ngSubmit)="handleSubmit()">
+    <form [formGroup]="bookForm" (ngSubmit)="handleUpdateBookSubmit()">
         <label for="name">Name:</label>
         <input type="text" formControlName="name" id="name" [disabled]="isLoading">
         <br />

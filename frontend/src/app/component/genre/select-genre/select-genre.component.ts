@@ -20,7 +20,7 @@ export class SelectGenreComponent implements OnInit {
 
     genresControl = new FormControl<number[]>([]);
 
-    @Input() genresToShow: string[] = [];
+    @Input() genresToShow: GenreIndexViewDTO[] = [];
     @Output() onGenreSelected = new EventEmitter<number[]>();
 
     constructor(private readonly genreService: GenreService) {
