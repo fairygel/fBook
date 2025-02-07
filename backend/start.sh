@@ -104,20 +104,22 @@ run_with_docker() {
     echo "application started successfully with Docker."
 }
 
+check_java_version() {
 # check if java installed
-if ! command -v java &> /dev/null; then
-    echo "please, install java 21 first to run fBook api."
-    exit 1
-fi
+    if ! command -v java &> /dev/null; then
+        echo "please, install java 21 first to run fBook api."
+        exit 1
+    fi
 
-# getting java version
-java_version=$(java -version 2>&1 | head -n 1 | grep -oP '(?<=version ")[^"]+')
+    # getting java version
+    java_version=$(java -version 2>&1 | head -n 1 | grep -oP '(?<=version ")[^"]+')
 
-# java version should be equal to 21
-if [[ $java_version != 21* ]]; then
-    echo "installed java version(java: $java_version) is not equal to 21. please, reinstall it."
-    exit 1
-fi
+    # java version should be equal to 21
+    if [[ $java_version != 21* ]]; then
+        echo "installed java version(java: $java_version) is not equal to 21. please, reinstall it."
+        exit 1
+    fi
+}
 
 force_build=false
 docker_run=false
@@ -154,6 +156,8 @@ if [[ $docker_run == true ]]; then
     check_docker
     run_with_docker
 else
+    check_java_version
+
     if [[ $database == true ]]; then
         check_docker
         run_database
@@ -168,6 +172,6 @@ else
     java -jar fBook.jar
 
     if [[ $database == true ]]; then
-            stop_database
+          stop_database
     fi
 fi
