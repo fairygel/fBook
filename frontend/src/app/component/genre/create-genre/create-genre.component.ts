@@ -28,21 +28,32 @@ export class CreateGenreComponent {
     createGenre() {
         if (this.isLoading) return;
 
-        this.isLoading = true;
+        this.changeLoading(false);
 
         this.genreService.createGenre(this.genreForm.get('genre')?.value ?? '').subscribe(
             {
                 next: () => {
                     this.genreForm.reset();
                     this.genreCreatedEvent.emit();
-                    this.isLoading = false;
+                    this.changeLoading(false)
                 },
                 error: (error: HttpErrorResponse) => {
                     const apiError: ApiError = error.error;
                     alert(apiError.description);
-                    this.isLoading = false;
+                    this.changeLoading(false);
                 }
             }
         )
+    }
+    changeLoading(value: boolean) {
+        if (this.isLoading === value) return;
+
+        this.isLoading = value;
+
+        if (this.isLoading) {
+            this.genreForm.disable();
+        } else {
+            this.genreForm.enable();
+        }
     }
 }

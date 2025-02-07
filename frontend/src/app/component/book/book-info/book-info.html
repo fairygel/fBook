@@ -3,11 +3,11 @@
 } @else if (book) {
     <form [formGroup]="bookForm" (ngSubmit)="handleUpdateBookSubmit()">
         <label for="name">Name:</label>
-        <input type="text" formControlName="name" id="name" [disabled]="isLoading">
+        <input type="text" formControlName="name" id="name">
         <br />
 
         <label for="annotation">Annotation:</label>
-        <input type="text" formControlName="annotation" id="annotation" [disabled]="isLoading">
+        <input type="text" formControlName="annotation" id="annotation">
         <br />
 
         <app-select-author (onAuthorSelected)="handleSelectedAuthor($event)" [authorToShow]="author" />
@@ -19,16 +19,16 @@
         <app-select-genre (onGenreSelected)="handleSelectedGenres($event)" [genresToShow]="bookGenres"/>
 
         <label for="startedReadDate">started reading:</label>
-        <input type="date" formControlName="startedReadDate" id="startedReadDate" [disabled]="isLoading">
+        <input type="date" formControlName="startedReadDate" id="startedReadDate">
         <br />
 
         <label for="endedReadDate">ended reading:</label>
-        <input type="date" formControlName="endedReadDate" id="endedReadDate" [disabled]="isLoading">
+        <input type="date" formControlName="endedReadDate" id="endedReadDate">
         <br />
 
-        <button type="submit" [disabled]="isLoading">edit book</button>
+        <button type="submit">edit book</button>
     </form>
-    <button (click)="deleteBook()" [disabled]="isLoading">delete book</button>
+    <button (click)="deleteBook()">delete book</button>
 } @else {
     <h1>no book found:(</h1>
 }

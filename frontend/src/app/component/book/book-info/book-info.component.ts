@@ -34,7 +34,7 @@ import {Title} from "@angular/platform-browser";
     styles: ``
 })
 export class BookInfoComponent implements OnInit {
-    isLoading: boolean = true;
+    isLoading: boolean = false;
     id: number = -1;
 
     genresToUpdate: number[] = [];
@@ -60,7 +60,7 @@ export class BookInfoComponent implements OnInit {
                 private readonly route: ActivatedRoute,
                 private readonly router: Router,
                 private readonly pageTitle: Title) {
-        this.pageTitle.setTitle('loading..');
+        this.changeLoading(true);
     }
 
     fetchBook(id: number) {
@@ -69,13 +69,12 @@ export class BookInfoComponent implements OnInit {
         this.bookService.getBook(id)
             .subscribe({
                 next: (response) => {
-                    this.pageTitle.setTitle(response.name);
                     this.fillBookWithData(response);
-                    this.isLoading = false;
+                    this.changeLoading(false);
                 },
                 error: (error) => {
                     console.error(error)
-                    this.isLoading = false;
+                    this.changeLoading(false);
                 }
             })
     }
@@ -89,7 +88,7 @@ export class BookInfoComponent implements OnInit {
         if (this.isLoading) return;
         if (!confirm('are you sure you want to delete this book?')) return;
 
-        this.isLoading = true;
+        this.changeLoading(true);
 
         this.bookService.deleteBook(this.id)
             .subscribe({
@@ -105,20 +104,19 @@ export class BookInfoComponent implements OnInit {
     handleUpdateBookSubmit() {
         if (this.isLoading) return;
 
-        this.pageTitle.setTitle('loading..');
-        this.isLoading = true;
+        this.changeLoading(true);
 
         const book = this.parseBookFromForm();
 
         this.bookService.updateBook(this.id, book).subscribe({
             next: () => {
                 this.fetchBook(this.id);
-                this.isLoading = false;
+                this.changeLoading(false);
             },
             error: (error: HttpErrorResponse) => {
                 const apiError: ApiError = error.error;
                 alert(apiError.description);
-                this.isLoading = false;
+                this.changeLoading(false);
             }
         });
 
@@ -168,5 +166,19 @@ export class BookInfoComponent implements OnInit {
 
     handleSelectedBookStatus(selectedBookStatus: number) {
         this.bookStatusToUpdate = selectedBookStatus;
+    }
+
+    changeLoading(value: boolean) {
+        if (this.isLoading === value) return;
+
+        this.isLoading = value;
+
+        if (this.isLoading) {
+            this.bookForm.disable();
+            this.pageTitle.setTitle('loading..');
+        } else {
+            this.bookForm.enable();
+            if (this.book) this.pageTitle.setTitle(this.book.name);
+        }
     }
 }

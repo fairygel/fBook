@@ -28,21 +28,33 @@ export class CreateAuthorComponent {
     createAuthor() {
         if (this.isLoading) return;
 
-        this.isLoading = true;
+        this.changeLoading(true);
 
         this.authorService.createAuthor(this.authorForm.get('fullName')?.value ?? '').subscribe(
             {
                 next: () => {
                     this.authorForm.reset();
                     this.authorCreatedEvent.emit();
-                    this.isLoading = false;
+                    this.changeLoading(false);
                 },
                 error: (error: HttpErrorResponse) => {
                     const apiError: ApiError = error.error;
                     alert(apiError.description);
-                    this.isLoading = false;
+                    this.changeLoading(false);
                 }
             }
         )
+    }
+
+    changeLoading(value: boolean) {
+        if (this.isLoading === value) return;
+
+        this.isLoading = value;
+
+        if (this.isLoading) {
+            this.authorForm.disable();
+        } else {
+            this.authorForm.enable();
+        }
     }
 }

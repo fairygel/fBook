@@ -39,8 +39,7 @@ export class CreateBookComponent {
 
     handleSubmit() {
         if (this.isLoading) return;
-
-        this.isLoading = true;
+        this.changeLoading(true);
 
         const book = this.parseBookFromForm();
 
@@ -48,12 +47,12 @@ export class CreateBookComponent {
             next: () => {
                 this.bookForm.reset();
                 this.onBookCreated.emit(true);
-                this.isLoading = false;
+                this.changeLoading(false);
             },
             error: (error: HttpErrorResponse) => {
                 const apiError: ApiError = error.error;
                 alert(apiError.description);
-                this.isLoading = false;
+                this.changeLoading(false);
             }
         });
     }
@@ -78,5 +77,17 @@ export class CreateBookComponent {
 
     handleSelectedBookType(bookType: number) {
         this.bookTypeId = bookType;
+    }
+
+    changeLoading(value: boolean) {
+        if (this.isLoading === value) return;
+
+        this.isLoading = value;
+
+        if (this.isLoading) {
+            this.bookForm.disable();
+        } else {
+            this.bookForm.enable();
+        }
     }
 }

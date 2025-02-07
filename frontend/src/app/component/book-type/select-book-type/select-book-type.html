@@ -5,7 +5,7 @@
 } @else if (allBookTypes.length === 0) {
     <span>no authors found:(</span>
 } @else {
-    <select id="bookType" [formControl]="bookTypeControl" [disabled]="isLoading">
+    <select id="bookType" [formControl]="bookTypeControl">
         @for (bookType of allBookTypes; track bookType.id) {
             @if (bookTypeToShow?.id !== bookType.id) {
                 <option [value]="bookType.id">{{ bookType.type }}</option>

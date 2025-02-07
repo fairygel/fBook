@@ -15,7 +15,7 @@ import {FormControl, ReactiveFormsModule} from "@angular/forms";
     styles: ``
 })
 export class SelectGenreComponent implements OnInit {
-    isLoading = true;
+    isLoading = false;
     allGenres: GenreIndexViewDTO[] = [];
 
     genresControl = new FormControl<number[]>([]);
@@ -25,6 +25,7 @@ export class SelectGenreComponent implements OnInit {
 
     constructor(private readonly genreService: GenreService) {
         this.controlValueChangeOfGenres()
+        this.changeLoading(true);
     }
 
     controlValueChangeOfGenres() {
@@ -39,7 +40,7 @@ export class SelectGenreComponent implements OnInit {
     }
 
     handleGenreCreation() {
-        this.isLoading = true;
+        this.changeLoading(true);
         this.fetchGenres();
     }
 
@@ -47,11 +48,22 @@ export class SelectGenreComponent implements OnInit {
         this.genreService.getGenres().subscribe({
             next: (response) => {
                 this.allGenres = response;
-                this.isLoading = false;
+                this.changeLoading(false);
             },
             error: (error) => {
                 console.error(error);
+                this.changeLoading(false);
             }
         });
+    }
+    changeLoading(value: boolean) {
+        if (value === this.isLoading) return;
+        this.isLoading = value;
+
+        if (this.isLoading) {
+            this.genresControl.disable();
+        } else {
+            this.genresControl.enable();
+        }
     }
 }

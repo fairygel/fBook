@@ -16,7 +16,7 @@ import {AuthorService} from "../../../service/author/author.service";
     styles: ``
 })
 export class SelectAuthorComponent implements OnInit {
-    isLoading = true;
+    isLoading = false;
     allAuthors: AuthorIndexViewDTO[] = [];
 
     authorControl = new FormControl<number>(0);
@@ -26,6 +26,7 @@ export class SelectAuthorComponent implements OnInit {
 
     constructor(private readonly authorService: AuthorService) {
         this.controlValueChangeOfAuthor()
+        this.changeLoading(true);
     }
 
     controlValueChangeOfAuthor() {
@@ -40,7 +41,7 @@ export class SelectAuthorComponent implements OnInit {
     }
 
     handleAuthorCreation() {
-        this.isLoading = true;
+        this.changeLoading(true);
         this.fetchAuthors();
     }
 
@@ -48,11 +49,24 @@ export class SelectAuthorComponent implements OnInit {
         this.authorService.getAuthors().subscribe({
             next: (response) => {
                 this.allAuthors = response;
-                this.isLoading = false;
+                this.changeLoading(false);
             },
             error: (error) => {
                 console.error(error);
+                this.changeLoading(false);
             }
         });
+    }
+
+    changeLoading(value: boolean) {
+        if (this.isLoading === value) return;
+
+        this.isLoading = value;
+
+        if (this.isLoading) {
+            this.authorControl.disable();
+        } else {
+            this.authorControl.enable();
+        }
     }
 }

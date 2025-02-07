@@ -8,7 +8,7 @@
 } @else if (allGenres.length === 0) {
     <span>no genres found:(</span>
 } @else {
-    <select [formControl]="genresControl" id="genres" [disabled]="isLoading" multiple>
+    <select [formControl]="genresControl" id="genres" multiple>
         @for(genre of allGenres; track genre.id) {
             <option [value]="genre.id">{{genre.genre}}</option>
         }

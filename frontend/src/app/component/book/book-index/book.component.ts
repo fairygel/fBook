@@ -18,11 +18,12 @@ import {Title} from "@angular/platform-browser";
 export class BookComponent implements OnInit {
     books: IndexBookViewDTO[] = [];
     isMenuOpened: boolean = false;
-    isLoading: boolean = true;
+    isLoading: boolean = false;
 
     constructor(private readonly bookService: BookService,
                 private readonly pageTitle: Title) {
         this.pageTitle.setTitle('fBook');
+        this.changeLoading(true);
     }
 
     openMenu() {
@@ -38,11 +39,11 @@ export class BookComponent implements OnInit {
             .subscribe({
                 next: (response) => {
                     this.books = response;
-                    this.isLoading = false;
+                    this.changeLoading(false);
                 },
                 error: (error) => {
                     console.error(error);
-                    this.isLoading = false;
+                    this.changeLoading(false);
                 }
             })
     }
@@ -54,5 +55,11 @@ export class BookComponent implements OnInit {
     createBook() {
         this.closeMenu();
         this.fetchBooks();
+    }
+
+    changeLoading(value: boolean) {
+        if (this.isLoading === value) return;
+
+        this.isLoading = value;
     }
 }

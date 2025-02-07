@@ -13,16 +13,17 @@ import {BookStatusService} from "../../../service/book-status/book-status.servic
     styles: ``
 })
 export class SelectBookStatusComponent implements OnInit {
-    isLoading = true;
+    isLoading = false;
     allBookStatuses: BookStatusIndexViewDTO[] = [];
 
-    bookStatusControl = new FormControl<number>(-1);
+    bookStatusControl = new FormControl<number|null>(null);
 
     @Input() bookStatusToShow: BookStatusIndexViewDTO|null = null;
     @Output() onBookStatusSelected = new EventEmitter<number>();
 
     constructor(private readonly bookStatusService: BookStatusService) {
         this.controlValueChangeOfBookStatus()
+        this.changeLoading(true);
     }
 
     controlValueChangeOfBookStatus() {
@@ -40,11 +41,24 @@ export class SelectBookStatusComponent implements OnInit {
         this.bookStatusService.getBookStatuses().subscribe({
             next: (response) => {
                 this.allBookStatuses = response;
-                this.isLoading = false;
+                this.changeLoading(false);
             },
             error: (error) => {
                 console.error(error);
+                this.changeLoading(false);
             }
         });
+    }
+
+    changeLoading(value: boolean) {
+        if (this.isLoading === value) return;
+
+        this.isLoading = value;
+
+        if (this.isLoading) {
+            this.bookStatusControl.disable();
+        } else {
+            this.bookStatusControl.enable();
+        }
     }
 }

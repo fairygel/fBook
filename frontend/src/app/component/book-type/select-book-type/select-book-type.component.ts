@@ -14,7 +14,7 @@ import {BookTypeService} from "../../../service/book-type/book-type.service";
     styles: ``
 })
 export class SelectBookTypeComponent implements OnInit {
-    isLoading = true;
+    isLoading = false;
     allBookTypes: BookTypeIndexViewDTO[] = [];
 
     bookTypeControl = new FormControl<number>(0);
@@ -24,6 +24,7 @@ export class SelectBookTypeComponent implements OnInit {
 
     constructor(private readonly bookTypeService: BookTypeService) {
         this.controlValueChangeOfBookType()
+        this.changeLoading(true);
     }
 
     controlValueChangeOfBookType() {
@@ -41,11 +42,24 @@ export class SelectBookTypeComponent implements OnInit {
         this.bookTypeService.getBookTypes().subscribe({
             next: (response) => {
                 this.allBookTypes = response;
-                this.isLoading = false;
+                this.changeLoading(false);
             },
             error: (error) => {
                 console.error(error);
+                this.changeLoading(false);
             }
         });
+    }
+
+    changeLoading(value: boolean) {
+        if (this.isLoading === value) return;
+
+        this.isLoading = value;
+
+        if (this.isLoading) {
+            this.bookTypeControl.disable();
+        } else {
+            this.bookTypeControl.enable();
+        }
     }
 }
