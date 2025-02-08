@@ -17,6 +17,7 @@ import {Title} from "@angular/platform-browser";
 })
 export class BookComponent implements OnInit {
     books: IndexBookViewDTO[] = [];
+
     isMenuOpened: boolean = false;
     isLoading: boolean = false;
 
@@ -40,12 +41,27 @@ export class BookComponent implements OnInit {
                 next: (response) => {
                     this.books = response;
                     this.changeLoading(false);
+                    this.loadCovers();
                 },
                 error: (error) => {
                     console.error(error);
                     this.changeLoading(false);
                 }
             })
+    }
+
+    loadCovers() {
+        this.books.forEach(book => {
+            this.bookService.getBookCover(book.id).subscribe({
+                next: (blob) => {
+                    book.coverUrl = URL.createObjectURL(blob);
+                },
+                error: (error) => {
+                    console.error(error);
+                }
+            });
+
+        });
     }
 
     ngOnInit(): void {
@@ -62,4 +78,5 @@ export class BookComponent implements OnInit {
 
         this.isLoading = value;
     }
+
 }

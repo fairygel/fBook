@@ -5,10 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import me.fairygel.fbook.dto.author.AuthorIndexViewDTO;
-import me.fairygel.fbook.dto.book.BookFullViewDTO;
-import me.fairygel.fbook.dto.book.CreateBookDTO;
-import me.fairygel.fbook.dto.book.IndexBookViewDTO;
-import me.fairygel.fbook.dto.book.UpdateBookDTO;
+import me.fairygel.fbook.dto.book.*;
 import me.fairygel.fbook.dto.book.status.BookStatusIndexViewDTO;
 import me.fairygel.fbook.dto.book.type.BookTypeIndexViewDTO;
 import me.fairygel.fbook.dto.genre.GenreIndexViewDTO;
@@ -124,7 +121,13 @@ public class BookMapperImpl implements BookMapper {
 
         return bookDTO;
     }
+    public BookCoverDTO bookToBookCoverDto(Book book) {
+        BookCoverDTO bookDTO = new BookCoverDTO();
 
+        bookDTO.setCover(book.getCover());
+
+        return bookDTO;
+    }
     @Override
     public IndexBookViewDTO bookToIndexBookViewDto(Book book) {
         IndexBookViewDTO bookDTO = new IndexBookViewDTO();

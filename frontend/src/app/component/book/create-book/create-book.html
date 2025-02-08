@@ -15,5 +15,12 @@
 
     <app-select-genre (onGenreSelected)="handleSelectedGenres($event)" />
 
+    <label for="cover">Cover:</label>
+    <input id="cover" type="file" accept="image/jpeg" (change)="onFileSelected($event)">
+    @if (cover) {
+        <img [src]="coverUrl" [alt]="" width="228" height="361"/>
+    }
+    <br/>
+
     <button type="submit">create book</button>
 </form>

@@ -1,7 +1,15 @@
 @if (isLoading) {
     <p>loading data..</p>
 } @else if (book) {
+    <img [src]="imageUrl" [alt]="" width="228" height="361">
     <form [formGroup]="bookForm" (ngSubmit)="handleUpdateBookSubmit()">
+        <label for="cover">update cover:</label>
+        <input id="cover" type="file" accept="image/jpeg" (change)="onFileSelected($event)">
+        @if (coverToUpdate) {
+            <img [src]="coverToUpdateUrl" [alt]="" width="228" height="361"/>
+        }
+        <br/>
+
         <label for="name">Name:</label>
         <input type="text" formControlName="name" id="name">
         <br />

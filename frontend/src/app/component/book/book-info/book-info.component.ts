@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {Title} from "@angular/platform-browser";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -12,11 +13,11 @@ import {SelectGenreComponent} from "../../genre/select-genre/select-genre.compon
 import {SelectAuthorComponent} from "../../author/select-author/select-author.component";
 import {SelectBookTypeComponent} from "../../book-type/select-book-type/select-book-type.component";
 import {SelectBookStatusComponent} from "../../book-status/select-book-status/select-book-status.component";
+
 import {GenreIndexViewDTO} from "../../../dto/genre/genreIndexViewDTO";
 import {AuthorIndexViewDTO} from "../../../dto/author/authorIndexViewDTO";
 import {BookTypeIndexViewDTO} from "../../../dto/book/type/bookTypeIndexViewDTO";
 import {BookStatusIndexViewDTO} from "../../../dto/book/status/bookStatusIndexViewDTO";
-import {Title} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-book-info',
@@ -35,7 +36,11 @@ import {Title} from "@angular/platform-browser";
 })
 export class BookInfoComponent implements OnInit {
     isLoading: boolean = false;
+    imageUrl: string = "";
     id: number = -1;
+
+    coverToUpdate: File|null = null;
+    coverToUpdateUrl: string = "";
 
     genresToUpdate: number[] = [];
     authorToUpdate: number|null = null;
@@ -76,6 +81,16 @@ export class BookInfoComponent implements OnInit {
                     console.error(error)
                     this.changeLoading(false);
                 }
+            });
+
+        this.bookService.getBookCover(id)
+            .subscribe({
+                next: (response) => {
+                    this.imageUrl = URL.createObjectURL(response);
+                },
+                error: (error) => {
+                    console.error(error);
+                }
             })
     }
 
@@ -108,8 +123,10 @@ export class BookInfoComponent implements OnInit {
 
         const book = this.parseBookFromForm();
 
-        this.bookService.updateBook(this.id, book).subscribe({
+        this.bookService.updateBook(this.id, book, this.coverToUpdate).subscribe({
             next: () => {
+                this.coverToUpdateUrl = "";
+                this.coverToUpdate = null;
                 this.fetchBook(this.id);
                 this.changeLoading(false);
             },
@@ -180,5 +197,16 @@ export class BookInfoComponent implements OnInit {
             this.bookForm.enable();
             if (this.book) this.pageTitle.setTitle(this.book.name);
         }
+    }
+
+    onFileSelected(event: any) {
+        const input = event.target as HTMLInputElement;
+        this.coverToUpdate = input.files?.[0] || null;
+
+        if (this.coverToUpdate) this.generatePreview(this.coverToUpdate);
+    }
+
+    private generatePreview(file: File): void {
+        this.coverToUpdateUrl = URL.createObjectURL(file);
     }
 }

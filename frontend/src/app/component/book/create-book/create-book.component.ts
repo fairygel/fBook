@@ -27,6 +27,9 @@ export class CreateBookComponent {
     authorId: number = 0;
     bookTypeId: number = 0;
 
+    cover: File|null = null;
+    coverUrl: string = "";
+
     @Output() onBookCreated = new EventEmitter();
 
     bookForm = new FormGroup({
@@ -43,7 +46,7 @@ export class CreateBookComponent {
 
         const book = this.parseBookFromForm();
 
-        this.bookService.createBook(book).subscribe({
+        this.bookService.createBook(book, this.cover).subscribe({
             next: () => {
                 this.bookForm.reset();
                 this.onBookCreated.emit(true);
@@ -89,5 +92,16 @@ export class CreateBookComponent {
         } else {
             this.bookForm.enable();
         }
+    }
+
+    onFileSelected(event: Event) {
+        const input = event.target as HTMLInputElement;
+        this.cover = input.files?.[0] || null;
+
+        if (this.cover) this.generatePreview(this.cover);
+    }
+
+    private generatePreview(file: File): void {
+        this.coverUrl = URL.createObjectURL(file);
     }
 }

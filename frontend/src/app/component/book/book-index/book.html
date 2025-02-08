@@ -5,6 +5,7 @@
     <ul>
         @for (book of books; track book.id) {
             <a routerLink="/books/{{book.id}}">{{ book.name }}</a>
+            <img [src]="book.coverUrl" [alt]="" width="228" height="361"/>
             <br />
         }
     </ul>

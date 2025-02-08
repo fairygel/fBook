@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
 import {HttpClient} from "@angular/common/http";
 import {IndexBookViewDTO} from "../../dto/book/indexBookViewDTO";
@@ -21,15 +21,33 @@ export class BookService {
     return this.http.get<BookFullViewDTO>(`/api/books/${id}`);
   }
 
-  createBook(book: CreateBookDTO) {
-    return this.http.post<CreateBookDTO>('/api/books', book);
+  getBookCover(id: number) {
+    return this.http.get(`/api/books/${id}/cover`, { responseType: 'blob' });
+  }
+
+  createBook(book: CreateBookDTO, cover: File|null) {
+    const formData = new FormData();
+
+    formData.append('book', this.bookToBlob(book));
+    if (cover) formData.append('cover', cover);
+
+    return this.http.post('/api/books', formData);
+  }
+
+  private bookToBlob(bookDTO: any): Blob {
+      return new Blob([JSON.stringify(bookDTO)], {type: 'application/json'});
   }
 
   deleteBook(id: number) {
     return this.http.delete(`/api/books/${id}`);
   }
 
-  updateBook(id: number, book: UpdateBookDTO) {
-    return this.http.patch(`/api/books/${id}`, book)
+  updateBook(id: number, book: UpdateBookDTO, cover: File|null) {
+    const formData = new FormData();
+
+    formData.append('book', this.bookToBlob(book))
+    if (cover) formData.append('cover', cover);
+
+    return this.http.patch(`/api/books/${id}`, formData)
   }
 }
