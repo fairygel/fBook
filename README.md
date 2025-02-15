@@ -12,14 +12,17 @@ if you need all modules of fBook, you can use docker compose:
 ```shell
 docker-compose up --build
 ```
-or else, you can build everything manually:
+or, if you forgot what docker is, you can just run `start.sh` script.
+it has 2 flags. first, `-f, --force-build` - forces the build of all containers. use it, if you made some changes.
+second, `-h, --help` - very important. just listen its definition(I think we need to add a little boldness to the description): **SHOWS HELP MENU**(wow)
+also, you can build everything manually:
 * [backend](backend#manual-build)
-
+* [frontend](frontend#manual-building)
 
 
 ## To-Do:
 - [x] backend rest api service
-- [ ] frontend
+- [x] frontend
 - [ ] login/register feature's
 - [ ] tests
 

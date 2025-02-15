@@ -1,27 +1,82 @@
-# Frontend
+# fBook web client
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.11.
+## Dependencies
+to build manually or using the script, you need to install the [Node.js](https://nodejs.org/en/download).
+also, you must run [backend](../backend). you can run server using [nginx](http://nginx.org/en/download.html), so, you can download it too.
+<br/>
+if you don't care about all of them, you can just install [docker](https://docs.docker.com/engine/install/), and run the project without dependencies.
+<br/>
+to clone a project, you need to install [git](https://git-scm.com/downloads).
 
-## Development server
+## Auto building and running using script
+!! before start, you must run [backend](../backend)
+if you are using linux, you can use `start.sh` to build and run the web client.
+by default, it will run `ng serve`, that starts angular client.
+you can use different flags, to get the result you need.
+flags:
+* -x, --nginx-deploy deploys build artifact to nginx.
+* -h, --help only show the help menu.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Manual building
+!! before start, you must run [backend](../backend)
+at first, clone repository:
+```bash
+git clone https://github.com/fairygel/fBook.git
+cd fBook/frontend
+```
+then, we can set up some things, like proxy for rest api.
+open `proxy.conf.json`. you will see something like this:
+```json
+{
+  "/api": {
+    "target": "http://localhost:8080",
+    "secure": false,
+    "changeOrigin": true
+  }
+}
+```
+where `target` - is your api location. replace it with your own(or do nothing, if server is running on your pc).
+may be you are so lazy, to do something else, so, you can just run
+```shell
+ng serve
+```
+and it will run server.
+there is a chance(less than 1%), that you need to run client on nginx. so, we need to change `nginx.conf`:
+```nginx configuration
+server {
+    listen 80;
+    server_name localhost;
 
-## Code scaffolding
+    root /usr/share/nginx/html;
+    index index.html;
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
 
-## Build
+    error_page 500 502 503 504 /50x.html;
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+    location = /50x.html {
+        root /usr/share/nginx/html;
+    }
 
-## Running unit tests
+    location = /favicon.ico {
+        log_not_found off;
+    }
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+    location /api/ {
+        proxy_pass http://localhost:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
 
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+}
+```
+`listen 80` - is port, that nginx will use, replace it with needed.
+`proxy_pass http://localhost:8080` - backend server. replace it or not, choose by yourself.
+after setting up, run
+```shell
+nginx -g "daemon off;"
+```
+!! before run, be sure, that nginx is stopped !!
