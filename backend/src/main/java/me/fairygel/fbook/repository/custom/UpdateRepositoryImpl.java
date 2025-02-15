@@ -7,7 +7,7 @@ import me.fairygel.fbook.util.PropertyMerger;
 
 import java.util.Optional;
 
-public class UpdateRepositoryImpl<T, U> implements UpdateRepository<T, U> {
+public class UpdateRepositoryImpl<U> implements UpdateRepository<U> {
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -20,7 +20,7 @@ public class UpdateRepositoryImpl<T, U> implements UpdateRepository<T, U> {
     @Override
     @Transactional
     @SuppressWarnings("unchecked")
-    public Optional<U> updateById(T id, U entity) {
+    public Optional<U> updateById(Long id, U entity) {
         U existingEntity = (U) entityManager.find(entity.getClass(), id);
 
         if (existingEntity == null) return Optional.empty();

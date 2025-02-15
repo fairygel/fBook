@@ -7,6 +7,7 @@ import me.fairygel.fbook.dto.book.BookCoverDTO;
 import me.fairygel.fbook.entity.Book;
 import me.fairygel.fbook.entity.BookCover;
 import me.fairygel.fbook.repository.BookCoverCrudRepository;
+import me.fairygel.fbook.util.ImageHelper;
 import me.fairygel.fbook.util.mapper.BookCoverMapperImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,10 +18,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class BookCoverService {
     private final BookCoverCrudRepository coverRepository;
     private final BookCoverMapperImpl mapper;
+    private final ImageHelper image;
 
     @SneakyThrows
     public void createCover(Book book, MultipartFile cover) {
-        if (cover == null) return;
+        if (!image.isImage(cover)) throw new IllegalArgumentException("file type for cover should be image");
 
         BookCover bookCover = mapper.coverFromMultipartFile(book, cover);
 
@@ -45,6 +47,8 @@ public class BookCoverService {
 
         if (updatedBook.getCover() == null) createCover(updatedBook, cover);
         else {
+            if (!image.isImage(cover)) throw new IllegalArgumentException("file type for cover should be image");
+
             BookCover bookCover = mapper.coverFromMultipartFile(updatedBook, cover);
             coverRepository.updateById(updatedBook.getId(), bookCover);
         }

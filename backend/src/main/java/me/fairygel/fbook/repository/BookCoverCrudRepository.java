@@ -9,7 +9,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public interface BookCoverCrudRepository extends CrudRepository<BookCover, Book>, UpdateRepository<Long, BookCover> {
+public interface BookCoverCrudRepository extends CrudRepository<BookCover, Book>, UpdateRepository<BookCover> {
 
     @Query("SELECT c FROM BookCover c WHERE c.bookId = :bookId")
     Optional<BookCover> findByBookId(Long bookId);

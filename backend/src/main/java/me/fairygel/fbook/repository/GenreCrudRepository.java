@@ -4,5 +4,5 @@ import me.fairygel.fbook.entity.Genre;
 import me.fairygel.fbook.repository.custom.UpdateRepository;
 import org.springframework.data.repository.CrudRepository;
 
-public interface GenreCrudRepository extends CrudRepository<Genre, Long>, UpdateRepository<Long, Genre> {
+public interface GenreCrudRepository extends CrudRepository<Genre, Long>, UpdateRepository<Genre> {
 }
