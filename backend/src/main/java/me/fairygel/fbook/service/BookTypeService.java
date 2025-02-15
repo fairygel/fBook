@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import me.fairygel.fbook.dto.book.type.BookTypeDTO;
 import me.fairygel.fbook.dto.book.type.BookTypeIndexViewDTO;
 import me.fairygel.fbook.entity.BookType;
-import me.fairygel.fbook.util.mapper.BookTypeMapper;
 import me.fairygel.fbook.repository.BookTypeReadOnlyRepository;
+import me.fairygel.fbook.util.mapper.BookTypeMapperImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -15,7 +15,7 @@ import java.util.*;
 @AllArgsConstructor
 public class BookTypeService {
     private final BookTypeReadOnlyRepository bookTypeRepository;
-    private final BookTypeMapper mapper;
+    private final BookTypeMapperImpl mapper;
 
     public BookTypeDTO read(Short id) {
         BookType bookType = bookTypeRepository.findById(id)

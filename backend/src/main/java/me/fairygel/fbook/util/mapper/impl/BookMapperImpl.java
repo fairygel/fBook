@@ -124,7 +124,7 @@ public class BookMapperImpl implements BookMapper {
     public BookCoverDTO bookToBookCoverDto(Book book) {
         BookCoverDTO bookDTO = new BookCoverDTO();
 
-        bookDTO.setCover(book.getCover());
+        //bookDTO.setCover(book.getCover());
 
         return bookDTO;
     }

@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import me.fairygel.fbook.dto.genre.GenreDTO;
 import me.fairygel.fbook.dto.genre.GenreIndexViewDTO;
 import me.fairygel.fbook.entity.Genre;
-import me.fairygel.fbook.util.mapper.GenreMapper;
 import me.fairygel.fbook.repository.GenreCrudRepository;
+import me.fairygel.fbook.util.mapper.GenreMapperImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -16,7 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class GenreService {
     private final GenreCrudRepository genreCrudRepository;
-    private final GenreMapper mapper;
+    private final GenreMapperImpl mapper;
 
     private static final String NO_GENRE = "No genre with id = ";
 

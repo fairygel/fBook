@@ -4,5 +4,6 @@ import lombok.Data;
 
 @Data
 public class BookCoverDTO {
+    private String imageType;
     private byte[] cover;
 }

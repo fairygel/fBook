@@ -19,42 +19,36 @@ import java.util.Set;
 public class BookService {
     private static final String NO_BOOK_WITH_ID = "No book with id = ";
 
-    private final BookMapperImpl mapper;
+    private final BookMapperImpl bookMapper;
+    private final BookCoverService coverService;
     private final BookAutomation bookAutomation;
     private final BookCrudRepository bookRepository;
 
     @SneakyThrows
-    public void create(CreateBookDTO bookDTO, MultipartFile cover) {
-        Book book = mapper.createBookDtoToBook(bookDTO);
+    public Book create(CreateBookDTO bookDTO) {
+        Book book = bookMapper.createBookDtoToBook(bookDTO);
 
-        if (cover != null)
-            book.setCover(cover.getBytes());
-
-        bookRepository.save(book);
+        return bookRepository.save(book);
     }
     public BookFullViewDTO read(long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(NO_BOOK_WITH_ID + id));
 
-        return mapper.bookToBookFullViewDto(book);
+        return bookMapper.bookToBookFullViewDto(book);
     }
-    public BookCoverDTO getCover(Long id) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(NO_BOOK_WITH_ID + id));
 
-        return mapper.bookToBookCoverDto(book);
-    }
     @SneakyThrows
     public BookFullViewDTO update(long id, UpdateBookDTO bookDTO, MultipartFile cover) {
-        Book book = mapper.updateBookDtoToBook(bookDTO);
+        Book book = bookMapper.updateBookDtoToBook(bookDTO);
 
         bookAutomation.automate(book);
-        if (cover != null) book.setCover(cover.getBytes());
 
         Book updatedBook = bookRepository.updateById(id, book)
                 .orElseThrow(() -> new EntityNotFoundException(NO_BOOK_WITH_ID + id));
 
-        return mapper.bookToBookFullViewDto(updatedBook);
+        coverService.updateCover(updatedBook, cover);
+
+        return bookMapper.bookToBookFullViewDto(updatedBook);
     }
     public void delete(long id) {
         bookRepository.deleteById(id);
@@ -62,7 +56,7 @@ public class BookService {
     public Set<IndexBookViewDTO> index() {
         Set<IndexBookViewDTO> books = new HashSet<>();
 
-        bookRepository.findAll().forEach(book -> books.add(mapper.bookToIndexBookViewDto(book)));
+        bookRepository.findAll().forEach(book -> books.add(bookMapper.bookToIndexBookViewDto(book)));
         return books;
     }
 }

@@ -6,8 +6,8 @@ import me.fairygel.fbook.dto.grade.CreateGradeDTO;
 import me.fairygel.fbook.dto.grade.GradeFullViewDTO;
 import me.fairygel.fbook.dto.grade.UpdateGradeDTO;
 import me.fairygel.fbook.entity.Grade;
-import me.fairygel.fbook.util.mapper.GradeMapper;
 import me.fairygel.fbook.repository.GradeCrudRepository;
+import me.fairygel.fbook.util.mapper.GradeMapperImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -17,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class GradeService {
     private final GradeCrudRepository gradeCrudRepository;
-    private final GradeMapper mapper;
+    private final GradeMapperImpl mapper;
 
     public void create(CreateGradeDTO gradeDTO) {
         Grade grade = mapper.createGradeDtoToGrade(gradeDTO);
