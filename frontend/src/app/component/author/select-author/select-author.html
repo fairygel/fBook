@@ -1,18 +1,18 @@
-<label for="author">Author: </label>
-<span>{{authorToShow?.fullName}}</span>
-@if (isLoading) {
-    <span>loading..</span>
-} @else if (allAuthors.length === 0) {
-    <span>no authors found:(</span>
-} @else {
-<select id="author" [formControl]="authorControl">
-    @for (author of allAuthors; track author.id) {
-        @if (authorToShow?.id !== author.id) {
-            <option [value]="author.id">{{ author.fullName }}</option>
-        }
+<div class="form-group">
+    <label for="author">author</label>
+    <span>{{ authorToShow?.fullName }}</span>
+    @if (isLoading) {
+        <span>loading..</span>
+    } @else if (allAuthors.length === 0) {
+        <span>no authors found:(</span>
+    } @else {
+        <select id="author" [formControl]="authorControl">
+            @for (author of allAuthors; track author.id) {
+                @if (authorToShow?.id !== author.id) {
+                    <option [value]="author.id">{{ author.fullName }}</option>
+                }
+            }
+        </select>
     }
-</select>
-}
-<br />
-
-<app-create-author (authorCreatedEvent)="handleAuthorCreation()" />
+</div>
+<app-create-author (authorCreatedEvent)="handleAuthorCreation()"/>

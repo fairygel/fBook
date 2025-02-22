@@ -11,7 +11,7 @@ import {BookTypeService} from "../../../service/book-type/book-type.service";
         ReactiveFormsModule
     ],
     templateUrl: 'select-book-type.html',
-    styles: ``
+    styleUrl: `select-book-type.scss`
 })
 export class SelectBookTypeComponent implements OnInit {
     isLoading = false;

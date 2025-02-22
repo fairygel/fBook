@@ -1,25 +1,35 @@
+$bg-color: #000000;
+$panel-color: #1a1a1a;
+$font-color: #ffffff;
 /* You can add global styles to this file, and also import other style files */
+body {
+  background-color: $bg-color;
+  color: $font-color;
+}
+
 * {
-  background-color: black;
-  color: white;
   border: none;
   outline: none;
-  font-size-adjust: 0.7;
-  margin-top: 0.5em;
-  margin-bottom: 1em;
+
+  font-family: Arial, serif;
+  font-size-adjust: 0.8;
 }
 
 input {
+  background-color: $bg-color;
+  color: $font-color;
   border-bottom: 1px solid;
 }
 
 select {
+  background-color: $bg-color;
+  color: $font-color;
   border-bottom: 1px solid;
 }
 
 button {
-  background-color: white;
-  color: black;
+  background-color: $font-color;
+  color: $bg-color;
   border-radius: 15px;
   padding: 2px 6px;
   cursor: pointer;

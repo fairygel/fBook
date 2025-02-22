@@ -1,6 +1,7 @@
 <form [formGroup]="genreForm" (ngSubmit)="createGenre()">
-    <label for="genre">genre:</label>
-    <input id="genre" type="text" formControlName="genre">
-    <button type="submit">create</button>
-    <br/>
+    <div class="form-group">
+        <label for="genre">add new genre</label>
+        <input id="genre" type="text" formControlName="genre">
+        <button type="submit">+</button>
+    </div>
 </form>

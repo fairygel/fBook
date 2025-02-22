@@ -10,7 +10,7 @@ import {BookStatusService} from "../../../service/book-status/book-status.servic
         ReactiveFormsModule
     ],
     templateUrl: "select-book-status.html",
-    styles: ``
+    styleUrl: `select-book-status.scss`
 })
 export class SelectBookStatusComponent implements OnInit {
     isLoading = false;

@@ -12,7 +12,7 @@ import {FormControl, ReactiveFormsModule} from "@angular/forms";
         ReactiveFormsModule
     ],
     templateUrl: 'select-genre.html',
-    styles: ``
+    styleUrl: `select-genre.scss`
 })
 export class SelectGenreComponent implements OnInit {
     isLoading = false;

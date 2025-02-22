@@ -18,7 +18,7 @@ import {SelectBookTypeComponent} from "../../book-type/select-book-type/select-b
         SelectBookTypeComponent
     ],
     templateUrl: 'create-book.html',
-    styles: ``
+    styleUrl: `create-book.scss`
 })
 export class CreateBookComponent {
     isLoading = false;

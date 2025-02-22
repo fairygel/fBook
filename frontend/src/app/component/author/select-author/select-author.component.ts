@@ -13,7 +13,7 @@ import {AuthorService} from "../../../service/author/author.service";
         ReactiveFormsModule
     ],
     templateUrl: 'select-author.html',
-    styles: ``
+    styleUrl: `select-author.scss`
 })
 export class SelectAuthorComponent implements OnInit {
     isLoading = false;

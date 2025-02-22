@@ -1,8 +1,8 @@
 @if (isLoading) {
-    <p>loading your books...</p>
+    <h1 class="loading">loading your books...</h1>
 }
 @else if (books && books.length > 0) {
-    <ul>
+    <ul class="book-cover-preview">
         @for (book of books; track book.id) {
             <a routerLink="/books/{{book.id}}">{{ book.name }}</a>
             <img [src]="book.coverUrl" [alt]="" width="228" height="361"/>
@@ -10,12 +10,19 @@
         }
     </ul>
 } @else {
-    <p>no books found :(</p>
+    <h1 class="not-found">no books found..</h1>
+    <p class="not-found">to create book, click the button below!</p>
 }
 
-@if (!isMenuOpened) {
-    <button (click)="openMenu()">+</button>
-} @else {
-    <button (click)="closeMenu()">x</button>
+<div class="book-create-container" [class.toggled]="isMenuOpened">
+    <div class="create-button-container">
+
+        <button class="create-button"
+                (click)="toggleMenu()"
+                [class.pressed]="isMenuOpened">
+            <span></span>
+        </button>
+    </div>
+
     <app-create-book (onBookCreated)="createBook()"/>
-}
+</div>

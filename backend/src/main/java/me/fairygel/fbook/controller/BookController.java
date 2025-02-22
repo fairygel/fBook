@@ -46,6 +46,7 @@ public class BookController {
     }
     @DeleteMapping(value = {"/{id}/", "/{id}"})
     public void delete(@PathVariable Long id) {
+        coverService.deleteCover(id);
         bookService.delete(id);
     }
     @DeleteMapping(value = {"/{id}/cover/", "/{id}/cover"})

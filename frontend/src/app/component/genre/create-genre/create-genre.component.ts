@@ -12,7 +12,7 @@ import {ApiError} from "../../../error/api-error";
         ReactiveFormsModule
     ],
     templateUrl: 'create-genre.html',
-    styles: ``
+    styleUrl: `create-genre.scss`
 })
 export class CreateGenreComponent {
     isLoading: boolean = false;

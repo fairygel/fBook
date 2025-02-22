@@ -1,4 +1,5 @@
-<label for="bookType">book status:</label>
+<div class="form-group">
+<label for="bookType">book status</label>
 <span>{{ bookStatusToShow?.status }}</span>
 @if (isLoading) {
     <span>loading..</span>
@@ -13,4 +14,4 @@
         }
     </select>
 }
-<br/>
+</div>

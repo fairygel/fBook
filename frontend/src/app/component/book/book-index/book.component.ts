@@ -13,7 +13,7 @@ import {Title} from "@angular/platform-browser";
         CreateBookComponent
     ],
     templateUrl: 'book.html',
-    styles: ``
+    styleUrl: 'book.scss'
 })
 export class BookComponent implements OnInit {
     books: IndexBookViewDTO[] = [];
@@ -27,12 +27,8 @@ export class BookComponent implements OnInit {
         this.changeLoading(true);
     }
 
-    openMenu() {
-        this.isMenuOpened = true;
-    }
-
-    closeMenu() {
-        this.isMenuOpened = false;
+    toggleMenu() {
+        this.isMenuOpened = !this.isMenuOpened;
     }
 
     fetchBooks() {
@@ -69,7 +65,7 @@ export class BookComponent implements OnInit {
     }
 
     createBook() {
-        this.closeMenu();
+        this.toggleMenu();
         this.fetchBooks();
     }
 

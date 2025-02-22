@@ -1,13 +1,16 @@
 <hr/>
 
 <form [formGroup]="bookForm" (ngSubmit)="handleSubmit()">
-    <label for="name">Name:</label>
-    <input id="name" type="text" formControlName="name">
-    <br/>
 
-    <label for="annotation">Annotation:</label>
-    <input id="annotation" type="text" formControlName="annotation">
-    <br/>
+    <div class="form-group">
+        <label for="name">name</label>
+        <input id="name" type="text" formControlName="name">
+    </div>
+
+    <div class="form-group">
+        <label for="annotation">annotation</label>
+        <input id="annotation" type="text" formControlName="annotation">
+    </div>
 
     <app-select-author (onAuthorSelected)="handleSelectedAuthor($event)" />
 

@@ -1,16 +1,17 @@
-<label for="bookType">book type:</label>
-<span>{{ bookTypeToShow?.type }}</span>
-@if (isLoading) {
-    <span>loading..</span>
-} @else if (allBookTypes.length === 0) {
-    <span>no authors found:(</span>
-} @else {
-    <select id="bookType" [formControl]="bookTypeControl">
-        @for (bookType of allBookTypes; track bookType.id) {
-            @if (bookTypeToShow?.id !== bookType.id) {
-                <option [value]="bookType.id">{{ bookType.type }}</option>
+<div class="form-group">
+    <label for="bookType">book type</label>
+    <span>{{ bookTypeToShow?.type }}</span>
+    @if (isLoading) {
+        <span>loading..</span>
+    } @else if (allBookTypes.length === 0) {
+        <span>no authors found:(</span>
+    } @else {
+        <select id="bookType" [formControl]="bookTypeControl">
+            @for (bookType of allBookTypes; track bookType.id) {
+                @if (bookTypeToShow?.id !== bookType.id) {
+                    <option [value]="bookType.id">{{ bookType.type }}</option>
+                }
             }
-        }
-    </select>
-}
-<br/>
+        </select>
+    }
+</div>

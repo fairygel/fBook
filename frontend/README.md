@@ -24,6 +24,10 @@ at first, clone repository:
 git clone https://github.com/fairygel/fBook.git
 cd fBook/frontend
 ```
+install dependencies:
+```bash
+npm install
+```
 then, we can set up some things, like proxy for rest api.
 open `proxy.conf.json`. you will see something like this:
 ```json
@@ -38,7 +42,7 @@ open `proxy.conf.json`. you will see something like this:
 where `target` - is your api location. replace it with your own(or do nothing, if server is running on your pc).
 may be you are so lazy, to do something else, so, you can just run
 ```shell
-ng serve
+npm start
 ```
 and it will run server.
 there is a chance(less than 1%), that you need to run client on nginx. so, we need to change `nginx.conf`:
@@ -77,6 +81,11 @@ server {
 `proxy_pass http://localhost:8080` - backend server. replace it or not, choose by yourself.
 after setting up, run
 ```shell
+npm run build -- --configuration production
+cp dist/frontend/browser /usr/share/nginx/html
+```
+to build project, and
+```shell
 nginx -g "daemon off;"
 ```
-!! before run, be sure, that nginx is stopped !!
+!! before run, be sure, that nginx service is stopped !!
