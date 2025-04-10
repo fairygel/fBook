@@ -1,29 +1,34 @@
-<hr/>
-
 <form [formGroup]="bookForm" (ngSubmit)="handleSubmit()">
+    <div class="form-container">
 
-    <div class="form-group">
-        <label for="name">name</label>
-        <input id="name" type="text" formControlName="name">
+        <div class="form-group">
+            <label for="name">name</label>
+            <input id="name" type="text" formControlName="name">
+        </div>
+
+        <div class="form-group">
+            <label for="annotation">annotation</label>
+            <input id="annotation" type="text" formControlName="annotation">
+        </div>
+
+
+        <app-select-author (onAuthorSelected)="handleSelectedAuthor($event)" />
+
+        <app-select-book-type (onBookTypeSelected)="handleSelectedBookType($event)" />
+
+        <app-select-genre (onGenreSelected)="handleSelectedGenres($event)" />
+
+        <div class="form-group form-for-image">
+            <label for="cover">cover</label>
+            <div class="form-image-wrapper">
+                <button type="button" class="add-image-file-button" (click)="fileInput.click()">+</button>
+                <input #fileInput id="cover" type="file" accept="image/jpeg" (change)="onFileSelected($event)" hidden>
+                @if (cover) {
+                    <img [src]="coverUrl" [alt]="" width="264" height="418" />
+                }
+            </div>
+        </div>
+
+        <button class="submit-creation-button" type="submit">new</button>
     </div>
-
-    <div class="form-group">
-        <label for="annotation">annotation</label>
-        <input id="annotation" type="text" formControlName="annotation">
-    </div>
-
-    <app-select-author (onAuthorSelected)="handleSelectedAuthor($event)" />
-
-    <app-select-book-type (onBookTypeSelected)="handleSelectedBookType($event)" />
-
-    <app-select-genre (onGenreSelected)="handleSelectedGenres($event)" />
-
-    <label for="cover">Cover:</label>
-    <input id="cover" type="file" accept="image/jpeg" (change)="onFileSelected($event)">
-    @if (cover) {
-        <img [src]="coverUrl" [alt]="" width="228" height="361"/>
-    }
-    <br/>
-
-    <button type="submit">create book</button>
 </form>

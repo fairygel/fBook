@@ -1,19 +1,26 @@
-<div class="form-group">
-    <label for="genres">genres</label>
-    @for (genre of genresToShow; track genre.id) {
-        <span>{{ genre.genre }}</span>
-        <span>{{ $last ? '' : ', ' }}</span>
-    }
-    @if (isLoading) {
-        <span>loading..</span>
-    } @else if (allGenres.length === 0) {
-        <span>no genres found:(</span>
-    } @else {
-        <select [formControl]="genresControl" id="genres" multiple>
-            @for (genre of allGenres; track genre.id) {
-                <option [value]="genre.id">{{ genre.genre }}</option>
+<div class="form-container">
+
+    <div class="form-group">
+        <label for="genres">genres</label>
+        @if (genresToShow) {
+            @for (genre of genresToShow; track genre.id) {
+                <span>{{ genre.genre }}</span>
+                <span>{{ $last ? '' : ', ' }}</span>
             }
-        </select>
-    }
+        }
+        @if (isLoading) {
+            <span>loading..</span>
+        } @else if (allGenres.length === 0) {
+            <span>no genres found:(</span>
+        } @else {
+            <select [formControl]="genresControl" id="genres" multiple>
+                @for (genre of allGenres; track genre.id) {
+                    <option [value]="genre.id">{{ genre.genre }}</option>
+                }
+            </select>
+        }
+    </div>
+
+    <app-create-genre (genreCreatedEvent)="handleGenreCreation()"/>
+
 </div>
-<app-create-genre (genreCreatedEvent)="handleGenreCreation()"/>

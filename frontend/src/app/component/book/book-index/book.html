@@ -10,17 +10,18 @@
         }
     </ul>
 } @else {
-    <h1 class="not-found">no books found..</h1>
-    <p class="not-found">to create book, click the button below!</p>
+    <div class="not-found">
+        <h1>no books found..</h1>
+        <p>to create book, click the button below!</p>
+    </div>
 }
 
 <div class="book-create-container" [class.toggled]="isMenuOpened">
     <div class="create-button-container">
-
         <button class="create-button"
                 (click)="toggleMenu()"
                 [class.pressed]="isMenuOpened">
-            <span></span>
+            <span class="cross">+</span>
         </button>
     </div>
 
