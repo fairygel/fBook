@@ -3,13 +3,15 @@ import {GenreService} from "../../../service/genre/genre.service";
 import {GenreIndexViewDTO} from "../../../dto/genre/genreIndexViewDTO";
 import {CreateGenreComponent} from "../create-genre/create-genre.component";
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
+import {NgClass} from "@angular/common";
 
 @Component({
     selector: 'app-select-genre',
     standalone: true,
     imports: [
         CreateGenreComponent,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        NgClass
     ],
     templateUrl: 'select-genre.html',
     styleUrl: `select-genre.scss`
@@ -23,16 +25,10 @@ export class SelectGenreComponent implements OnInit {
     @Input() genresToShow: GenreIndexViewDTO[] = [];
     @Output() onGenreSelected = new EventEmitter<number[]>();
 
-    constructor(private readonly genreService: GenreService) {
-        this.controlValueChangeOfGenres()
-        this.changeLoading(true);
-    }
+    isOpen: boolean = false;
 
-    controlValueChangeOfGenres() {
-        this.genresControl.valueChanges.subscribe((genreIds) => {
-            if (genreIds && genreIds.length > 0)
-                this.onGenreSelected.emit(genreIds);
-        });
+    constructor(private readonly genreService: GenreService) {
+        this.changeLoading(true);
     }
 
     ngOnInit(): void {
@@ -65,5 +61,28 @@ export class SelectGenreComponent implements OnInit {
         } else {
             this.genresControl.enable();
         }
+    }
+
+    toggleDropdown() {
+        this.isOpen = !this.isOpen;
+    }
+
+    onGenreChange(genre: GenreIndexViewDTO) {
+        if (this.isSelected(genre)) {
+            this.genresToShow = this.genresToShow.filter(g => g.id !== genre.id)
+        } else {
+            this.genresToShow.push(genre)
+        }
+        this.onGenreSelected.emit(this.genresToShow.map(g => g.id))
+    }
+
+    get shownGenres(): string {
+        return this.genresToShow
+                .map(g => g.genre)
+                .join(', ')
+    }
+
+    isSelected(genre: GenreIndexViewDTO) {
+        return this.genresToShow.some(g => g.id===genre.id)
     }
 }

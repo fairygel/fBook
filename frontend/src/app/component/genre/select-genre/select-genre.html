@@ -1,23 +1,33 @@
 <div class="form-container">
 
     <div class="form-group">
-        <label for="genres">genres</label>
-        @if (genresToShow) {
-            @for (genre of genresToShow; track genre.id) {
-                <span>{{ genre.genre }}</span>
-                <span>{{ $last ? '' : ', ' }}</span>
-            }
-        }
+        <label>genres</label>
+
         @if (isLoading) {
             <span>loading..</span>
         } @else if (allGenres.length === 0) {
             <span>no genres found:(</span>
         } @else {
-            <select [formControl]="genresControl" id="genres" multiple>
-                @for (genre of allGenres; track genre.id) {
-                    <option [value]="genre.id">{{ genre.genre }}</option>
+            <div class="multiple-select" [class.open]="isOpen">
+                <button class="dropdown-toggle" (click)="toggleDropdown()">
+                    {{ shownGenres }}
+                </button>
+                @if (isOpen) {
+                    <div class="dropdown-menu">
+                        @for (genre of allGenres; track genre.id) {
+                            <label class="dropdown-option"
+                                   [ngClass]="{'dropdown-option-selected': isSelected(genre)}">
+                                <input type="checkbox"
+                                       [value]="genre.id"
+                                       (change)="onGenreChange(genre)"
+                                       hidden
+                                />
+                                {{ genre.genre }}
+                            </label>
+                        }
+                    </div>
                 }
-            </select>
+            </div>
         }
     </div>
 

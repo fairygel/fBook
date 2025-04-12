@@ -1,4 +1,4 @@
-<form [formGroup]="bookForm" (ngSubmit)="handleSubmit()">
+<form [formGroup]="bookForm">
     <div class="form-container">
 
         <div class="form-group">
@@ -29,6 +29,6 @@
             </div>
         </div>
 
-        <button class="submit-creation-button" type="submit">new</button>
+        <button class="submit-creation-button" (click)="handleSubmit()">new</button>
     </div>
 </form>
