@@ -2,11 +2,25 @@
     <h1 class="loading">loading your books...</h1>
 }
 @else if (books && books.length > 0) {
-    <ul class="book-cover-preview">
+    <ul class="books-preview">
         @for (book of books; track book.id) {
-            <a routerLink="/books/{{book.id}}">{{ book.name }}</a>
-            <img [src]="book.coverUrl" [alt]="" width="228" height="361"/>
-            <br />
+            <li class="book-cover-preview">
+                <a routerLink="/books/{{book.id}}">
+                    <div class="book-image-wrapper">
+                        @if (book.coverUrl) {
+                            <img [src]="book.coverUrl"
+                                 [alt]="book.name"
+                                 width="228"
+                                 height="361"/>
+                        } @else {
+                            <div class="no-cover">
+                                <span class="no-cover-title"> {{book.name}} </span>
+                            </div>
+                        }
+                        <div class="book-title">{{ book.name }}</div>
+                    </div>
+                </a>
+            </li>
         }
     </ul>
 } @else {

@@ -12,12 +12,68 @@ body {
     right: 24px;
 }
 
+.books-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(228px, 1fr));
+    gap: 16px;
+    padding: 0;
+    list-style: none;
+}
+
+.book-cover-preview {
+    text-align: center;
+}
+
+.book-cover-preview .no-cover {
+    width: 228px;
+    height: 361px;
+    background-color: styles.$panel-color;
+    border-radius: 12px;
+}
+
+.book-cover-preview img {
+    position: relative;
+    border-radius: 12px;
+}
+
+.book-cover-preview a {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.no-cover-title {
+    position: relative;
+    top: 20%;
+    color: styles.$font-color;
+    font-size-adjust: 1.2;
+    font-family: "Comic Sans MS", serif;
+}
+
+.book-title {
+    position: relative;
+    transform: translateY(-150%);
+
+    transition: transform 0.2s ease;
+    color: styles.$font-color;
+
+    z-index: -1;
+}
+
+.book-image-wrapper {
+    width: 228px;
+    height: 361px;
+}
+
+.book-image-wrapper:hover .book-title {
+    transform: translateY(0);
+}
+
 .create-button {
     width: 48px;
     height: 48px;
 
-    background-color: white;
-    color: black;
+    background-color: styles.$font-color;
+    color: styles.$bg-color;
 
     border: none;
     border-radius: 50%;
