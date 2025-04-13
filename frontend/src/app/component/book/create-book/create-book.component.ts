@@ -104,4 +104,19 @@ export class CreateBookComponent {
     private generatePreview(file: File): void {
         this.coverUrl = URL.createObjectURL(file);
     }
+
+    onDrop(event: DragEvent) {
+        this.handleDrag(event);
+
+        if (event.dataTransfer?.files && event.dataTransfer.files[0]) {
+            this.cover = event.dataTransfer.files[0];
+
+            if (this.cover) this.generatePreview(this.cover);
+        }
+    }
+
+    handleDrag(event: DragEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
 }
