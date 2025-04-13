@@ -1,7 +1,17 @@
 @use '../../../../form-styles';
 
+.panel {
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.panel > form {
+  position: relative;
+}
+
 .form-container {
   padding-top: 20px;
+
 }
 
 .submit-creation-button {
@@ -13,4 +23,6 @@
   height: 48px;
 
   border-radius: 48px;
+
+  z-index: 3;
 }
