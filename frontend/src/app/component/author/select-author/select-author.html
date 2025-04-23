@@ -1,19 +1,34 @@
 <div class="form-container">
+
     <div class="form-group">
-        <label for="author">author</label>
-        <span>{{ authorToShow?.fullName }}</span>
+        <label>author</label>
+
         @if (isLoading) {
             <span>loading..</span>
         } @else if (allAuthors.length === 0) {
             <span>no authors found:(</span>
         } @else {
-            <select id="author" [formControl]="authorControl">
-                @for (author of allAuthors; track author.id) {
-                    @if (authorToShow?.id !== author.id) {
-                        <option [value]="author.id">{{ author.fullName }}</option>
-                    }
+
+            <div class="custom-select" [class.open]="isDropdownOpened">
+                <button class="dropdown-toggle" (click)="toggleDropdown()">
+                    {{ authorToShow?.fullName }}
+                </button>
+                @if (isDropdownOpened) {
+                    <div class="dropdown-menu">
+                        @for (author of allAuthors; track author.id) {
+                            <label class="dropdown-option"
+                                   [ngClass]="{'dropdown-option-selected': isSelected(author)}">
+                                <input type="checkbox"
+                                       [value]="author.id"
+                                       (change)="onAuthorChange(author)"
+                                       hidden
+                                />
+                                {{ author.fullName }}
+                            </label>
+                        }
+                    </div>
                 }
-            </select>
+            </div>
         }
     </div>
 

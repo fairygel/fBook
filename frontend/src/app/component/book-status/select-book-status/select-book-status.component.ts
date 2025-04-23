@@ -1,13 +1,15 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output} from '@angular/core';
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
 import {BookStatusIndexViewDTO} from "../../../dto/book/status/bookStatusIndexViewDTO";
 import {BookStatusService} from "../../../service/book-status/book-status.service";
+import {NgClass} from "@angular/common";
 
 @Component({
     selector: 'app-select-book-status',
     standalone: true,
     imports: [
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        NgClass
     ],
     templateUrl: "select-book-status.html",
     styleUrl: `select-book-status.scss`
@@ -20,17 +22,11 @@ export class SelectBookStatusComponent implements OnInit {
 
     @Input() bookStatusToShow: BookStatusIndexViewDTO|null = null;
     @Output() onBookStatusSelected = new EventEmitter<number>();
+    isDropdownOpened: boolean = false;
 
-    constructor(private readonly bookStatusService: BookStatusService) {
-        this.controlValueChangeOfBookStatus()
+    constructor(private readonly bookStatusService: BookStatusService,
+                private readonly elementRef: ElementRef) {
         this.changeLoading(true);
-    }
-
-    controlValueChangeOfBookStatus() {
-        this.bookStatusControl.valueChanges.subscribe((bookStatusId) => {
-            if (bookStatusId)
-                this.onBookStatusSelected.emit(bookStatusId);
-        });
     }
 
     ngOnInit(): void {
@@ -60,5 +56,30 @@ export class SelectBookStatusComponent implements OnInit {
         } else {
             this.bookStatusControl.enable();
         }
+    }
+
+    toggleDropdown() {
+        this.isDropdownOpened = !this.isDropdownOpened;
+    }
+
+    @HostListener('document:click', ['$event'])
+    closeDropdown(event: Event) {
+        if (!this.elementRef.nativeElement.contains(event.target))
+            if (this.isDropdownOpened) this.isDropdownOpened = false;
+    }
+
+    isSelected(bookStatus: BookStatusIndexViewDTO): boolean {
+        return bookStatus.id === this.bookStatusToShow?.id
+    }
+
+    onBookStatusChange(bookStatus: BookStatusIndexViewDTO) {
+        if (this.isSelected(bookStatus)) {
+            this.bookStatusToShow = null
+        } else {
+            this.bookStatusToShow = bookStatus
+        }
+        this.onBookStatusSelected.emit(this.bookStatusToShow?.id)
+
+        this.isDropdownOpened = false;
     }
 }

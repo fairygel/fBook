@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Title} from "@angular/platform-browser";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ActivatedRoute, Router, RouterLink} from "@angular/router";
@@ -32,15 +32,15 @@ import {BookStatusIndexViewDTO} from "../../../dto/book/status/bookStatusIndexVi
         SelectBookStatusComponent
     ],
     templateUrl: 'book-info.html',
-    styles: ``
+    styleUrl: `book-info.scss`,
+    encapsulation: ViewEncapsulation.None
 })
 export class BookInfoComponent implements OnInit {
     isLoading: boolean = false;
-    imageUrl: string = "";
     id: number = -1;
 
-    coverToUpdate: File|null = null;
-    coverToUpdateUrl: string = "";
+    coverUrl: string = "";
+    cover: File|null = null;
 
     genresToUpdate: number[] = [];
     authorToUpdate: number|null = null;
@@ -60,6 +60,9 @@ export class BookInfoComponent implements OnInit {
         startedReadDate: new FormControl<string|null>(null),
         endedReadDate: new FormControl<string|null>(null)
     });
+
+    @ViewChild('startedDate') startedDate!: ElementRef;
+    @ViewChild('endedDate') endedDate!: ElementRef;
 
     constructor(private readonly bookService: BookService,
                 private readonly route: ActivatedRoute,
@@ -86,7 +89,7 @@ export class BookInfoComponent implements OnInit {
         this.bookService.getBookCover(id)
             .subscribe({
                 next: (response) => {
-                    this.imageUrl = URL.createObjectURL(response);
+                    this.coverUrl = URL.createObjectURL(response);
                 },
                 error: (error) => {
                     console.error(error);
@@ -123,10 +126,9 @@ export class BookInfoComponent implements OnInit {
 
         const book = this.parseBookFromForm();
 
-        this.bookService.updateBook(this.id, book, this.coverToUpdate).subscribe({
+        this.bookService.updateBook(this.id, book, this.cover).subscribe({
             next: () => {
-                this.coverToUpdateUrl = "";
-                this.coverToUpdate = null;
+                this.cover = null;
                 this.fetchBook(this.id);
                 this.changeLoading(false);
             },
@@ -201,12 +203,43 @@ export class BookInfoComponent implements OnInit {
 
     onFileSelected(event: any) {
         const input = event.target as HTMLInputElement;
-        this.coverToUpdate = input.files?.[0] || null;
+        this.cover = input.files?.[0] || null;
 
-        if (this.coverToUpdate) this.generatePreview(this.coverToUpdate);
+        if (this.cover) this.generatePreview(this.cover);
     }
 
     private generatePreview(file: File): void {
-        this.coverToUpdateUrl = URL.createObjectURL(file);
+        this.coverUrl = URL.createObjectURL(file);
+    }
+
+    onDrop(event: DragEvent) {
+        this.handleDrag(event);
+
+        if (event.dataTransfer?.files && event.dataTransfer.files[0]) {
+            this.cover = event.dataTransfer.files[0];
+
+            if (this.cover) this.generatePreview(this.cover);
+        }
+    }
+
+    handleDrag(event: DragEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    openDatepickerForStartedDate() {
+        if ('showPicker' in this.startedDate.nativeElement) {
+            this.startedDate.nativeElement.showPicker();
+        } else {
+            this.startedDate.nativeElement.focus();
+        }
+    }
+
+    openDatepickerForEndedDate() {
+        if ('showPicker' in this.endedDate.nativeElement) {
+            this.endedDate.nativeElement.showPicker();
+        } else {
+            this.endedDate.nativeElement.focus();
+        }
     }
 }

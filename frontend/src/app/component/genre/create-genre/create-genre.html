@@ -1,4 +1,4 @@
-<form [formGroup]="genreForm" (ngSubmit)="createGenre()">
+<form [formGroup]="genreForm" (ngSubmit)="createGenre()" autocomplete="off">
     <div class="form-group">
         <label for="genre">new genre</label>
         <input id="genre" type="text" formControlName="genre" class="form-for-creation">

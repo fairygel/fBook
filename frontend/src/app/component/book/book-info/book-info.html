@@ -1,42 +1,57 @@
 @if (isLoading) {
     <p>loading data..</p>
 } @else if (book) {
-    <img [src]="imageUrl" [alt]="" width="228" height="361">
-    <form [formGroup]="bookForm" (ngSubmit)="handleUpdateBookSubmit()">
-        <label for="cover">update cover:</label>
-        <input id="cover" type="file" accept="image/jpeg" (change)="onFileSelected($event)">
-        @if (coverToUpdate) {
-            <img [src]="coverToUpdateUrl" [alt]="" width="228" height="361"/>
-        }
-        <br/>
+    <form [formGroup]="bookForm" autocomplete="off">
+        <div class="form-container">
+            <div class="form-group form-for-image">
+                <label for="cover">cover</label>
+                <div class="form-image-wrapper"
+                     (dragover)="handleDrag($event)"
+                     (dragleave)="handleDrag($event)"
+                     (drop)="onDrop($event)">
 
-        <label for="name">Name:</label>
-        <input type="text" formControlName="name" id="name">
-        <br />
+                    <button type="button" class="add-image-file-button" (click)="fileInput.click()">+</button>
+                    <input #fileInput id="cover" type="file" accept="image/*" (change)="onFileSelected($event)" hidden>
+                    @if (coverUrl) {
+                        <img [src]="coverUrl" [alt]="''" width="264" height="418" />
+                    }
+                </div>
+            </div>
 
-        <label for="annotation">Annotation:</label>
-        <input type="text" formControlName="annotation" id="annotation">
-        <br />
+            <div class="form-group">
+                <label for="name">name</label>
+                <input type="text" formControlName="name" id="name">
+            </div>
 
-        <app-select-author (onAuthorSelected)="handleSelectedAuthor($event)" [authorToShow]="author" />
+            <div class="form-group">
+                <label for="annotation">annotation</label>
+                <input type="text" formControlName="annotation" id="annotation"/>
+            </div>
 
-        <app-select-book-type (onBookTypeSelected)="handleSelectedBookType($event)" [bookTypeToShow]="bookType" />
+            <app-select-author (onAuthorSelected)="handleSelectedAuthor($event)" [authorToShow]="author" />
 
-        <app-select-book-status (onBookStatusSelected)="handleSelectedBookStatus($event)" [bookStatusToShow]="bookStatus" />
+            <app-select-book-type (onBookTypeSelected)="handleSelectedBookType($event)" [bookTypeToShow]="bookType" />
 
-        <app-select-genre (onGenreSelected)="handleSelectedGenres($event)" [genresToShow]="bookGenres"/>
+            <app-select-book-status (onBookStatusSelected)="handleSelectedBookStatus($event)" [bookStatusToShow]="bookStatus" />
 
-        <label for="startedReadDate">started reading:</label>
-        <input type="date" formControlName="startedReadDate" id="startedReadDate">
-        <br />
+            <app-select-genre (onGenreSelected)="handleSelectedGenres($event)" [genresToShow]="bookGenres"/>
 
-        <label for="endedReadDate">ended reading:</label>
-        <input type="date" formControlName="endedReadDate" id="endedReadDate">
-        <br />
+            <div class="form-group">
+                <label for="startedReadDate">started</label>
+                <input class="clickable" type="date" formControlName="startedReadDate" id="startedReadDate"
+                       #startedDate (click)="openDatepickerForStartedDate()">
+            </div>
 
-        <button type="submit">edit book</button>
+            <div class="form-group">
+                <label for="endedReadDate">ended</label>
+                <input class="clickable" type="date" formControlName="endedReadDate" id="endedReadDate"
+                       #endedDate (click)="openDatepickerForEndedDate()">
+            </div>
+
+            <button type="submit" (click)="handleUpdateBookSubmit()">edit book</button>
+            <button (click)="deleteBook()">delete book</button>
+        </div>
     </form>
-    <button (click)="deleteBook()">delete book</button>
 } @else {
     <h1>no book found:(</h1>
 }

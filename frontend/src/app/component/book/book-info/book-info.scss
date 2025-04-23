@@ -1,0 +1,10 @@
+@use '../../../../form-styles';
+@use '../../../../styles';
+
+body {
+  background-color: styles.$panel-color;
+}
+
+.add-image-file-button {
+  z-index: 3;
+}

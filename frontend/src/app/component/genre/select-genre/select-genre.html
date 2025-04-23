@@ -8,11 +8,11 @@
         } @else if (allGenres.length === 0) {
             <span>no genres found:(</span>
         } @else {
-            <div class="multiple-select" [class.open]="isOpen">
+            <div class="custom-select" [class.open]="isDropdownOpened">
                 <button class="dropdown-toggle" (click)="toggleDropdown()">
                     {{ shownGenres }}
                 </button>
-                @if (isOpen) {
+                @if (isDropdownOpened) {
                     <div class="dropdown-menu">
                         @for (genre of allGenres; track genre.id) {
                             <label class="dropdown-option"

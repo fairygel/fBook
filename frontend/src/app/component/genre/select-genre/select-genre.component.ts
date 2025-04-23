@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output} from '@angular/core';
 import {GenreService} from "../../../service/genre/genre.service";
 import {GenreIndexViewDTO} from "../../../dto/genre/genreIndexViewDTO";
 import {CreateGenreComponent} from "../create-genre/create-genre.component";
@@ -25,9 +25,10 @@ export class SelectGenreComponent implements OnInit {
     @Input() genresToShow: GenreIndexViewDTO[] = [];
     @Output() onGenreSelected = new EventEmitter<number[]>();
 
-    isOpen: boolean = false;
+    isDropdownOpened: boolean = false;
 
-    constructor(private readonly genreService: GenreService) {
+    constructor(private readonly genreService: GenreService,
+                private readonly elementRef: ElementRef) {
         this.changeLoading(true);
     }
 
@@ -64,7 +65,13 @@ export class SelectGenreComponent implements OnInit {
     }
 
     toggleDropdown() {
-        this.isOpen = !this.isOpen;
+        this.isDropdownOpened = !this.isDropdownOpened;
+    }
+
+    @HostListener('document:click', ['$event'])
+    closeDropdown(event: Event) {
+        if (!this.elementRef.nativeElement.contains(event.target))
+            if (this.isDropdownOpened) this.isDropdownOpened = false;
     }
 
     onGenreChange(genre: GenreIndexViewDTO) {

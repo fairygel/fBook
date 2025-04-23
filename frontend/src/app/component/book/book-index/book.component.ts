@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {BookService} from "../../../service/book/book.service";
 import {IndexBookViewDTO} from "../../../dto/book/indexBookViewDTO";
 import {RouterLink} from "@angular/router";
@@ -13,7 +13,8 @@ import {Title} from "@angular/platform-browser";
         CreateBookComponent
     ],
     templateUrl: 'book.html',
-    styleUrl: 'book.scss'
+    styleUrl: 'book.scss',
+    encapsulation: ViewEncapsulation.None
 })
 export class BookComponent implements OnInit {
     books: IndexBookViewDTO[] = [];

@@ -1,4 +1,4 @@
-<form [formGroup]="authorForm" (ngSubmit)="createAuthor()">
+<form [formGroup]="authorForm" (ngSubmit)="createAuthor()" autocomplete="off">
     <div class="form-group">
         <label for="fullName">new author</label>
         <input id="fullName" type="text" formControlName="fullName" class="form-for-creation">

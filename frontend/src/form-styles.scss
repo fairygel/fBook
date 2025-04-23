@@ -39,16 +39,43 @@
 }
 
 .form-group > input, select {
-  background: styles.$panel-color;
   border: none;
-  position: relative;
-
-  top: -22px;
-  left: 2%;
-  width: 95%;
-
 
   font-size: 14px;
+}
+
+.form-group > input {
+  background: styles.$panel-color;
+  position: relative;
+  left: 8px;
+  top: -20px;
+
+  width: calc(100% - 24px);
+}
+
+.form-group > select {
+  position: relative;
+
+  top: -20px;
+  width: 100%;
+}
+
+.form-group > select {
+  opacity: 0;
+  cursor: pointer;
+}
+
+.form-group > select::after {
+  transform: scale(0.9, 0.45);
+  color: styles.$font-color;
+  position: absolute;
+  top: 25%;
+  right: 14px;
+  pointer-events: none;
+
+  opacity: 1;
+  z-index: 3;
+  content: '˅';
 }
 
 .form-group > span {
@@ -62,7 +89,10 @@
 }
 
 .form-group > .form-for-creation {
-  width: 83%;
+  position: absolute;
+  left: 8px;
+  width: calc(100% - 60px);
+  top: 10px;
 }
 .form-group > button {
   position: absolute;
@@ -115,7 +145,7 @@
   border-radius: 12px;
 }
 
-.multiple-select > .dropdown-toggle {
+.custom-select > .dropdown-toggle {
   position: absolute;
   top: 0;
   left: 4px;
@@ -131,25 +161,25 @@
 
 }
 
-.multiple-select > .dropdown-toggle::after {
+.custom-select > .dropdown-toggle::after {
   transform: scale(0.9, 0.45);
   color: styles.$font-color;
   position: absolute;
   top: 25%;
-  right: 14px;
+  right: 23px;
   pointer-events: none;
 
   content: '˅';
 }
 
-.multiple-select > .dropdown-menu {
+.custom-select > .dropdown-menu {
   font-size: 10px;
 
   position: absolute;
   top: 80%;
 
-  width: 93.3%;
-  left: 2%;
+  width: calc(100% - 20px);
+  left: 8px;
 
   padding: 2px;
 
