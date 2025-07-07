@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {GenreIndexViewDTO} from "../../dto/genre/genreIndexViewDTO";
 import {Observable} from "rxjs";
-import {HttpClient} from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import {GenreDTO} from "../../dto/genre/genreDTO";
 
 @Injectable({
