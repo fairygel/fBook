@@ -1,5 +1,9 @@
 @use '../../../../styles';
 
+body {
+    background: styles.$bg-color;
+}
+
 .create-button-container {
     position: fixed;
 

@@ -1,4 +1,13 @@
-import {Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output} from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    HostListener,
+    Input,
+    OnInit,
+    Output,
+    ViewEncapsulation
+} from '@angular/core';
 import {GenreService} from "../../../service/genre/genre.service";
 import {GenreIndexViewDTO} from "../../../dto/genre/genreIndexViewDTO";
 import {CreateGenreComponent} from "../create-genre/create-genre.component";
@@ -14,7 +23,8 @@ import {NgClass} from "@angular/common";
         NgClass
     ],
     templateUrl: 'select-genre.html',
-    styleUrl: `select-genre.scss`
+    styleUrl: `select-genre.scss`,
+    encapsulation: ViewEncapsulation.None
 })
 export class SelectGenreComponent implements OnInit {
     isLoading = false;

@@ -1,4 +1,13 @@
-import {Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output} from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    HostListener,
+    Input,
+    OnInit,
+    Output,
+    ViewEncapsulation
+} from '@angular/core';
 import {CreateAuthorComponent} from "../create-author/create-author.component";
 import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AuthorIndexViewDTO} from "../../../dto/author/authorIndexViewDTO";
@@ -15,7 +24,8 @@ import {NgClass} from "@angular/common";
         NgClass
     ],
     templateUrl: 'select-author.html',
-    styleUrl: `select-author.scss`
+    styleUrl: `select-author.scss`,
+    encapsulation: ViewEncapsulation.None
 })
 export class SelectAuthorComponent implements OnInit {
     isLoading = false;

@@ -1,36 +1,33 @@
-<div class="form-container">
+<div class="form-group">
+    <label>author</label>
 
-    <div class="form-group">
-        <label>author</label>
+    @if (isLoading) {
+        <span>loading..</span>
+    } @else if (allAuthors.length === 0) {
+        <span>no authors found:(</span>
+    } @else {
 
-        @if (isLoading) {
-            <span>loading..</span>
-        } @else if (allAuthors.length === 0) {
-            <span>no authors found:(</span>
-        } @else {
-
-            <div class="custom-select" [class.open]="isDropdownOpened">
-                <button class="dropdown-toggle" (click)="toggleDropdown()">
-                    {{ authorToShow?.fullName }}
-                </button>
-                @if (isDropdownOpened) {
-                    <div class="dropdown-menu">
-                        @for (author of allAuthors; track author.id) {
-                            <label class="dropdown-option"
-                                   [ngClass]="{'dropdown-option-selected': isSelected(author)}">
-                                <input type="checkbox"
-                                       [value]="author.id"
-                                       (change)="onAuthorChange(author)"
-                                       hidden
-                                />
-                                {{ author.fullName }}
-                            </label>
-                        }
-                    </div>
-                }
-            </div>
-        }
-    </div>
-
-    <app-create-author (authorCreatedEvent)="handleAuthorCreation()" />
+        <div class="custom-select" [class.open]="isDropdownOpened">
+            <button class="dropdown-toggle" (click)="toggleDropdown()">
+                {{ authorToShow?.fullName }}
+            </button>
+            @if (isDropdownOpened) {
+                <div class="dropdown-menu">
+                    @for (author of allAuthors; track author.id) {
+                        <label class="dropdown-option"
+                               [ngClass]="{'dropdown-option-selected': isSelected(author)}">
+                            <input type="checkbox"
+                                   [value]="author.id"
+                                   (change)="onAuthorChange(author)"
+                                   hidden
+                            />
+                            {{ author.fullName }}
+                        </label>
+                    }
+                </div>
+            }
+        </div>
+    }
 </div>
+
+<app-create-author (authorCreatedEvent)="handleAuthorCreation()"/>

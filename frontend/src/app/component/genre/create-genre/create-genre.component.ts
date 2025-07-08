@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Output, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {GenreService} from "../../../service/genre/genre.service";
 import { HttpErrorResponse } from "@angular/common/http";
@@ -12,7 +12,8 @@ import {ApiError} from "../../../error/api-error";
         ReactiveFormsModule
     ],
     templateUrl: 'create-genre.html',
-    styleUrl: `create-genre.scss`
+    styleUrl: `create-genre.scss`,
+    encapsulation: ViewEncapsulation.None
 })
 export class CreateGenreComponent {
     isLoading: boolean = false;

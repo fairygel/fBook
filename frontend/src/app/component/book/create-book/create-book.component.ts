@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Output, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {BookService} from "../../../service/book/book.service";
 import {CreateBookDTO} from "../../../dto/book/createBookDTO";
@@ -18,7 +18,8 @@ import {SelectBookTypeComponent} from "../../book-type/select-book-type/select-b
         SelectBookTypeComponent
     ],
     templateUrl: 'create-book.html',
-    styleUrl: `create-book.scss`
+    styleUrl: `create-book.scss`,
+    encapsulation: ViewEncapsulation.None
 })
 export class CreateBookComponent {
     isLoading = false;

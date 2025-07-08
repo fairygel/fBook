@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Output, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AuthorService} from "../../../service/author/author.service";
 import { HttpErrorResponse } from "@angular/common/http";
@@ -12,7 +12,8 @@ import {ApiError} from "../../../error/api-error";
         ReactiveFormsModule
     ],
     templateUrl: 'create-author.html',
-    styleUrl: `create-author.scss`
+    styleUrl: `create-author.scss`,
+    encapsulation: ViewEncapsulation.None
 })
 export class CreateAuthorComponent {
     isLoading = false;

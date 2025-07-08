@@ -11,7 +11,6 @@
   height: 100%;
 }
 
-
 .form-group {
   position: relative;
   margin-left: 12px;
@@ -58,9 +57,7 @@
 
   top: -20px;
   width: 100%;
-}
 
-.form-group > select {
   opacity: 0;
   cursor: pointer;
 }
@@ -94,6 +91,7 @@
   width: calc(100% - 60px);
   top: 10px;
 }
+
 .form-group > button {
   position: absolute;
 
@@ -106,6 +104,11 @@
   background-color: styles.$form-border-color;
 
   border-radius: 100%;
+}
+
+.form-group > form {
+  position: absolute;
+
 }
 
 .form-for-image {

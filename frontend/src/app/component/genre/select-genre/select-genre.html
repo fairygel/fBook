@@ -1,36 +1,32 @@
-<div class="form-container">
+<div class="form-group">
+    <label>genres</label>
 
-    <div class="form-group">
-        <label>genres</label>
-
-        @if (isLoading) {
-            <span>loading..</span>
-        } @else if (allGenres.length === 0) {
-            <span>no genres found:(</span>
-        } @else {
-            <div class="custom-select" [class.open]="isDropdownOpened">
-                <button class="dropdown-toggle" (click)="toggleDropdown()">
-                    {{ shownGenres }}
-                </button>
-                @if (isDropdownOpened) {
-                    <div class="dropdown-menu">
-                        @for (genre of allGenres; track genre.id) {
-                            <label class="dropdown-option"
-                                   [ngClass]="{'dropdown-option-selected': isSelected(genre)}">
-                                <input type="checkbox"
-                                       [value]="genre.id"
-                                       (change)="onGenreChange(genre)"
-                                       hidden
-                                />
-                                {{ genre.genre }}
-                            </label>
-                        }
-                    </div>
-                }
-            </div>
-        }
-    </div>
-
-    <app-create-genre (genreCreatedEvent)="handleGenreCreation()"/>
-
+    @if (isLoading) {
+        <span>loading..</span>
+    } @else if (allGenres.length === 0) {
+        <span>no genres found:(</span>
+    } @else {
+        <div class="custom-select" [class.open]="isDropdownOpened">
+            <button class="dropdown-toggle" (click)="toggleDropdown()">
+                {{ shownGenres }}
+            </button>
+            @if (isDropdownOpened) {
+                <div class="dropdown-menu">
+                    @for (genre of allGenres; track genre.id) {
+                        <label class="dropdown-option"
+                               [ngClass]="{'dropdown-option-selected': isSelected(genre)}">
+                            <input type="checkbox"
+                                   [value]="genre.id"
+                                   (change)="onGenreChange(genre)"
+                                   hidden
+                            />
+                            {{ genre.genre }}
+                        </label>
+                    }
+                </div>
+            }
+        </div>
+    }
 </div>
+
+<app-create-genre (genreCreatedEvent)="handleGenreCreation()"/>

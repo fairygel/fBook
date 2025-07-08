@@ -1,4 +1,13 @@
-import {Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output} from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    HostListener,
+    Input,
+    OnInit,
+    Output,
+    ViewEncapsulation
+} from '@angular/core';
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
 import {BookStatusIndexViewDTO} from "../../../dto/book/status/bookStatusIndexViewDTO";
 import {BookStatusService} from "../../../service/book-status/book-status.service";
@@ -12,7 +21,8 @@ import {NgClass} from "@angular/common";
         NgClass
     ],
     templateUrl: "select-book-status.html",
-    styleUrl: `select-book-status.scss`
+    styleUrl: `select-book-status.scss`,
+    encapsulation: ViewEncapsulation.None
 })
 export class SelectBookStatusComponent implements OnInit {
     isLoading = false;

@@ -3,8 +3,25 @@
 
 body {
   background-color: styles.$panel-color;
+  margin: 30px;
 }
 
 .add-image-file-button {
   z-index: 3;
+}
+
+.form-container {
+  display: grid !important;
+  grid-template-columns: 4fr 1fr 5fr;
+}
+
+.dates-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.left-group, .right-group {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
 }
