@@ -53,9 +53,9 @@
 
                 <app-select-genre (onGenreSelected)="handleSelectedGenres($event)" [genresToShow]="bookGenres"/>
 
-                <div class="form-group">
+                <div class="form-group stretching-form">
                     <label for="annotation">annotation</label>
-                    <input type="text" formControlName="annotation" id="annotation"/>
+                    <textarea formControlName="annotation" id="annotation"></textarea>
                 </div>
             </div>
 

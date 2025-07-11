@@ -201,6 +201,7 @@
 
   cursor: pointer;
   border: styles.$label-color solid 1px;
+  color: styles.$font-color;
   padding: 1px 4px 1px 4px;
   margin: 4px;
   border-radius: 4px;
@@ -209,5 +210,5 @@
 .dropdown-option-selected {
   border: styles.$panel-color solid 1px;
   background-color: styles.$label-color;
-  color: styles.$panel-color;
+  color: styles.$panel-color !important;
 }

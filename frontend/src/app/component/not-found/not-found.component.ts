@@ -10,7 +10,7 @@ import {Title} from "@angular/platform-browser";
       404 page not found
     </p>
   `,
-  styles: ``
+  styles: `p {color:white;}`
 })
 export class NotFoundComponent {
   constructor(private readonly pageTitle: Title) {
