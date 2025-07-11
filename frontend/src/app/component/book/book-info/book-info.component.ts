@@ -18,6 +18,7 @@ import {GenreIndexViewDTO} from "../../../dto/genre/genreIndexViewDTO";
 import {AuthorIndexViewDTO} from "../../../dto/author/authorIndexViewDTO";
 import {BookTypeIndexViewDTO} from "../../../dto/book/type/bookTypeIndexViewDTO";
 import {BookStatusIndexViewDTO} from "../../../dto/book/status/bookStatusIndexViewDTO";
+import {NgOptimizedImage} from "@angular/common";
 
 @Component({
     selector: 'app-book-info',
@@ -29,7 +30,8 @@ import {BookStatusIndexViewDTO} from "../../../dto/book/status/bookStatusIndexVi
         SelectGenreComponent,
         SelectAuthorComponent,
         SelectBookTypeComponent,
-        SelectBookStatusComponent
+        SelectBookStatusComponent,
+        NgOptimizedImage
     ],
     templateUrl: 'book-info.html',
     styleUrl: `book-info.scss`,
@@ -242,4 +244,6 @@ export class BookInfoComponent implements OnInit {
             this.endedDate.nativeElement.focus();
         }
     }
+
+    protected readonly onkeydown = onkeydown;
 }

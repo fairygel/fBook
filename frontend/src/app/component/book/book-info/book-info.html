@@ -1,5 +1,5 @@
 @if (isLoading) {
-    <p>loading data..</p>
+    <h1 class="loading">loading your book..</h1>
 } @else if (book) {
     <form [formGroup]="bookForm" autocomplete="off">
         <div class="form-container">
@@ -62,12 +62,24 @@
             <button type="submit" (click)="handleUpdateBookSubmit()">edit book</button>
 
             <div class="separator"></div>
+            <div class="separator"></div>
 
-            <button (click)="deleteBook()">delete book</button>
+            <span>
+                <a routerLink="/">
+                    <img class="back-image" width="32" height="32" ngSrc="https://www.svgrepo.com/show/335978/arrow-left.svg" alt="←">
+                </a>
+            </span>
+
+            <div class="separator"></div>
+
+            <span class="trash-container">
+                <button class="trash-image" (click)="deleteBook()">
+                    <img width="24" height="24" ngSrc="https://www.svgrepo.com/show/14231/trash.svg" alt="🗑">
+                </button>
+            </span>
         </div>
     </form>
 } @else {
     <h1>no book found:(</h1>
 }
 <hr/>
-<a routerLink="/">see your books..</a>
