@@ -27,6 +27,8 @@ import {NgClass} from "@angular/common";
     encapsulation: ViewEncapsulation.None
 })
 export class SelectGenreComponent implements OnInit {
+    maxSymbolsToShow = 28;
+
     isLoading = false;
     allGenres: GenreIndexViewDTO[] = [];
 
@@ -94,9 +96,20 @@ export class SelectGenreComponent implements OnInit {
     }
 
     get shownGenres(): string {
-        return this.genresToShow
-                .map(g => g.genre)
-                .join(', ')
+        let result = "";
+        let notFinished = false;
+
+        let g = this.genresToShow;
+
+        for (let i = 0; i < g.length; i++) {
+            if (result.length + g[i].genre.length > this.maxSymbolsToShow) {
+                notFinished = true;
+                break;
+            }
+            result += g[i].genre + (g.length-1 == i?"":", ");
+        }
+
+        return result + (notFinished?"...":"");
     }
 
     isSelected(genre: GenreIndexViewDTO) {

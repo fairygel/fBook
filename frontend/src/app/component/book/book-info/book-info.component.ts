@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, HostListener, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Title} from "@angular/platform-browser";
 import { HttpErrorResponse } from "@angular/common/http";
 import {ActivatedRoute, Router, RouterLink} from "@angular/router";
@@ -18,7 +18,7 @@ import {GenreIndexViewDTO} from "../../../dto/genre/genreIndexViewDTO";
 import {AuthorIndexViewDTO} from "../../../dto/author/authorIndexViewDTO";
 import {BookTypeIndexViewDTO} from "../../../dto/book/type/bookTypeIndexViewDTO";
 import {BookStatusIndexViewDTO} from "../../../dto/book/status/bookStatusIndexViewDTO";
-import {NgOptimizedImage} from "@angular/common";
+import {NgClass, NgOptimizedImage} from "@angular/common";
 
 @Component({
     selector: 'app-book-info',
@@ -31,7 +31,8 @@ import {NgOptimizedImage} from "@angular/common";
         SelectAuthorComponent,
         SelectBookTypeComponent,
         SelectBookStatusComponent,
-        NgOptimizedImage
+        NgOptimizedImage,
+        NgClass
     ],
     templateUrl: 'book-info.html',
     styleUrl: `book-info.scss`,
@@ -40,6 +41,8 @@ import {NgOptimizedImage} from "@angular/common";
 export class BookInfoComponent implements OnInit {
     isLoading: boolean = false;
     id: number = -1;
+
+    isShrank = false;
 
     coverUrl: string = "";
     cover: File|null = null;
@@ -101,6 +104,7 @@ export class BookInfoComponent implements OnInit {
 
     ngOnInit() {
         const bookId = +this.route.snapshot.paramMap.get('id')!;
+        this.onResize();
         this.fetchBook(bookId);
     }
 
@@ -163,8 +167,8 @@ export class BookInfoComponent implements OnInit {
         return {
             name: this.bookForm.get('name')?.value ?? '',
             annotation: this.bookForm.get('annotation')?.value ?? null,
-            endedReadDate: this.bookForm.get('endedReadDate')?.value || null,
-            startedReadDate: this.bookForm.get('startedReadDate')?.value || null,
+            endedReadDate: this.bookForm.get('endedReadDate')?.value ?? null,
+            startedReadDate: this.bookForm.get('startedReadDate')?.value ?? null,
 
             authorId: this.authorToUpdate,
             genreIds: this.genresToUpdate,
@@ -217,11 +221,16 @@ export class BookInfoComponent implements OnInit {
     onDrop(event: DragEvent) {
         this.handleDrag(event);
 
-        if (event.dataTransfer?.files && event.dataTransfer.files[0]) {
+        if (event.dataTransfer?.files?.[0]) {
             this.cover = event.dataTransfer.files[0];
 
             if (this.cover) this.generatePreview(this.cover);
         }
+    }
+
+    @HostListener('window:resize', ['$event'])
+    onResize() {
+        this.isShrank = window.innerWidth <= 950;
     }
 
     handleDrag(event: DragEvent) {
@@ -244,6 +253,4 @@ export class BookInfoComponent implements OnInit {
             this.endedDate.nativeElement.focus();
         }
     }
-
-    protected readonly onkeydown = onkeydown;
 }
