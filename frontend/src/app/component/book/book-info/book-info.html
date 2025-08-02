@@ -24,7 +24,7 @@
 
                 <div class="form-group">
                     <label for="name">name</label>
-                    <input type="text" formControlName="name" id="name">
+                    <input (input)="onFormChange()" type="text" formControlName="name" id="name">
                 </div>
 
                 <app-select-author (onAuthorSelected)="handleSelectedAuthor($event)" [authorToShow]="author"/>
@@ -32,13 +32,13 @@
                 <div class="dates-group">
                     <div class="form-group">
                         <label for="startedReadDate">started</label>
-                        <input class="clickable" type="date" formControlName="startedReadDate" id="startedReadDate"
+                        <input (change)="onFormChange()" class="clickable" type="date" formControlName="startedReadDate" id="startedReadDate"
                                #startedDate (click)="openDatepickerForStartedDate()">
                     </div>
 
                     <div class="form-group">
                         <label for="endedReadDate">ended</label>
-                        <input class="clickable" type="date" formControlName="endedReadDate" id="endedReadDate"
+                        <input (change)="onFormChange()" class="clickable" type="date" formControlName="endedReadDate" id="endedReadDate"
                                #endedDate (click)="openDatepickerForEndedDate()">
                     </div>
                 </div>
@@ -57,17 +57,12 @@
 
                 <div class="form-group stretching-form">
                     <label for="annotation">annotation</label>
-                    <textarea formControlName="annotation" id="annotation"></textarea>
+                    <textarea (input)="onFormChange()" formControlName="annotation" id="annotation"></textarea>
                 </div>
             </div>
 
-            <button type="submit" (click)="handleUpdateBookSubmit()">edit book</button>
-
-            <div class="separator"></div>
-            <div class="separator"></div>
-
             <span>
-                <a routerLink="/">
+                <a (click)="handleUpdateBookSubmit()" routerLink="/">
                     <img class="back-image" width="32" height="32"
                          ngSrc="https://www.svgrepo.com/show/335978/arrow-left.svg" alt="←">
                 </a>

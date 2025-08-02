@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostListener, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Title} from "@angular/platform-browser";
 import { HttpErrorResponse } from "@angular/common/http";
 import {ActivatedRoute, Router, RouterLink} from "@angular/router";
@@ -20,6 +20,9 @@ import {BookTypeIndexViewDTO} from "../../../dto/book/type/bookTypeIndexViewDTO"
 import {BookStatusIndexViewDTO} from "../../../dto/book/status/bookStatusIndexViewDTO";
 import {NgClass, NgOptimizedImage} from "@angular/common";
 
+import { Subject } from "rxjs";
+import { debounceTime } from "rxjs/operators";
+
 @Component({
     selector: 'app-book-info',
     standalone: true,
@@ -38,7 +41,9 @@ import {NgClass, NgOptimizedImage} from "@angular/common";
     styleUrl: `book-info.scss`,
     encapsulation: ViewEncapsulation.None
 })
-export class BookInfoComponent implements OnInit {
+export class BookInfoComponent implements OnInit, OnDestroy {
+    formChangeSubject = new Subject<void>();
+
     isLoading: boolean = false;
     id: number = -1;
 
@@ -103,9 +108,26 @@ export class BookInfoComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.formChangeSubject.pipe(
+            debounceTime(2000)
+        ).subscribe(() => {
+            this.handleUpdateBookSubmit();
+        })
+
         const bookId = +this.route.snapshot.paramMap.get('id')!;
         this.onResize();
         this.fetchBook(bookId);
+    }
+
+    onFormChange() {
+        this.formChangeSubject.next();
+    }
+
+    ngOnDestroy() {
+        this.handleUpdateBookSubmit();
+
+        if (this.cover) URL.revokeObjectURL(this.coverUrl);
+        this.formChangeSubject.complete();
     }
 
     deleteBook() {
@@ -179,18 +201,22 @@ export class BookInfoComponent implements OnInit {
 
     handleSelectedGenres(selectedGenres: number[]) {
         this.genresToUpdate = selectedGenres;
+        this.onFormChange();
     }
 
     handleSelectedAuthor(selectedAuthor: number) {
         this.authorToUpdate = selectedAuthor;
+        this.onFormChange();
     }
 
     handleSelectedBookType(selectedBookType: number) {
         this.bookTypeToUpdate = selectedBookType;
+        this.onFormChange();
     }
 
     handleSelectedBookStatus(selectedBookStatus: number) {
         this.bookStatusToUpdate = selectedBookStatus;
+        this.onFormChange();
     }
 
     changeLoading(value: boolean) {
@@ -216,6 +242,7 @@ export class BookInfoComponent implements OnInit {
 
     private generatePreview(file: File): void {
         this.coverUrl = URL.createObjectURL(file);
+        this.onFormChange();
     }
 
     onDrop(event: DragEvent) {
