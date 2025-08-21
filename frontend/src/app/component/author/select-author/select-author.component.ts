@@ -24,8 +24,7 @@ import {NgClass} from "@angular/common";
         NgClass
     ],
     templateUrl: 'select-author.html',
-    styleUrl: `select-author.scss`,
-    encapsulation: ViewEncapsulation.None
+    styleUrl: `select-author.scss`
 })
 export class SelectAuthorComponent implements OnInit {
     isLoading = false;

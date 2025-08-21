@@ -9,7 +9,8 @@ import {RouterOutlet} from "@angular/router";
   ],
   template: `
     <router-outlet></router-outlet>
-  `
+  `,
+  styles: 'html, body { padding: 0; margin: 0;}'
 })
 export class AppComponent {
 

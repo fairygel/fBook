@@ -13,13 +13,12 @@ import {Title} from "@angular/platform-browser";
         CreateBookComponent
     ],
     templateUrl: 'book.html',
-    styleUrl: 'book.scss',
-    encapsulation: ViewEncapsulation.None
+    styleUrl: 'book.scss'
 })
 export class BookComponent implements OnInit {
     books: IndexBookViewDTO[] = [];
 
-    isMenuOpened: boolean = false;
+    isMenuOpened: boolean = true;
     isLoading: boolean = false;
 
     constructor(private readonly bookService: BookService,

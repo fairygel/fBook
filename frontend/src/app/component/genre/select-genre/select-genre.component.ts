@@ -11,8 +11,10 @@ import {
 import {GenreService} from "../../../service/genre/genre.service";
 import {GenreIndexViewDTO} from "../../../dto/genre/genreIndexViewDTO";
 import {CreateGenreComponent} from "../create-genre/create-genre.component";
-import {FormControl, ReactiveFormsModule} from "@angular/forms";
+import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {NgClass} from "@angular/common";
+import {HttpErrorResponse} from "@angular/common/http";
+import {ApiError} from "../../../error/api-error";
 
 @Component({
     selector: 'app-select-genre',
@@ -23,21 +25,26 @@ import {NgClass} from "@angular/common";
         NgClass
     ],
     templateUrl: 'select-genre.html',
-    styleUrl: `select-genre.scss`,
-    encapsulation: ViewEncapsulation.None
+    styleUrl: `select-genre.scss`
 })
 export class SelectGenreComponent implements OnInit {
-    maxSymbolsToShow = 28;
-
     isLoading = false;
     allGenres: GenreIndexViewDTO[] = [];
 
     genresControl = new FormControl<number[]>([]);
 
+    // at the input field, not on the dropdown
     @Input() genresToShow: GenreIndexViewDTO[] = [];
     @Output() onGenreSelected = new EventEmitter<number[]>();
 
     isDropdownOpened: boolean = false;
+
+    isModalOpened: boolean = false;
+    isCreatingGenre: boolean = false;
+
+    genreForm = new FormGroup({
+        genre: new FormControl('')
+    });
 
     constructor(private readonly genreService: GenreService,
                 private readonly elementRef: ElementRef) {
@@ -80,12 +87,6 @@ export class SelectGenreComponent implements OnInit {
         this.isDropdownOpened = !this.isDropdownOpened;
     }
 
-    @HostListener('document:click', ['$event'])
-    closeDropdown(event: Event) {
-        if (!this.elementRef.nativeElement.contains(event.target))
-            if (this.isDropdownOpened) this.isDropdownOpened = false;
-    }
-
     onGenreChange(genre: GenreIndexViewDTO) {
         if (this.isSelected(genre)) {
             this.genresToShow = this.genresToShow.filter(g => g.id !== genre.id)
@@ -96,23 +97,51 @@ export class SelectGenreComponent implements OnInit {
     }
 
     get shownGenres(): string {
-        let result = "";
-        let notFinished = false;
-
-        let g = this.genresToShow;
-
-        for (let i = 0; i < g.length; i++) {
-            if (result.length + g[i].genre.length > this.maxSymbolsToShow) {
-                notFinished = true;
-                break;
-            }
-            result += g[i].genre + (g.length-1 == i?"":", ");
-        }
-
-        return result + (notFinished?"...":"");
+        return this.genresToShow.map(g => g.genre).join(', ')
     }
 
+    get sortedGenres(): GenreIndexViewDTO[] {
+        return this.allGenres.sort((a, b) => {
+            const aSelected = this.isSelected(a);
+            const bSelected = this.isSelected(b);
+
+            if (aSelected && !bSelected) return -1;
+            if (!aSelected && bSelected) return 1;
+
+            return a.genre.localeCompare(b.genre);
+        });
+    }
     isSelected(genre: GenreIndexViewDTO) {
         return this.genresToShow.some(g => g.id===genre.id)
+    }
+
+    openCreateModal() {
+        this.isModalOpened = true;
+    }
+
+    closeCreateModal() {
+        this.isModalOpened = false;
+    }
+
+    onGenreCreated() {
+        this.closeCreateModal();
+        this.changeLoading(true);
+        this.fetchGenres();
+    }
+
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: Event) {
+        if (!this.elementRef.nativeElement.contains(event.target))
+            if (this.isDropdownOpened) this.isDropdownOpened = false;
+    }
+
+    @HostListener('document:keydown.escape', ['$event'])
+    onEscapePress() {
+        if (this.isModalOpened) {
+            this.closeCreateModal();
+        }
+        if (this.isDropdownOpened) {
+            this.isDropdownOpened = false;
+        }
     }
 }

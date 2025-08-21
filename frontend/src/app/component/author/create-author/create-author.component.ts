@@ -12,8 +12,7 @@ import {ApiError} from "../../../error/api-error";
         ReactiveFormsModule
     ],
     templateUrl: 'create-author.html',
-    styleUrl: `create-author.scss`,
-    encapsulation: ViewEncapsulation.None
+    styleUrl: `create-author.scss`
 })
 export class CreateAuthorComponent {
     isLoading = false;

@@ -1,51 +1,58 @@
-import {Component, EventEmitter, Output, ViewEncapsulation} from '@angular/core';
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {GenreService} from "../../../service/genre/genre.service";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { GenreService } from "../../../service/genre/genre.service";
 import { HttpErrorResponse } from "@angular/common/http";
-import {ApiError} from "../../../error/api-error";
+import { ApiError } from "../../../error/api-error";
+import { CommonModule } from "@angular/common";
 
 @Component({
     selector: 'app-create-genre',
     standalone: true,
     imports: [
+        CommonModule,
         FormsModule,
         ReactiveFormsModule
     ],
     templateUrl: 'create-genre.html',
-    styleUrl: `create-genre.scss`,
-    encapsulation: ViewEncapsulation.None
+    styleUrl: 'create-genre.scss'
 })
 export class CreateGenreComponent {
+    @Input() isOpen: boolean = false;
+    @Output() genreCreatedEvent = new EventEmitter<void>();
+    @Output() closeModalEvent = new EventEmitter<void>();
+
     isLoading: boolean = false;
 
     genreForm = new FormGroup({
-        genre: new FormControl('')
+        genre: new FormControl('', Validators.required)
     });
 
-    @Output() genreCreatedEvent = new EventEmitter();
-
-    constructor(private readonly genreService: GenreService){}
+    constructor(private readonly genreService: GenreService) {}
 
     createGenre() {
-        if (this.isLoading) return;
+        if (this.isLoading || this.genreForm.invalid) return;
 
-        this.changeLoading(false);
+        this.changeLoading(true);
 
-        this.genreService.createGenre(this.genreForm.get('genre')?.value ?? '').subscribe(
-            {
-                next: () => {
-                    this.genreForm.reset();
-                    this.genreCreatedEvent.emit();
-                    this.changeLoading(false)
-                },
-                error: (error: HttpErrorResponse) => {
-                    const apiError: ApiError = error.error;
-                    alert(apiError.description);
-                    this.changeLoading(false);
-                }
+        this.genreService.createGenre(this.genreForm.get('genre')?.value ?? '').subscribe({
+            next: () => {
+                this.genreForm.reset();
+                this.genreCreatedEvent.emit();
+                this.closeModal(); // закрываем модалку после успеха
+                this.changeLoading(false);
+            },
+            error: (error: HttpErrorResponse) => {
+                const apiError: ApiError = error.error;
+                alert(apiError.description);
+                this.changeLoading(false);
             }
-        )
+        });
     }
+
+    closeModal() {
+        this.closeModalEvent.emit();
+    }
+
     changeLoading(value: boolean) {
         if (this.isLoading === value) return;
 

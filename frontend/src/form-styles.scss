@@ -2,9 +2,9 @@
 
 .form-container {
   display: flex;
-  
+
   flex-direction: column;
-  
+
   gap: 16px;
 
   width: 100%;
@@ -13,16 +13,33 @@
 
 .form-group {
   position: relative;
-  margin-left: 12px;
-  margin-right: 12px;
-
+  margin: 12px;
   height: 48px;
 
-  border: styles.$form-border-color solid 2px;
   border-radius: 12px;
+
+  background-color: var(--form-color, styles.$panel-color);
+}
+.form-group::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid styles.$form-border-color;
+  border-radius: 12px;
+
+  -webkit-mask:
+          linear-gradient(white, white),
+          linear-gradient(black, black);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+
+  -webkit-mask-position: 0 0, 20px -1px;
+  -webkit-mask-size: 100% 100%, var(--label-width, 0) 4px;
+  -webkit-mask-repeat: no-repeat;
 }
 
 .form-group > label {
+
   user-select: none;
 
   position: relative;
@@ -30,8 +47,7 @@
   left: 20px;
 
   font-size-adjust: 0.6;
-
-  background-color: styles.$panel-color;
+  background: transparent;
   padding: 0 4px 0 4px;
 
   color: styles.$label-color;
@@ -41,10 +57,11 @@
   border: none;
 
   font-size: 14px;
+  background-color: var(--form-color, styles.$panel-color);
 }
 
 .form-group > input {
-  background: styles.$panel-color;
+  background-color: var(--form-color, styles.$panel-color);
   position: relative;
   left: 8px;
   top: -20px;
@@ -83,6 +100,9 @@
   width: 95%;
 
   font-size: 14px;
+
+  color: styles.$font-color;
+  background-color: var(--form-color, styles.$panel-color);
 }
 
 .form-group > .form-for-creation {
@@ -136,11 +156,10 @@
 .form-image-wrapper > button::content {
   z-index: 2;
 
-  text-shadow:
-          -1px -1px 0 styles.$shadow-color,
-          1px -1px 0 styles.$shadow-color,
-          -1px  1px 0 styles.$shadow-color,
-          1px  1px 0 styles.$shadow-color;
+  text-shadow: -1px -1px 0 styles.$shadow-color,
+  1px -1px 0 styles.$shadow-color,
+  -1px 1px 0 styles.$shadow-color,
+  1px 1px 0 styles.$shadow-color;
 }
 
 .form-image-wrapper > img {
@@ -150,6 +169,10 @@
 }
 
 .custom-select > .dropdown-toggle {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   position: absolute;
   top: 0;
   left: 4px;
@@ -161,8 +184,10 @@
   width: 100%;
   height: 100%;
 
-  background-color: #ffffff00;
+  box-sizing: border-box;
+  padding-right: 56px;
 
+  background-color: #ffffff00;
 }
 
 .custom-select > .dropdown-toggle::after {
@@ -190,8 +215,8 @@
   border: styles.$label-color solid 1px;
   border-radius: 4px;
 
-  background-color: styles.$panel-color;
-  z-index: 1;
+  background-color: var(--form-color, styles.$panel-color);
+  z-index: 3;
 }
 
 .dropdown-menu > .dropdown-option {

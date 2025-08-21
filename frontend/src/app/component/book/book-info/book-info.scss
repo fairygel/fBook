@@ -1,6 +1,39 @@
 @use '../../../../form-styles';
 @use '../../../../styles';
 
+.name {
+  --label-width: 53px;
+}
+
+.annotation {
+  --label-width: 93px;
+}
+
+.form-for-image {
+  --label-width: 52px;
+}
+
+.started-date {
+  --label-width: 63px;
+}
+
+.ended-date {
+  --label-width: 58px;
+}
+
+h1 {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -100%);
+
+  color: styles.$font-color;
+
+  text-align: center;
+}
+
 body {
   background-color: styles.$panel-color;
   margin: 30px;

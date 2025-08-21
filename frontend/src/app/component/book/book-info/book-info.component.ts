@@ -38,8 +38,7 @@ import { debounceTime } from "rxjs/operators";
         NgClass
     ],
     templateUrl: 'book-info.html',
-    styleUrl: `book-info.scss`,
-    encapsulation: ViewEncapsulation.None
+    styleUrl: `book-info.scss`
 })
 export class BookInfoComponent implements OnInit, OnDestroy {
     formChangeSubject = new Subject<void>();

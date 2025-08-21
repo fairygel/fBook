@@ -22,7 +22,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group name">
                     <label for="name">name</label>
                     <input (input)="onFormChange()" type="text" formControlName="name" id="name">
                 </div>
@@ -30,13 +30,13 @@
                 <app-select-author (onAuthorSelected)="handleSelectedAuthor($event)" [authorToShow]="author"/>
 
                 <div class="dates-group">
-                    <div class="form-group">
+                    <div class="form-group started-date">
                         <label for="startedReadDate">started</label>
                         <input (change)="onFormChange()" class="clickable" type="date" formControlName="startedReadDate" id="startedReadDate"
                                #startedDate (click)="openDatepickerForStartedDate()">
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group ended-date">
                         <label for="endedReadDate">ended</label>
                         <input (change)="onFormChange()" class="clickable" type="date" formControlName="endedReadDate" id="endedReadDate"
                                #endedDate (click)="openDatepickerForEndedDate()">
@@ -55,7 +55,7 @@
 
                 <app-select-genre (onGenreSelected)="handleSelectedGenres($event)" [genresToShow]="bookGenres"/>
 
-                <div class="form-group stretching-form">
+                <div class="form-group stretching-form annotation">
                     <label for="annotation">annotation</label>
                     <textarea (input)="onFormChange()" formControlName="annotation" id="annotation"></textarea>
                 </div>

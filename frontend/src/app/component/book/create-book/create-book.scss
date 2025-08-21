@@ -1,6 +1,21 @@
 @use '../../../../form-styles';
+@use '../../../../styles';
+
+.name {
+  --label-width: 53px;
+}
+
+.annotation {
+  --label-width: 93px;
+}
+
+.form-for-image {
+  --label-width: 52px;
+}
 
 .panel {
+  padding-top: 24px;
+
   height: 100vh;
   overflow-y: auto;
 }
@@ -9,9 +24,18 @@
   position: relative;
 }
 
+.panel {
+  background-color: rgba(styles.$panel-color, 0.4);
+  backdrop-filter: blur(10px);
+}
+
+* {
+  --form-color: #{rgba(styles.$panel-color, 0.0)};
+}
+
 .submit-creation-button {
   position: absolute;
-  bottom: 24px;
+  bottom: 48px;
   left: 24px;
 
   width: 96px;
