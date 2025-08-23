@@ -3,11 +3,10 @@ import {
     ElementRef,
     EventEmitter,
     HostListener,
-    Input,
+    Input, OnChanges,
     OnDestroy,
     OnInit,
-    Output,
-    ViewEncapsulation
+    Output, QueryList, SimpleChanges, ViewChildren
 } from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AuthorService} from "../../../service/author/author.service";
@@ -24,7 +23,9 @@ import {ApiError} from "../../../error/api-error";
     templateUrl: 'create-author.html',
     styleUrl: `create-author.scss`
 })
-export class CreateAuthorComponent implements OnInit, OnDestroy {
+export class CreateAuthorComponent implements OnInit, OnDestroy, OnChanges {
+    @ViewChildren('create_input') searchInput!: QueryList<ElementRef>;
+
     @Input() isOpen: boolean = false;
 
     // true on author added, false if no changes
@@ -46,6 +47,13 @@ export class CreateAuthorComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.el.nativeElement.remove();
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['isOpen']?.currentValue) {
+            setTimeout(() =>
+                this.searchInput?.first.nativeElement.focus());
+        }
     }
 
     createAuthor() {

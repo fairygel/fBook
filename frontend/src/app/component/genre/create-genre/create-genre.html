@@ -5,7 +5,7 @@
 
             <form [formGroup]="genreForm" (ngSubmit)="createGenre()" autocomplete="off">
                 <div class="form-group">
-                    <input id="genre" type="text" formControlName="genre"/>
+                    <input #create_input id="genre" type="text" formControlName="genre"/>
                 </div>
 
                 <div class="modal-actions">

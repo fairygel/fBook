@@ -5,7 +5,7 @@
 
             <form [formGroup]="authorForm" (ngSubmit)="createAuthor()" autocomplete="off">
                 <div class="form-group">
-                    <input id="fullName" type="text" formControlName="fullName">
+                    <input #create_input id="fullName" type="text" formControlName="fullName">
                 </div>
 
                 <div class="modal-actions">

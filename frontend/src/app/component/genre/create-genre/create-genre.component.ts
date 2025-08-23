@@ -1,4 +1,14 @@
-import {Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {
+    AfterViewInit,
+    Component,
+    ElementRef,
+    EventEmitter,
+    HostListener,
+    Input, OnChanges,
+    OnDestroy,
+    OnInit,
+    Output, QueryList, SimpleChanges, ViewChild, ViewChildren
+} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {GenreService} from "../../../service/genre/genre.service";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -16,7 +26,9 @@ import {CommonModule} from "@angular/common";
     templateUrl: 'create-genre.html',
     styleUrl: 'create-genre.scss'
 })
-export class CreateGenreComponent implements OnInit, OnDestroy {
+export class CreateGenreComponent implements OnInit, OnDestroy, OnChanges {
+    @ViewChildren('create_input') searchInput!: QueryList<ElementRef>;
+
     @Input() isOpen: boolean = false;
 
     // true on genre added, false if no changes
@@ -38,6 +50,13 @@ export class CreateGenreComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.el.nativeElement.remove();
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['isOpen']?.currentValue) {
+            setTimeout(() =>
+                this.searchInput?.first.nativeElement.focus());
+        }
     }
 
     createGenre() {
