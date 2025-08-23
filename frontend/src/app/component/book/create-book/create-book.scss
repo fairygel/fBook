@@ -18,19 +18,18 @@
 
   height: 100vh;
   overflow-y: auto;
+
+  background-color: rgba(styles.$panel-color, 0.4);
+  backdrop-filter: blur(10px);
 }
 
 .panel > form {
   position: relative;
 }
 
-.panel {
-  background-color: rgba(styles.$panel-color, 0.4);
-  backdrop-filter: blur(10px);
-}
-
 * {
   --form-color: #{rgba(styles.$panel-color, 0.0)};
+  --dropdown-bg: #{rgba(styles.$panel-color, 0.4)};
 }
 
 .submit-creation-button {
