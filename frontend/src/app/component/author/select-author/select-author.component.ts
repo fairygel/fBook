@@ -95,9 +95,7 @@ export class SelectAuthorComponent implements OnInit {
 
     closeCreateModal() {
         this.isModalOpened = false;
-    }
 
-    onAuthorCreated() {
         this.changeLoading(true);
         this.fetchAuthors();
     }

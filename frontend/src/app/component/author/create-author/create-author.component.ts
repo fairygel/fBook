@@ -26,7 +26,6 @@ import {ApiError} from "../../../error/api-error";
 })
 export class CreateAuthorComponent implements OnInit, OnDestroy {
     @Input() isOpen: boolean = false;
-    @Output() authorCreatedEvent = new EventEmitter<void>();
     @Output() closeModalEvent = new EventEmitter<void>();
 
     isLoading = false;
@@ -55,7 +54,6 @@ export class CreateAuthorComponent implements OnInit, OnDestroy {
             {
                 next: () => {
                     this.authorForm.reset();
-                    this.authorCreatedEvent.emit();
                     this.changeLoading(false);
                 },
                 error: (error: HttpErrorResponse) => {

@@ -18,7 +18,6 @@ import {CommonModule} from "@angular/common";
 })
 export class CreateGenreComponent implements OnInit, OnDestroy {
     @Input() isOpen: boolean = false;
-    @Output() genreCreatedEvent = new EventEmitter<void>();
     @Output() closeModalEvent = new EventEmitter<void>();
 
     isLoading: boolean = false;
@@ -46,7 +45,6 @@ export class CreateGenreComponent implements OnInit, OnDestroy {
         this.genreService.createGenre(this.genreForm.get('genre')?.value ?? '').subscribe({
             next: () => {
                 this.genreForm.reset();
-                this.genreCreatedEvent.emit();
                 this.changeLoading(false);
             },
             error: (error: HttpErrorResponse) => {
