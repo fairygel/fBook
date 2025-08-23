@@ -5,16 +5,13 @@ import {
     HostListener,
     Input,
     OnInit,
-    Output,
-    ViewEncapsulation
+    Output
 } from '@angular/core';
 import {GenreService} from "../../../service/genre/genre.service";
 import {GenreIndexViewDTO} from "../../../dto/genre/genreIndexViewDTO";
 import {CreateGenreComponent} from "../create-genre/create-genre.component";
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {NgClass} from "@angular/common";
-import {HttpErrorResponse} from "@angular/common/http";
-import {ApiError} from "../../../error/api-error";
 
 @Component({
     selector: 'app-select-genre',
@@ -40,11 +37,6 @@ export class SelectGenreComponent implements OnInit {
     isDropdownOpened: boolean = false;
 
     isModalOpened: boolean = false;
-    isCreatingGenre: boolean = false;
-
-    genreForm = new FormGroup({
-        genre: new FormControl('')
-    });
 
     constructor(private readonly genreService: GenreService,
                 private readonly elementRef: ElementRef) {
@@ -124,22 +116,22 @@ export class SelectGenreComponent implements OnInit {
     }
 
     onGenreCreated() {
-        this.closeCreateModal();
         this.changeLoading(true);
         this.fetchGenres();
     }
 
     @HostListener('document:click', ['$event'])
     onDocumentClick(event: Event) {
+        if (this.isModalOpened) return;
+
         if (!this.elementRef.nativeElement.contains(event.target))
             if (this.isDropdownOpened) this.isDropdownOpened = false;
     }
 
     @HostListener('document:keydown.escape', ['$event'])
     onEscapePress() {
-        if (this.isModalOpened) {
-            this.closeCreateModal();
-        }
+        if (this.isModalOpened) return;
+
         if (this.isDropdownOpened) {
             this.isDropdownOpened = false;
         }

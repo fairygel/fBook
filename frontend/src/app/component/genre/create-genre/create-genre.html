@@ -1,19 +1,19 @@
-<div class="modal-backdrop" *ngIf="isOpen">
-    <div class="modal">
-        <h2>Create</h2>
+@if (isOpen) {
+    <div class="modal-backdrop">
+        <div class="modal">
+            <h3>New Genre</h3>
 
-        <form [formGroup]="genreForm" (ngSubmit)="createGenre()" autocomplete="off">
-            <div class="form-group">
-                <label for="genre">name</label>
-                <input id="genre" type="text" formControlName="genre" class="form-for-creation" />
-            </div>
+            <form [formGroup]="genreForm" (ngSubmit)="createGenre()" autocomplete="off">
+                <div class="form-group">
+                    <input id="genre" type="text" formControlName="genre"/>
+                </div>
 
-            <div class="modal-actions">
-                <button type="button" (click)="closeModal()" [disabled]="isLoading">Cancel</button>
-                <button type="submit" [disabled]="genreForm.invalid || isLoading">
-                    {{ isLoading ? 'Creating...' : 'Create' }}
-                </button>
-            </div>
-        </form>
+                <div class="modal-actions">
+                    <button type="submit" [disabled]="genreForm.invalid || isLoading">
+                        +
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+}

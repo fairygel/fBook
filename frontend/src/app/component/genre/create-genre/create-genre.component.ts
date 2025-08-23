@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
-import { GenreService } from "../../../service/genre/genre.service";
-import { HttpErrorResponse } from "@angular/common/http";
-import { ApiError } from "../../../error/api-error";
-import { CommonModule } from "@angular/common";
+import {Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {GenreService} from "../../../service/genre/genre.service";
+import {HttpErrorResponse} from "@angular/common/http";
+import {ApiError} from "../../../error/api-error";
+import {CommonModule} from "@angular/common";
 
 @Component({
     selector: 'app-create-genre',
@@ -16,7 +16,7 @@ import { CommonModule } from "@angular/common";
     templateUrl: 'create-genre.html',
     styleUrl: 'create-genre.scss'
 })
-export class CreateGenreComponent {
+export class CreateGenreComponent implements OnInit, OnDestroy {
     @Input() isOpen: boolean = false;
     @Output() genreCreatedEvent = new EventEmitter<void>();
     @Output() closeModalEvent = new EventEmitter<void>();
@@ -24,13 +24,22 @@ export class CreateGenreComponent {
     isLoading: boolean = false;
 
     genreForm = new FormGroup({
-        genre: new FormControl('', Validators.required)
+        genre: new FormControl('')
     });
 
-    constructor(private readonly genreService: GenreService) {}
+    constructor(private readonly genreService: GenreService,
+                private readonly el: ElementRef) {}
+
+    ngOnInit() {
+        document.body.appendChild(this.el.nativeElement);
+    }
+
+    ngOnDestroy() {
+        this.el.nativeElement.remove();
+    }
 
     createGenre() {
-        if (this.isLoading || this.genreForm.invalid) return;
+        if (this.isLoading) return;
 
         this.changeLoading(true);
 
@@ -38,7 +47,6 @@ export class CreateGenreComponent {
             next: () => {
                 this.genreForm.reset();
                 this.genreCreatedEvent.emit();
-                this.closeModal(); // закрываем модалку после успеха
                 this.changeLoading(false);
             },
             error: (error: HttpErrorResponse) => {
@@ -50,6 +58,7 @@ export class CreateGenreComponent {
     }
 
     closeModal() {
+        this.genreForm.reset()
         this.closeModalEvent.emit();
     }
 
@@ -63,5 +72,18 @@ export class CreateGenreComponent {
         } else {
             this.genreForm.enable();
         }
+    }
+
+    @HostListener('document:keydown.escape', ['$event'])
+    onEscapePress() {
+        this.closeModal();
+    }
+
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: Event) {
+        const target = event.target as HTMLElement;
+
+        if (target.classList.contains('modal-backdrop'))
+            this.closeModal();
     }
 }

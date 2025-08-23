@@ -18,7 +18,7 @@ import {Title} from "@angular/platform-browser";
 export class BookComponent implements OnInit {
     books: IndexBookViewDTO[] = [];
 
-    isMenuOpened: boolean = true;
+    isMenuOpened: boolean = false;
     isLoading: boolean = false;
 
     constructor(private readonly bookService: BookService,
