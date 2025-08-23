@@ -1,4 +1,14 @@
-import {Component, EventEmitter, Output, ViewEncapsulation} from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    HostListener,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output,
+    ViewEncapsulation
+} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AuthorService} from "../../../service/author/author.service";
 import { HttpErrorResponse } from "@angular/common/http";
@@ -14,16 +24,27 @@ import {ApiError} from "../../../error/api-error";
     templateUrl: 'create-author.html',
     styleUrl: `create-author.scss`
 })
-export class CreateAuthorComponent {
+export class CreateAuthorComponent implements OnInit, OnDestroy {
+    @Input() isOpen: boolean = false;
+    @Output() authorCreatedEvent = new EventEmitter<void>();
+    @Output() closeModalEvent = new EventEmitter<void>();
+
     isLoading = false;
 
     authorForm = new FormGroup({
         fullName: new FormControl('')
     });
 
-    @Output() authorCreatedEvent = new EventEmitter();
+    constructor(private readonly authorService: AuthorService,
+                private readonly el: ElementRef) {}
 
-    constructor(private readonly authorService: AuthorService) {}
+    ngOnInit() {
+        document.body.appendChild(this.el.nativeElement);
+    }
+
+    ngOnDestroy() {
+        this.el.nativeElement.remove();
+    }
 
     createAuthor() {
         if (this.isLoading) return;
@@ -46,6 +67,11 @@ export class CreateAuthorComponent {
         )
     }
 
+    closeModal() {
+        this.authorForm.reset()
+        this.closeModalEvent.emit();
+    }
+
     changeLoading(value: boolean) {
         if (this.isLoading === value) return;
 
@@ -56,5 +82,18 @@ export class CreateAuthorComponent {
         } else {
             this.authorForm.enable();
         }
+    }
+
+    @HostListener('document:keydown.escape', ['$event'])
+    onEscapePress() {
+        this.closeModal();
+    }
+
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: Event) {
+        const target = event.target as HTMLElement;
+
+        if (target.classList.contains('modal-backdrop'))
+            this.closeModal();
     }
 }

@@ -5,8 +5,7 @@ import {
     HostListener,
     Input,
     OnInit,
-    Output,
-    ViewEncapsulation
+    Output
 } from '@angular/core';
 import {CreateAuthorComponent} from "../create-author/create-author.component";
 import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -31,6 +30,7 @@ export class SelectAuthorComponent implements OnInit {
     allAuthors: AuthorIndexViewDTO[] = [];
 
     isDropdownOpened: boolean = false;
+    isModalOpened: boolean = false;
 
     authorControl = new FormControl<number>(0);
 
@@ -43,11 +43,6 @@ export class SelectAuthorComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.fetchAuthors();
-    }
-
-    handleAuthorCreation() {
-        this.changeLoading(true);
         this.fetchAuthors();
     }
 
@@ -70,7 +65,6 @@ export class SelectAuthorComponent implements OnInit {
 
     changeLoading(value: boolean) {
         if (this.isLoading === value) return;
-
         this.isLoading = value;
 
         if (this.isLoading) {
@@ -78,16 +72,6 @@ export class SelectAuthorComponent implements OnInit {
         } else {
             this.authorControl.enable();
         }
-    }
-
-    @HostListener('document:click', ['$event'])
-    closeDropdown(event: Event) {
-        if (!this.elementRef.nativeElement.contains(event.target))
-            if (this.isDropdownOpened) this.isDropdownOpened = false;
-    }
-
-    isSelected(author: AuthorIndexViewDTO): boolean {
-        return author.id === this.authorToShow?.id
     }
 
     onAuthorChange(author: AuthorIndexViewDTO) {
@@ -99,5 +83,39 @@ export class SelectAuthorComponent implements OnInit {
         this.onAuthorSelected.emit(this.authorToShow?.id)
 
         this.isDropdownOpened = false;
+    }
+
+    isSelected(author: AuthorIndexViewDTO): boolean {
+        return author.id === this.authorToShow?.id
+    }
+
+    openCreateModal() {
+        this.isModalOpened = true;
+    }
+
+    closeCreateModal() {
+        this.isModalOpened = false;
+    }
+
+    onAuthorCreated() {
+        this.changeLoading(true);
+        this.fetchAuthors();
+    }
+
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: Event) {
+        if (this.isModalOpened) return;
+
+        if (!this.elementRef.nativeElement.contains(event.target))
+            if (this.isDropdownOpened) this.isDropdownOpened = false;
+    }
+
+    @HostListener('document:keydown.escape', ['$event'])
+    onEscapePress() {
+        if (this.isModalOpened) return;
+
+        if (this.isDropdownOpened) {
+            this.isDropdownOpened = false;
+        }
     }
 }

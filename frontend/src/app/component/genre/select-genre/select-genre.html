@@ -12,9 +12,9 @@
             </button>
             @if (isDropdownOpened) {
                 <div class="dropdown-menu">
-                    <label class="dropdown-option" (click)="openCreateModal()">
+                    <span class="dropdown-option" (click)="openCreateModal()">
                         <b>+ New</b>
-                    </label>
+                    </span>
                     @for (genre of sortedGenres; track genre.id) {
                         <label class="dropdown-option"
                                [ngClass]="{'dropdown-option-selected': isSelected(genre)}">
@@ -33,7 +33,6 @@
         <app-create-genre
                 [isOpen]="isModalOpened"
                 (genreCreatedEvent)="onGenreCreated()"
-                (closeModalEvent)="closeCreateModal()"
-        />
+                (closeModalEvent)="closeCreateModal()"/>
     }
 </div>

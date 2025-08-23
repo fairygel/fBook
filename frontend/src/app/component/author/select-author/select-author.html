@@ -13,6 +13,9 @@
             </button>
             @if (isDropdownOpened) {
                 <div class="dropdown-menu">
+                    <span class="dropdown-option" (click)="openCreateModal()">
+                        <b>+ New</b>
+                    </span>
                     @for (author of allAuthors; track author.id) {
                         <label class="dropdown-option"
                                [ngClass]="{'dropdown-option-selected': isSelected(author)}">
@@ -27,7 +30,10 @@
                 </div>
             }
         </div>
+
+        <app-create-author
+            [isOpen]="isModalOpened"
+            (authorCreatedEvent)="onAuthorCreated()"
+            (closeModalEvent)="closeCreateModal()"/>
     }
 </div>
-
-<app-create-author (authorCreatedEvent)="handleAuthorCreation()"/>

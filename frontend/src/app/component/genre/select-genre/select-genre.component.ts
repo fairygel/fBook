@@ -10,7 +10,7 @@ import {
 import {GenreService} from "../../../service/genre/genre.service";
 import {GenreIndexViewDTO} from "../../../dto/genre/genreIndexViewDTO";
 import {CreateGenreComponent} from "../create-genre/create-genre.component";
-import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {FormControl, ReactiveFormsModule} from "@angular/forms";
 import {NgClass} from "@angular/common";
 
 @Component({
@@ -28,15 +28,14 @@ export class SelectGenreComponent implements OnInit {
     isLoading = false;
     allGenres: GenreIndexViewDTO[] = [];
 
+    isDropdownOpened: boolean = false;
+    isModalOpened: boolean = false;
+
     genresControl = new FormControl<number[]>([]);
 
     // at the input field, not on the dropdown
     @Input() genresToShow: GenreIndexViewDTO[] = [];
     @Output() onGenreSelected = new EventEmitter<number[]>();
-
-    isDropdownOpened: boolean = false;
-
-    isModalOpened: boolean = false;
 
     constructor(private readonly genreService: GenreService,
                 private readonly elementRef: ElementRef) {
@@ -44,11 +43,6 @@ export class SelectGenreComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.fetchGenres();
-    }
-
-    handleGenreCreation() {
-        this.changeLoading(true);
         this.fetchGenres();
     }
 
@@ -64,6 +58,11 @@ export class SelectGenreComponent implements OnInit {
             }
         });
     }
+
+    toggleDropdown() {
+        this.isDropdownOpened = !this.isDropdownOpened;
+    }
+
     changeLoading(value: boolean) {
         if (value === this.isLoading) return;
         this.isLoading = value;
@@ -73,10 +72,6 @@ export class SelectGenreComponent implements OnInit {
         } else {
             this.genresControl.enable();
         }
-    }
-
-    toggleDropdown() {
-        this.isDropdownOpened = !this.isDropdownOpened;
     }
 
     onGenreChange(genre: GenreIndexViewDTO) {

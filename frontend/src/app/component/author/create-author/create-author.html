@@ -1,7 +1,19 @@
-<form [formGroup]="authorForm" (ngSubmit)="createAuthor()" autocomplete="off">
-    <div class="form-group">
-        <label for="fullName">new author</label>
-        <input id="fullName" type="text" formControlName="fullName" class="form-for-creation">
-        <button type="submit">+</button>
+@if (isOpen) {
+    <div class="modal-backdrop">
+        <div class="modal">
+            <h3>New Author</h3>
+
+            <form [formGroup]="authorForm" (ngSubmit)="createAuthor()" autocomplete="off">
+                <div class="form-group">
+                    <input id="fullName" type="text" formControlName="fullName">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" [disabled]="isLoading">
+                        +
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-</form>
+}
