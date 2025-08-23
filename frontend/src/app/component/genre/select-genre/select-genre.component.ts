@@ -106,9 +106,10 @@ export class SelectGenreComponent implements OnInit {
         this.isModalOpened = true;
     }
 
-    closeCreateModal() {
+    closeCreateModal(isAdded: boolean) {
         this.isModalOpened = false;
 
+        if (!isAdded) return;
         this.changeLoading(true);
         this.fetchGenres();
     }

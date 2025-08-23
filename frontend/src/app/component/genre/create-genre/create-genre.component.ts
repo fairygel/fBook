@@ -18,9 +18,12 @@ import {CommonModule} from "@angular/common";
 })
 export class CreateGenreComponent implements OnInit, OnDestroy {
     @Input() isOpen: boolean = false;
-    @Output() closeModalEvent = new EventEmitter<void>();
+
+    // true on genre added, false if no changes
+    @Output() closeModalEvent = new EventEmitter<boolean>();
 
     isLoading: boolean = false;
+    isGenreAdded = false;
 
     genreForm = new FormGroup({
         genre: new FormControl('')
@@ -45,6 +48,7 @@ export class CreateGenreComponent implements OnInit, OnDestroy {
         this.genreService.createGenre(this.genreForm.get('genre')?.value ?? '').subscribe({
             next: () => {
                 this.genreForm.reset();
+                this.isGenreAdded = true;
                 this.changeLoading(false);
             },
             error: (error: HttpErrorResponse) => {
@@ -57,7 +61,8 @@ export class CreateGenreComponent implements OnInit, OnDestroy {
 
     closeModal() {
         this.genreForm.reset()
-        this.closeModalEvent.emit();
+        this.closeModalEvent.emit(this.isGenreAdded);
+        this.isGenreAdded = false;
     }
 
     changeLoading(value: boolean) {
@@ -74,7 +79,7 @@ export class CreateGenreComponent implements OnInit, OnDestroy {
 
     @HostListener('document:keydown.escape', ['$event'])
     onEscapePress() {
-        this.closeModal();
+        if (this.isOpen) this.closeModal();
     }
 
     @HostListener('document:click', ['$event'])

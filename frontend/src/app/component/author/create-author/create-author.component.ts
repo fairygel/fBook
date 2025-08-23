@@ -26,9 +26,12 @@ import {ApiError} from "../../../error/api-error";
 })
 export class CreateAuthorComponent implements OnInit, OnDestroy {
     @Input() isOpen: boolean = false;
-    @Output() closeModalEvent = new EventEmitter<void>();
+
+    // true on author added, false if no changes
+    @Output() closeModalEvent = new EventEmitter<boolean>();
 
     isLoading = false;
+    isAuthorAdded = false;
 
     authorForm = new FormGroup({
         fullName: new FormControl('')
@@ -54,6 +57,7 @@ export class CreateAuthorComponent implements OnInit, OnDestroy {
             {
                 next: () => {
                     this.authorForm.reset();
+                    this.isAuthorAdded = true;
                     this.changeLoading(false);
                 },
                 error: (error: HttpErrorResponse) => {
@@ -67,7 +71,8 @@ export class CreateAuthorComponent implements OnInit, OnDestroy {
 
     closeModal() {
         this.authorForm.reset()
-        this.closeModalEvent.emit();
+        this.closeModalEvent.emit(this.isAuthorAdded);
+        this.isAuthorAdded = false;
     }
 
     changeLoading(value: boolean) {
@@ -84,7 +89,7 @@ export class CreateAuthorComponent implements OnInit, OnDestroy {
 
     @HostListener('document:keydown.escape', ['$event'])
     onEscapePress() {
-        this.closeModal();
+        if (this.isOpen) this.closeModal();
     }
 
     @HostListener('document:click', ['$event'])
