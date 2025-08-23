@@ -1,5 +1,4 @@
 import {
-    AfterViewInit,
     Component,
     ElementRef,
     EventEmitter,
@@ -7,7 +6,7 @@ import {
     Input, OnChanges,
     OnDestroy,
     OnInit,
-    Output, QueryList, SimpleChanges, ViewChild, ViewChildren
+    Output, QueryList, SimpleChanges, ViewChildren
 } from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {GenreService} from "../../../service/genre/genre.service";

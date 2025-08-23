@@ -73,6 +73,13 @@ export class SelectBookTypeComponent implements OnInit {
             if (this.isDropdownOpened) this.isDropdownOpened = false;
     }
 
+    @HostListener('document:keydown.escape', ['$event'])
+    onEscapePress() {
+        if (this.isDropdownOpened) {
+            this.isDropdownOpened = false;
+        }
+    }
+
     toggleDropdown() {
         this.isDropdownOpened = !this.isDropdownOpened;
     }

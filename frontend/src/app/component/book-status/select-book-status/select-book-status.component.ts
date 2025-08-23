@@ -78,6 +78,13 @@ export class SelectBookStatusComponent implements OnInit {
             if (this.isDropdownOpened) this.isDropdownOpened = false;
     }
 
+    @HostListener('document:keydown.escape', ['$event'])
+    onEscapePress() {
+        if (this.isDropdownOpened) {
+            this.isDropdownOpened = false;
+        }
+    }
+
     isSelected(bookStatus: BookStatusIndexViewDTO): boolean {
         return bookStatus.id === this.bookStatusToShow?.id
     }
