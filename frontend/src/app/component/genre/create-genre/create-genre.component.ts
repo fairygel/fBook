@@ -53,9 +53,12 @@ export class CreateGenreComponent implements OnInit, OnDestroy, OnChanges {
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes['isOpen']?.currentValue) {
-            setTimeout(() =>
-                this.searchInput?.first.nativeElement.focus());
+            setTimeout(() => this.focusOnInput());
         }
+    }
+
+    focusOnInput() {
+        this.searchInput?.first.nativeElement.focus()
     }
 
     createGenre() {
@@ -68,11 +71,13 @@ export class CreateGenreComponent implements OnInit, OnDestroy, OnChanges {
                 this.genreForm.reset();
                 this.isGenreAdded = true;
                 this.changeLoading(false);
+                this.focusOnInput();
             },
             error: (error: HttpErrorResponse) => {
                 const apiError: ApiError = error.error;
                 alert(apiError.description);
                 this.changeLoading(false);
+                this.focusOnInput();
             }
         });
     }
