@@ -1,5 +1,5 @@
-@use '../../../../form-styles';
-@use '../../../../styles';
+@use '../../../../assets/form-styles';
+@use '../../../../assets/colors';
 
 .name {
   --label-width: 53px;
@@ -19,7 +19,7 @@
   height: 100vh;
   overflow-y: auto;
 
-  background-color: rgba(styles.$panel-color, 0.4);
+  background-color: rgba(colors.$panel-color, 0.4);
   backdrop-filter: blur(10px);
 }
 
@@ -28,8 +28,8 @@
 }
 
 * {
-  --form-color: #{rgba(styles.$panel-color, 0.0)};
-  --dropdown-bg: #{rgba(styles.$panel-color, 0.4)};
+  --form-color: #{rgba(colors.$panel-color, 0.0)};
+  --dropdown-bg: #{rgba(colors.$panel-color, 0.4)};
 }
 
 .submit-creation-button {

@@ -1,4 +1,4 @@
-@use 'styles';
+@use './colors';
 
 .form-container {
   display: flex;
@@ -18,13 +18,13 @@
 
   border-radius: 12px;
 
-  background-color: var(--form-color, styles.$panel-color);
+  background-color: var(--form-color, colors.$panel-color);
 }
 .form-group::before {
   content: "";
   position: absolute;
   inset: 0;
-  border: 2px solid styles.$form-border-color;
+  border: 2px solid colors.$form-border-color;
   border-radius: 12px;
 
   -webkit-mask:
@@ -50,85 +50,52 @@
   background: transparent;
   padding: 0 4px 0 4px;
 
-  color: styles.$label-color;
-}
-
-.form-group > input, select {
-  border: none;
-
-  font-size: 14px;
-  background-color: var(--form-color, styles.$panel-color);
+  color: colors.$label-color;
 }
 
 .form-group > input {
-  background-color: var(--form-color, styles.$panel-color);
+  border: none;
+  font-size: 14px;
+
+  background-color: var(--form-color, colors.$panel-color);
+  color: colors.$font-color;
   position: relative;
-  left: 8px;
+  left: 12px;
   top: -20px;
 
   width: calc(100% - 24px);
 }
 
-.form-group > select {
+.form-group > textarea {
+  border: none;
+  font-size: 14px;
+
+  background-color: var(--form-color, colors.$panel-color);
+  color: colors.$font-color;
   position: relative;
-
+  left: 12px;
   top: -20px;
-  width: 100%;
 
-  opacity: 0;
-  cursor: pointer;
-}
-
-.form-group > select::after {
-  transform: scale(0.9, 0.45);
-  color: styles.$font-color;
-  position: absolute;
-  top: 25%;
-  right: 14px;
-  pointer-events: none;
-
-  opacity: 1;
-  z-index: 3;
-  content: '˅';
+  width: calc(100% - 24px);
+  height: calc(100% - 20px);
+  resize: none;
 }
 
 .form-group > span {
   position: absolute;
 
-  left: 8px;
+  left: 12px;
   top: 12px;
   width: 95%;
 
   font-size: 14px;
 
-  color: styles.$font-color;
-  background-color: var(--form-color, styles.$panel-color);
-}
-
-.form-group > .form-for-creation {
-  position: absolute;
-  left: 8px;
-  width: calc(100% - 60px);
-  top: 10px;
-}
-
-.form-group > button {
-  position: absolute;
-
-  right: 8px;
-  top: 8px;
-  width: 32px;
-  height: 32px;
-
-  color: styles.$panel-color;
-  background-color: styles.$form-border-color;
-
-  border-radius: 100%;
+  color: colors.$font-color;
+  background-color: var(--form-color, colors.$panel-color);
 }
 
 .form-group > form {
   position: absolute;
-
 }
 
 .form-for-image {
@@ -147,19 +114,20 @@
   width: 100%;
   height: 100%;
 
-  color: styles.$label-color;
-  background-color: styles.$transparent-color;
+  color: colors.$label-color;
+  background-color: transparent;
 
   font-size-adjust: 3;
+  cursor: pointer;
 }
 
 .form-image-wrapper > button::content {
   z-index: 2;
 
-  text-shadow: -1px -1px 0 styles.$shadow-color,
-  1px -1px 0 styles.$shadow-color,
-  -1px 1px 0 styles.$shadow-color,
-  1px 1px 0 styles.$shadow-color;
+  text-shadow: -1px -1px 0 colors.$shadow-color,
+  1px -1px 0 colors.$shadow-color,
+  -1px 1px 0 colors.$shadow-color,
+  1px 1px 0 colors.$shadow-color;
 }
 
 .form-image-wrapper > img {
@@ -175,27 +143,29 @@
 
   position: absolute;
   top: 0;
-  left: 4px;
+  left: 12px;
 
   font-size: 14px;
-  color: styles.$font-color;
+  color: colors.$font-color;
   text-align: left;
 
-  width: 100%;
+  width: calc(100% - 18px);
   height: 100%;
 
   box-sizing: border-box;
   padding-right: 56px;
 
   background-color: #ffffff00;
+
+  cursor: pointer;
 }
 
 .custom-select > .dropdown-toggle::after {
   transform: scale(0.9, 0.45);
-  color: styles.$font-color;
+  color: colors.$font-color;
   position: absolute;
   top: 25%;
-  right: 23px;
+  right: 11px;
   pointer-events: none;
 
   content: '˅';
@@ -212,10 +182,10 @@
 
   padding: 2px;
 
-  border: styles.$label-color solid 1px;
+  border: colors.$label-color solid 1px;
   border-radius: 4px;
 
-  background-color: var(--dropdown-bg, styles.$panel-color);
+  background-color: var(--dropdown-bg, colors.$panel-color);
   backdrop-filter: blur(10px);
 
   z-index: 3;
@@ -228,16 +198,16 @@
   flex-wrap: wrap;
 
   cursor: pointer;
-  border: styles.$label-color solid 1px;
-  background-color: styles.$panel-color;
-  color: styles.$font-color;
+  border: colors.$label-color solid 1px;
+  background-color: colors.$panel-color;
+  color: colors.$font-color;
   padding: 1px 4px 1px 4px;
   margin: 4px;
   border-radius: 4px;
 }
 
 .dropdown-option-selected {
-  border: styles.$panel-color solid 1px;
-  background-color: styles.$label-color;
-  color: styles.$panel-color !important;
+  border: colors.$panel-color solid 1px;
+  background-color: colors.$label-color !important;
+  color: colors.$panel-color !important;
 }

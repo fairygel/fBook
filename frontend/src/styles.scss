@@ -1,10 +1,4 @@
-$bg-color: #000000;
-$panel-color: #1a1a1a;
-$font-color: #ffffff;
-$form-border-color: #ffffff;
-$label-color: lightgrey;
-$shadow-color: #00000014;
-$transparent-color: #00000000;
+@use './assets/colors';
 
 * {
   border: none;
@@ -17,28 +11,6 @@ $transparent-color: #00000000;
 }
 
 body {
-  background-color: $bg-color;
-  color: $font-color;
-}
-
-input {
-  background-color: $bg-color;
-  color: $font-color;
-  border-bottom: 1px solid;
-}
-
-select {
-  background: green;
-}
-
-button {
-  background-color: $font-color;
-  color: $bg-color;
-  border-radius: 15px;
-  padding: 2px 6px;
-  cursor: pointer;
-}
-
-.clickable {
-  cursor: pointer;
+  background-color: colors.$bg-color;
+  color: colors.$font-color;
 }
