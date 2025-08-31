@@ -47,6 +47,7 @@ export class SelectBookStatusComponent implements OnInit {
         this.bookStatusService.getBookStatuses().subscribe({
             next: (response) => {
                 this.allBookStatuses = response;
+                this.sortOptions();
                 this.changeLoading(false);
             },
             error: (error) => {
@@ -70,18 +71,31 @@ export class SelectBookStatusComponent implements OnInit {
 
     toggleDropdown() {
         this.isDropdownOpened = !this.isDropdownOpened;
+
+        if (!this.isDropdownOpened) {
+            this.sortOptions();
+        }
+    }
+
+    sortOptions() {
+        this.allBookStatuses.sort((a, b) => {
+            if (this.bookStatusToShow && a.id === this.bookStatusToShow.id) return -1;
+            if (this.bookStatusToShow && b.id === this.bookStatusToShow.id) return 1;
+
+            return a.id - b.id;
+        });
     }
 
     @HostListener('document:click', ['$event'])
     closeDropdown(event: Event) {
         if (!this.elementRef.nativeElement.contains(event.target))
-            if (this.isDropdownOpened) this.isDropdownOpened = false;
+            if (this.isDropdownOpened) this.toggleDropdown()
     }
 
     @HostListener('document:keydown.escape', ['$event'])
     onEscapePress() {
         if (this.isDropdownOpened) {
-            this.isDropdownOpened = false;
+            this.toggleDropdown()
         }
     }
 
@@ -91,12 +105,10 @@ export class SelectBookStatusComponent implements OnInit {
 
     onBookStatusChange(bookStatus: BookStatusIndexViewDTO) {
         if (this.isSelected(bookStatus)) {
-            this.bookStatusToShow = null
+            return;
         } else {
             this.bookStatusToShow = bookStatus
         }
         this.onBookStatusSelected.emit(this.bookStatusToShow?.id)
-
-        this.isDropdownOpened = false;
     }
 }

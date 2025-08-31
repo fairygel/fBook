@@ -50,6 +50,7 @@ export class SelectAuthorComponent implements OnInit {
         this.authorService.getAuthors().subscribe({
             next: (response) => {
                 this.allAuthors = response;
+                this.sortOptions();
                 this.changeLoading(false);
             },
             error: (error) => {
@@ -61,6 +62,19 @@ export class SelectAuthorComponent implements OnInit {
 
     toggleDropdown() {
         this.isDropdownOpened = !this.isDropdownOpened;
+
+        if (!this.isDropdownOpened) {
+            this.sortOptions();
+        }
+    }
+
+    sortOptions() {
+        this.allAuthors.sort((a, b) => {
+            if (this.authorToShow && a.id === this.authorToShow.id) return -1;
+            if (this.authorToShow && b.id === this.authorToShow.id) return 1;
+
+            return a.fullName.localeCompare(b.fullName);
+        });
     }
 
     changeLoading(value: boolean) {
@@ -81,8 +95,6 @@ export class SelectAuthorComponent implements OnInit {
             this.authorToShow = author
         }
         this.onAuthorSelected.emit(this.authorToShow?.id)
-
-        this.isDropdownOpened = false;
     }
 
     isSelected(author: AuthorIndexViewDTO): boolean {
@@ -106,7 +118,7 @@ export class SelectAuthorComponent implements OnInit {
         if (this.isModalOpened) return;
 
         if (!this.elementRef.nativeElement.contains(event.target))
-            if (this.isDropdownOpened) this.isDropdownOpened = false;
+            if (this.isDropdownOpened) this.toggleDropdown();
     }
 
     @HostListener('document:keydown.escape', ['$event'])
@@ -114,7 +126,7 @@ export class SelectAuthorComponent implements OnInit {
         if (this.isModalOpened) return;
 
         if (this.isDropdownOpened) {
-            this.isDropdownOpened = false;
+            this.toggleDropdown();
         }
     }
 }

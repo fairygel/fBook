@@ -15,7 +15,7 @@
                     <span class="dropdown-option" (click)="openCreateModal()">
                         <b>+ New</b>
                     </span>
-                    @for (genre of sortedGenres; track genre.id) {
+                    @for (genre of allGenres; track genre.id) {
                         <label class="dropdown-option"
                                [ngClass]="{'dropdown-option-selected': isSelected(genre)}">
                             <input type="checkbox"

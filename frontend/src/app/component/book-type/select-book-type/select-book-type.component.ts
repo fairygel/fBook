@@ -46,6 +46,7 @@ export class SelectBookTypeComponent implements OnInit {
         this.bookTypeService.getBookTypes().subscribe({
             next: (response) => {
                 this.allBookTypes = response;
+                this.sortOptions();
                 this.changeLoading(false);
             },
             error: (error) => {
@@ -70,18 +71,33 @@ export class SelectBookTypeComponent implements OnInit {
     @HostListener('document:click', ['$event'])
     closeDropdown(event: Event) {
         if (!this.elementRef.nativeElement.contains(event.target))
-            if (this.isDropdownOpened) this.isDropdownOpened = false;
+            if (this.isDropdownOpened) {
+                this.toggleDropdown();
+            }
     }
 
     @HostListener('document:keydown.escape', ['$event'])
     onEscapePress() {
         if (this.isDropdownOpened) {
-            this.isDropdownOpened = false;
+            this.toggleDropdown();
         }
     }
 
     toggleDropdown() {
         this.isDropdownOpened = !this.isDropdownOpened;
+
+        if (!this.isDropdownOpened) {
+            this.sortOptions();
+        }
+    }
+
+    sortOptions() {
+        this.allBookTypes.sort((a, b) => {
+            if (this.bookTypeToShow && a.id === this.bookTypeToShow.id) return -1;
+            if (this.bookTypeToShow && b.id === this.bookTypeToShow.id) return 1;
+
+            return a.id - b.id;
+        });
     }
 
     isSelected(bookStatus: BookTypeIndexViewDTO): boolean {
@@ -90,12 +106,10 @@ export class SelectBookTypeComponent implements OnInit {
 
     onBookTypeChange(bookType: BookTypeIndexViewDTO) {
         if (this.isSelected(bookType)) {
-            this.bookTypeToShow = null
+            return;
         } else {
             this.bookTypeToShow = bookType
         }
         this.onBookTypeSelected.emit(this.bookTypeToShow?.id)
-
-        this.isDropdownOpened = false;
     }
 }

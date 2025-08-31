@@ -50,6 +50,7 @@ export class SelectGenreComponent implements OnInit {
         this.genreService.getGenres().subscribe({
             next: (response) => {
                 this.allGenres = response;
+                this.sortOptions()
                 this.changeLoading(false);
             },
             error: (error) => {
@@ -61,6 +62,10 @@ export class SelectGenreComponent implements OnInit {
 
     toggleDropdown() {
         this.isDropdownOpened = !this.isDropdownOpened;
+
+        if (!this.isDropdownOpened) {
+            this.sortOptions();
+        }
     }
 
     changeLoading(value: boolean) {
@@ -87,7 +92,7 @@ export class SelectGenreComponent implements OnInit {
         return this.genresToShow.map(g => g.genre).join(', ')
     }
 
-    get sortedGenres(): GenreIndexViewDTO[] {
+    sortOptions() {
         return this.allGenres.sort((a, b) => {
             const aSelected = this.isSelected(a);
             const bSelected = this.isSelected(b);
@@ -119,7 +124,7 @@ export class SelectGenreComponent implements OnInit {
         if (this.isModalOpened) return;
 
         if (!this.elementRef.nativeElement.contains(event.target))
-            if (this.isDropdownOpened) this.isDropdownOpened = false;
+            if (this.isDropdownOpened) this.toggleDropdown();
     }
 
     @HostListener('document:keydown.escape', ['$event'])
@@ -127,7 +132,7 @@ export class SelectGenreComponent implements OnInit {
         if (this.isModalOpened) return;
 
         if (this.isDropdownOpened) {
-            this.isDropdownOpened = false;
+            this.toggleDropdown();
         }
     }
 }
