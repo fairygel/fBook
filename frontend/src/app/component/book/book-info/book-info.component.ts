@@ -198,6 +198,28 @@ export class BookInfoComponent implements OnInit, OnDestroy {
         }
     }
 
+    get startedDateFormatted(): string {
+        return this.getFormatedDate('startedReadDate')
+    }
+
+    get endedDateFormatted(): string {
+        return this.getFormatedDate('endedReadDate')
+    }
+
+    getFormatedDate(elementName: string): string {
+        const value = this.bookForm.get(elementName)?.value;
+        if (!value) {
+            return '';
+        }
+
+        const date = new Date(value);
+        return date.toLocaleDateString('ru-RU', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    }
+
     handleSelectedGenres(selectedGenres: number[]) {
         this.genresToUpdate = selectedGenres;
         this.onFormChange();

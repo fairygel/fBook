@@ -66,6 +66,30 @@
   width: calc(100% - 24px);
 }
 
+.form-group > input[type="date"] {
+  color: transparent;
+}
+
+.form-group > .date-span {
+  position: absolute;
+
+  color: colors.$font-color;
+
+  width: calc(100% - 24px);
+}
+
+.date-span > .date-icon {
+  position: absolute;
+
+  width: 20px;
+  height: 20px;
+
+  right: 0;
+  top: 2px;
+
+  color: colors.$font-color;
+}
+
 .form-group > textarea {
   border: none;
   font-size: 14px;
