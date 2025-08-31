@@ -32,14 +32,16 @@
                 <div class="dates-group">
                     <div class="form-group started-date">
                         <label for="startedReadDate">started</label>
-                        <input (change)="onFormChange()" class="clickable" type="date" formControlName="startedReadDate" id="startedReadDate"
-                               #startedDate (click)="openDatepickerForStartedDate()">
+                        <button (click)="focusOnElement(startedDate)" class="focusable-input"></button>
+                        <input (change)="onFormChange()" type="date" formControlName="startedReadDate"
+                               #startedDate>
                     </div>
 
                     <div class="form-group ended-date">
                         <label for="endedReadDate">ended</label>
-                        <input (change)="onFormChange()" class="clickable" type="date" formControlName="endedReadDate" id="endedReadDate"
-                               #endedDate (click)="openDatepickerForEndedDate()">
+                        <button (click)="focusOnElement(endedDate)" class="focusable-input"></button>
+                        <input (change)="onFormChange()" type="date" formControlName="endedReadDate" id="endedReadDate"
+                               #endedDate>
                     </div>
                 </div>
             </div>

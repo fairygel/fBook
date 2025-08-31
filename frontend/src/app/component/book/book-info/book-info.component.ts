@@ -264,19 +264,12 @@ export class BookInfoComponent implements OnInit, OnDestroy {
         event.stopPropagation();
     }
 
-    openDatepickerForStartedDate() {
-        if ('showPicker' in this.startedDate.nativeElement) {
-            this.startedDate.nativeElement.showPicker();
+    focusOnElement(element: HTMLInputElement, event?: Event) {
+        event?.preventDefault();
+        if ('showPicker' in element) {
+            element.showPicker();
         } else {
-            this.startedDate.nativeElement.focus();
-        }
-    }
-
-    openDatepickerForEndedDate() {
-        if ('showPicker' in this.endedDate.nativeElement) {
-            this.endedDate.nativeElement.showPicker();
-        } else {
-            this.endedDate.nativeElement.focus();
+            (element as HTMLInputElement).focus();
         }
     }
 }
