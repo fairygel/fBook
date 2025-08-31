@@ -80,14 +80,16 @@ export class BookInfoComponent implements OnInit, OnDestroy {
         this.changeLoading(true);
     }
 
-    fetchBook(id: number) {
+    fetchBook(id: number, isFirstLoading?: boolean) {
         this.id = id;
 
         this.bookService.getBook(id)
             .subscribe({
                 next: (response) => {
-                    this.fillBookWithData(response);
-                    this.changeLoading(false);
+                    if (isFirstLoading) {
+                        this.fillBookWithData(response);
+                        this.changeLoading(false);
+                    }
                 },
                 error: (error) => {
                     console.error(error)
@@ -115,7 +117,7 @@ export class BookInfoComponent implements OnInit, OnDestroy {
 
         const bookId = +this.route.snapshot.paramMap.get('id')!;
         this.onResize();
-        this.fetchBook(bookId);
+        this.fetchBook(bookId, true);
     }
 
     onFormChange() {
@@ -149,20 +151,16 @@ export class BookInfoComponent implements OnInit, OnDestroy {
     handleUpdateBookSubmit() {
         if (this.isLoading) return;
 
-        this.changeLoading(true);
-
         const book = this.parseBookFromForm();
 
         this.bookService.updateBook(this.id, book, this.cover).subscribe({
             next: () => {
                 this.cover = null;
                 this.fetchBook(this.id);
-                this.changeLoading(false);
             },
             error: (error: HttpErrorResponse) => {
                 const apiError: ApiError = error.error;
                 alert(apiError.description);
-                this.changeLoading(false);
             }
         });
 
