@@ -1,11 +1,11 @@
 @if (isOpen) {
     <div class="modal-backdrop">
         <div class="modal">
-            <h3>New Genre</h3>
+            <h3>New {{objectName}}</h3>
 
-            <form [formGroup]="genreForm" (ngSubmit)="createGenre()" autocomplete="off">
+            <form [formGroup]="objectForm" (ngSubmit)="createObject()" autocomplete="off">
                 <div class="form-group">
-                    <input #create_input id="genre" type="text" formControlName="genre"/>
+                    <input #create_input id="obj" type="text" formControlName="obj"/>
                 </div>
 
                 <div class="modal-actions">

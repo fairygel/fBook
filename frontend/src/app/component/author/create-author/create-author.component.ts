@@ -1,115 +1,40 @@
 import {
     Component,
-    ElementRef,
     EventEmitter,
-    HostListener,
-    Input, OnChanges,
-    OnDestroy,
-    OnInit,
-    Output, QueryList, SimpleChanges, ViewChildren
+    Input,
+    Output, ViewChild
 } from '@angular/core';
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AuthorService} from "../../../service/author/author.service";
-import { HttpErrorResponse } from "@angular/common/http";
-import {ApiError} from "../../../error/api-error";
+import {GenericCreateModalComponent} from "../../../base/generic-create-modal/generic-create-modal.component";
 
 @Component({
     selector: 'app-create-author',
     standalone: true,
-    imports: [
-        FormsModule,
-        ReactiveFormsModule
-    ],
-    templateUrl: 'create-author.html',
-    styleUrl: `create-author.scss`
+    imports: [GenericCreateModalComponent],
+    template: `
+        <app-generic-create-modal
+                #modal
+                [isOpen]="isOpen"
+                objectName="Author"
+                (closeModalEvent)="handleClose($event)"
+                (submitEvent)="createAuthor($event)">
+        </app-generic-create-modal>
+    `
 })
-export class CreateAuthorComponent implements OnInit, OnDestroy, OnChanges {
-    @ViewChildren('create_input') searchInput!: QueryList<ElementRef>;
-
-    @Input() isOpen: boolean = false;
-
-    // true on author added, false if no changes
+export class CreateAuthorComponent {
+    @ViewChild('modal') modal!: GenericCreateModalComponent;
+    @Input() isOpen = false;
     @Output() closeModalEvent = new EventEmitter<boolean>();
 
-    isLoading = false;
-    isAuthorAdded = false;
+    constructor(private readonly authorService: AuthorService) {}
 
-    authorForm = new FormGroup({
-        fullName: new FormControl('')
-    });
-
-    constructor(private readonly authorService: AuthorService,
-                private readonly el: ElementRef) {}
-
-    ngOnInit() {
-        document.body.appendChild(this.el.nativeElement);
+    handleClose(added: boolean) {
+        this.closeModalEvent.emit(added);
     }
 
-    ngOnDestroy() {
-        this.el.nativeElement.remove();
-    }
+    createAuthor(value: string) {
+        if (!this.modal) return;
+        this.modal.handleSubmit(() => this.authorService.createAuthor(value));
 
-    ngOnChanges(changes: SimpleChanges) {
-        if (changes['isOpen']?.currentValue) {
-            setTimeout(() => this.focusOnInput());
-        }
-    }
-
-    focusOnInput() {
-        this.searchInput?.first.nativeElement.focus()
-    }
-
-    createAuthor() {
-        if (this.isLoading) return;
-
-        this.changeLoading(true);
-
-        this.authorService.createAuthor(this.authorForm.get('fullName')?.value ?? '').subscribe(
-            {
-                next: () => {
-                    this.authorForm.reset();
-                    this.isAuthorAdded = true;
-                    this.changeLoading(false);
-                    this.focusOnInput();
-                },
-                error: (error: HttpErrorResponse) => {
-                    const apiError: ApiError = error.error;
-                    alert(apiError.description);
-                    this.changeLoading(false);
-                    this.focusOnInput();
-                }
-            }
-        )
-    }
-
-    closeModal() {
-        this.authorForm.reset()
-        this.closeModalEvent.emit(this.isAuthorAdded);
-        this.isAuthorAdded = false;
-    }
-
-    changeLoading(value: boolean) {
-        if (this.isLoading === value) return;
-
-        this.isLoading = value;
-
-        if (this.isLoading) {
-            this.authorForm.disable();
-        } else {
-            this.authorForm.enable();
-        }
-    }
-
-    @HostListener('document:keydown.escape', ['$event'])
-    onEscapePress() {
-        if (this.isOpen) this.closeModal();
-    }
-
-    @HostListener('document:click', ['$event'])
-    onDocumentClick(event: Event) {
-        const target = event.target as HTMLElement;
-
-        if (target.classList.contains('modal-backdrop'))
-            this.closeModal();
     }
 }
