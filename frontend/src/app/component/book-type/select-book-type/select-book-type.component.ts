@@ -1,115 +1,56 @@
 import {
+    AfterViewInit,
     Component,
-    ElementRef,
     EventEmitter,
-    HostListener,
     Input,
-    OnInit,
-    Output
+    Output, ViewChild
 } from '@angular/core';
-import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {BookTypeIndexViewDTO} from "../../../dto/book/type/bookTypeIndexViewDTO";
+import {GenericSelect} from "../../../base/generic-select/generic-select.component";
 import {BookTypeService} from "../../../service/book-type/book-type.service";
-import {NgClass} from "@angular/common";
+import {OptionDTO} from "../../../base/generic-select/optionDTO";
+import {BookTypeIndexViewDTO} from "../../../dto/book/type/bookTypeIndexViewDTO";
 
 @Component({
     selector: 'app-select-book-type',
     standalone: true,
-    imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        NgClass
-    ],
-    templateUrl: 'select-book-type.html',
-    styleUrl: `select-book-type.scss`
+    imports: [GenericSelect],
+    template: `
+        <app-generic-select
+                #select
+                [toOption]="toOption"
+                [shownOption]="toOption(bookTypeToShow)"
+                (onOptionSelected)="handleOptionSelected($event)"
+                objectName="Book Type">
+        </app-generic-select>
+    `,
+    styles: `* { --label-width: 97px }`
 })
-export class SelectBookTypeComponent implements OnInit {
-    isLoading = false;
-    allBookTypes: BookTypeIndexViewDTO[] = [];
-
-    bookTypeControl = new FormControl<number>(0);
-
-    @Input() bookTypeToShow: BookTypeIndexViewDTO|null = null;
+export class SelectBookTypeComponent implements AfterViewInit {
+    @ViewChild('select') modal!: GenericSelect;
     @Output() onBookTypeSelected = new EventEmitter<number>();
-    isDropdownOpened: boolean = false;
+    @Input() bookTypeToShow: BookTypeIndexViewDTO|null = null;
 
-    constructor(private readonly bookTypeService: BookTypeService,
-                private readonly elementRef: ElementRef) {
-        this.changeLoading(true);
+    constructor(private readonly bookTypeService: BookTypeService) {}
+
+    ngAfterViewInit(): void {
+        this.modal.loadOptions(() => this.bookTypeService.getBookTypes());
     }
 
-    ngOnInit(): void {
-        this.fetchBookTypes();
+    toOption(bookStatuses: any): OptionDTO {
+        let raw = bookStatuses as BookTypeIndexViewDTO;
+        return {
+            id: raw.id,
+            name: raw.type
+        };
     }
 
-    fetchBookTypes() {
-        this.bookTypeService.getBookTypes().subscribe({
-            next: (response) => {
-                this.allBookTypes = response;
-                this.sortOptions();
-                this.changeLoading(false);
-            },
-            error: (error) => {
-                console.error(error);
-                this.changeLoading(false);
-            }
-        });
-    }
+    handleOptionSelected(selectedOption: OptionDTO| null): void {
+        if (!selectedOption) return;
 
-    changeLoading(value: boolean) {
-        if (this.isLoading === value) return;
-
-        this.isLoading = value;
-
-        if (this.isLoading) {
-            this.bookTypeControl.disable();
-        } else {
-            this.bookTypeControl.enable();
-        }
-    }
-
-    @HostListener('document:click', ['$event'])
-    closeDropdown(event: Event) {
-        if (!this.elementRef.nativeElement.contains(event.target))
-            if (this.isDropdownOpened) {
-                this.toggleDropdown();
-            }
-    }
-
-    @HostListener('document:keydown.escape', ['$event'])
-    onEscapePress() {
-        if (this.isDropdownOpened) {
-            this.toggleDropdown();
-        }
-    }
-
-    toggleDropdown() {
-        this.isDropdownOpened = !this.isDropdownOpened;
-
-        if (!this.isDropdownOpened) {
-            this.sortOptions();
-        }
-    }
-
-    sortOptions() {
-        this.allBookTypes.sort((a, b) => {
-            if (this.bookTypeToShow && a.id === this.bookTypeToShow.id) return -1;
-            if (this.bookTypeToShow && b.id === this.bookTypeToShow.id) return 1;
-
-            return a.id - b.id;
-        });
-    }
-
-    isSelected(bookStatus: BookTypeIndexViewDTO): boolean {
-        return bookStatus.id === this.bookTypeToShow?.id;
-    }
-
-    onBookTypeChange(bookType: BookTypeIndexViewDTO) {
-        if (this.isSelected(bookType)) {
-            return;
-        } else {
-            this.bookTypeToShow = bookType
-        }
-        this.onBookTypeSelected.emit(this.bookTypeToShow?.id)
+        this.bookTypeToShow = {
+            id: selectedOption.id,
+            type: selectedOption.name
+        };
+        this.onBookTypeSelected.emit(selectedOption.id);
     }
 }

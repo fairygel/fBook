@@ -20,10 +20,11 @@ export class GenericSelect {
 
     @Input() shownOption: OptionDTO|null = null;
     @Input() toOption: any;
-    @Input() objectName: any;
+    @Input() objectName: string = '';
+    @Input() canDeselect: boolean = false;
 
     // returns selected option id
-    @Output() onOptionSelected = new EventEmitter<OptionDTO>();
+    @Output() onOptionSelected = new EventEmitter<OptionDTO|null>();
     isDropdownOpened: boolean = false;
 
     constructor(private readonly elementRef: ElementRef) {}
@@ -77,11 +78,15 @@ export class GenericSelect {
     }
 
     onOptionChange(option: OptionDTO) {
-        if (this.isSelected(option))
-            return;
+        if (this.isSelected(option)) {
+            if (!this.canDeselect) return;
 
-        this.shownOption = option
-        this.onOptionSelected.emit(this.shownOption)
+            this.shownOption = null;
+            this.onOptionSelected.emit(null);
+        } else {
+            this.shownOption = option
+            this.onOptionSelected.emit(this.shownOption)
+        }
     }
 
     @HostListener('document:click', ['$event'])

@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Title} from "@angular/platform-browser";
 import { HttpErrorResponse } from "@angular/common/http";
 import {ActivatedRoute, Router, RouterLink} from "@angular/router";
@@ -110,7 +110,7 @@ export class BookInfoComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.formChangeSubject.pipe(
-            debounceTime(2000)
+            debounceTime(1000)
         ).subscribe(() => {
             this.handleUpdateBookSubmit();
         })

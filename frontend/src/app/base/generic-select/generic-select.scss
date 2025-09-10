@@ -2,4 +2,8 @@
 
 .dropdown-option-selected {
   cursor: default !important;
+
+  &.can-deselect {
+    cursor: pointer !important;
+  }
 }

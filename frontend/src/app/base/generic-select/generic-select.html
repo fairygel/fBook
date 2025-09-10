@@ -1,5 +1,5 @@
 <div class="form-group">
-    <label>book status</label>
+    <label>{{objectName}}</label>
     @if (isLoading) {
         <span>loading..</span>
     } @else if (allOptions.length === 0) {
@@ -13,7 +13,8 @@
                 <div class="dropdown-menu">
                     @for (option of allOptions; track option.id) {
                         <label class="dropdown-option"
-                               [ngClass]="{'dropdown-option-selected': isSelected(option)}">
+                               [ngClass]="{'dropdown-option-selected': isSelected(option)}"
+                               [class.can-deselect]="canDeselect">
                             <input type="checkbox"
                                    [value]="option.id"
                                    (change)="onOptionChange(option)"

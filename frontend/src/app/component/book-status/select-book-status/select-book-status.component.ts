@@ -20,7 +20,7 @@ import {BookStatusIndexViewDTO} from "../../../dto/book/status/bookStatusIndexVi
                 objectName="Book Status">
         </app-generic-select>
     `,
-    styles: `* { --label-width: 106px }`
+    styles: `* { --label-width: 110px }`
 })
 export class SelectBookStatusComponent implements AfterViewInit {
     @ViewChild('select') modal!: GenericSelect;
@@ -41,7 +41,9 @@ export class SelectBookStatusComponent implements AfterViewInit {
         };
     }
 
-    handleOptionSelected(selectedOption: OptionDTO): void {
+    handleOptionSelected(selectedOption: OptionDTO|null): void {
+        if (!selectedOption) return;
+
         this.bookStatusToShow = {
             id: selectedOption.id,
             status: selectedOption.name

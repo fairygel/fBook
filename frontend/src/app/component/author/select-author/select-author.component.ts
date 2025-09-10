@@ -1,132 +1,63 @@
 import {
+    AfterViewInit,
     Component,
-    ElementRef,
     EventEmitter,
-    HostListener,
     Input,
-    OnInit,
-    Output
+    Output, ViewChild
 } from '@angular/core';
-import {CreateAuthorComponent} from "../create-author/create-author.component";
-import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {GenericSelect} from "../../../base/generic-select/generic-select.component";
+import {OptionDTO} from "../../../base/generic-select/optionDTO";
 import {AuthorIndexViewDTO} from "../../../dto/author/authorIndexViewDTO";
 import {AuthorService} from "../../../service/author/author.service";
-import {NgClass} from "@angular/common";
 
 @Component({
     selector: 'app-select-author',
     standalone: true,
-    imports: [
-        CreateAuthorComponent,
-        FormsModule,
-        ReactiveFormsModule,
-        NgClass
-    ],
-    templateUrl: 'select-author.html',
-    styleUrl: `select-author.scss`
+    imports: [GenericSelect],
+    template: `
+        <app-generic-select
+                #select
+                [toOption]="toOption"
+                [shownOption]="toOption(authorToShow)"
+                (onOptionSelected)="handleOptionSelected($event)"
+                [canDeselect]="true"
+                objectName="Author">
+        </app-generic-select>
+    `,
+    styles: `* { --label-width: 64px }`
 })
-export class SelectAuthorComponent implements OnInit {
-    isLoading = false;
-    allAuthors: AuthorIndexViewDTO[] = [];
-
-    isDropdownOpened: boolean = false;
-    isModalOpened: boolean = false;
-
-    authorControl = new FormControl<number>(0);
-
-    @Input() authorToShow: AuthorIndexViewDTO|null = null;
+export class SelectAuthorComponent implements AfterViewInit {
+    @ViewChild('select') modal!: GenericSelect;
     @Output() onAuthorSelected = new EventEmitter<number>();
+    @Input() authorToShow: AuthorIndexViewDTO|null = null;
 
-    constructor(private readonly authorService: AuthorService,
-                private readonly elementRef: ElementRef) {
-        this.changeLoading(true);
+    constructor(private readonly authorService: AuthorService) {}
+
+    ngAfterViewInit(): void {
+        this.modal.loadOptions(() => this.authorService.getAuthors());
     }
 
-    ngOnInit(): void {
-        this.fetchAuthors();
+    toOption(bookStatuses: any): OptionDTO {
+        if (!bookStatuses) return {id: 0, name: ''};
+
+        let raw = bookStatuses as AuthorIndexViewDTO;
+        return {
+            id: raw.id,
+            name: raw.fullName
+        };
     }
 
-    fetchAuthors() {
-        this.authorService.getAuthors().subscribe({
-            next: (response) => {
-                this.allAuthors = response;
-                this.sortOptions();
-                this.changeLoading(false);
-            },
-            error: (error) => {
-                console.error(error);
-                this.changeLoading(false);
-            }
-        });
-    }
-
-    toggleDropdown() {
-        this.isDropdownOpened = !this.isDropdownOpened;
-
-        if (!this.isDropdownOpened) {
-            this.sortOptions();
+    handleOptionSelected(selectedOption: OptionDTO|null): void {
+        if (!selectedOption) {
+            this.authorToShow = null;
+            this.onAuthorSelected.emit(0);
+            return;
         }
-    }
 
-    sortOptions() {
-        this.allAuthors.sort((a, b) => {
-            if (this.authorToShow && a.id === this.authorToShow.id) return -1;
-            if (this.authorToShow && b.id === this.authorToShow.id) return 1;
-
-            return a.fullName.localeCompare(b.fullName);
-        });
-    }
-
-    changeLoading(value: boolean) {
-        if (this.isLoading === value) return;
-        this.isLoading = value;
-
-        if (this.isLoading) {
-            this.authorControl.disable();
-        } else {
-            this.authorControl.enable();
-        }
-    }
-
-    onAuthorChange(author: AuthorIndexViewDTO) {
-        if (this.isSelected(author)) {
-            this.authorToShow = null
-        } else {
-            this.authorToShow = author
-        }
-        this.onAuthorSelected.emit(this.authorToShow?.id)
-    }
-
-    isSelected(author: AuthorIndexViewDTO): boolean {
-        return author.id === this.authorToShow?.id
-    }
-
-    openCreateModal() {
-        this.isModalOpened = true;
-    }
-
-    closeCreateModal(isAdded: boolean) {
-        this.isModalOpened = false;
-
-        if (!isAdded) return;
-        this.changeLoading(true);
-        this.fetchAuthors();
-    }
-
-    @HostListener('document:click', ['$event'])
-    onDocumentClick(event: Event) {
-        if (this.isModalOpened) return;
-
-        if (!this.elementRef.nativeElement.contains(event.target))
-            if (this.isDropdownOpened) this.toggleDropdown();
-    }
-
-    @HostListener('document:keydown.escape', ['$event'])
-    onEscapePress() {
-        if (this.isModalOpened) return;
-
-        if (this.isDropdownOpened) {
-            this.toggleDropdown();
-        }
+        this.authorToShow = {
+            id: selectedOption.id,
+            fullName: selectedOption.name
+        };
+        this.onAuthorSelected.emit(selectedOption.id);
     }
 }
