@@ -2,11 +2,12 @@
 
 :host {
     display: block;
-    height: 100vh;
-    width: 100vw;
+    height: calc(100vh - 24px);
+    width: calc(100vw - 10px);
     background-color: colors.$bg-color;
     color: colors.$font-color;
     padding-top: 24px;
+    padding-left: 10px;
 }
 
 .create-button-container {

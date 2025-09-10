@@ -34,6 +34,8 @@ export class SelectBookStatusComponent implements AfterViewInit {
     }
 
     toOption(bookStatuses: any): OptionDTO {
+        if (!bookStatuses) return {id: 0, name: ''};
+
         let raw = bookStatuses as BookStatusIndexViewDTO;
         return {
             id: raw.id,
