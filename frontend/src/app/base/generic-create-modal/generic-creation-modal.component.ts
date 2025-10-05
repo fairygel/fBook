@@ -21,7 +21,7 @@ import {Observable} from "rxjs";
     templateUrl: 'generic-create-modal.html',
     styleUrl: 'generic-create-modal.scss'
 })
-export class GenericCreateModalComponent implements OnInit, OnDestroy, OnChanges {
+export class GenericCreationModalComponent implements OnInit, OnDestroy, OnChanges {
     @ViewChildren('create_input') searchInput!: QueryList<ElementRef>;
 
     @Input() isOpen = false;

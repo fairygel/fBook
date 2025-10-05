@@ -1,31 +1,41 @@
-import {Component, ElementRef, EventEmitter, HostListener, Input, Output} from "@angular/core";
+import {Component, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild} from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {OptionDTO} from "./optionDTO";
 import {Observable} from "rxjs";
 import {ApiError} from "../../error/api-error";
+import {GenericCreationModalComponent} from "../generic-create-modal/generic-creation-modal.component";
 
 @Component({
     selector: 'app-generic-select',
     standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, GenericCreationModalComponent],
     templateUrl: 'generic-select.html',
     styleUrl: 'generic-select.scss'
 })
 export class GenericSelect {
-    isLoading = true;
+    @ViewChild('modal') creationModal!: GenericCreationModalComponent;
+
+    isLoading: boolean = true;
     allOptions: OptionDTO[] = [];
 
     bookStatusControl = new FormControl<number|null>(null);
 
     @Input() shownOption: OptionDTO|null = null;
-    @Input() toOption: any;
+    @Input() toOption!: ((r: any) => OptionDTO);
+    @Input() createMethod!: ((value: string) => Observable<any>);
+    @Input() loadMethod!: (() => Observable<any>);
+
+    @Input() isOpen: boolean = false;
     @Input() objectName: string = '';
-    @Input() canDeselect: boolean = false;
+    @Input() canCreate: boolean = false;
 
     // returns selected option id
     @Output() onOptionSelected = new EventEmitter<OptionDTO|null>();
+    @Output() closeModalEvent = new EventEmitter<boolean>();
     isDropdownOpened: boolean = false;
+
+    added: boolean = false;
 
     constructor(private readonly elementRef: ElementRef) {}
 
@@ -79,7 +89,7 @@ export class GenericSelect {
 
     onOptionChange(option: OptionDTO) {
         if (this.isSelected(option)) {
-            if (!this.canDeselect) return;
+            if (!this.canCreate) return;
 
             this.shownOption = null;
             this.onOptionSelected.emit(null);
@@ -99,6 +109,26 @@ export class GenericSelect {
     onEscapePress() {
         if (this.isDropdownOpened) {
             this.toggleDropdown()
+        }
+    }
+
+    newOption(value: string) {
+        if (!this.creationModal) return;
+        this.creationModal.handleSubmit(() => this.createMethod(value));
+
+    }
+
+    openCreateModal() {
+        this.isOpen = true;
+    }
+
+    handleClose(added: boolean) {
+        this.isOpen = false;
+        this.closeModalEvent.emit(added);
+
+        if (added) {
+            this.changeLoading(true);
+            this.loadOptions(() => this.loadMethod());
         }
     }
 }

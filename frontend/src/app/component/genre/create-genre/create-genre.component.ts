@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { GenericCreateModalComponent } from '../../../base/generic-create-modal/generic-create-modal.component';
+import { GenericCreationModalComponent } from '../../../base/generic-create-modal/generic-creation-modal.component';
 import { GenreService } from '../../../service/genre/genre.service';
 
 @Component({
     selector: 'app-create-genre',
     standalone: true,
-    imports: [GenericCreateModalComponent],
+    imports: [GenericCreationModalComponent],
     template: `
         <app-generic-create-modal
                 #modal
@@ -17,7 +17,7 @@ import { GenreService } from '../../../service/genre/genre.service';
     `
 })
 export class CreateGenreComponent {
-    @ViewChild('modal') modal!: GenericCreateModalComponent;
+    @ViewChild('modal') modal!: GenericCreationModalComponent;
     @Input() isOpen = false;
     @Output() closeModalEvent = new EventEmitter<boolean>();
 

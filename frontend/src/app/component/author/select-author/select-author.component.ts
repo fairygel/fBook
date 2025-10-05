@@ -20,7 +20,9 @@ import {AuthorService} from "../../../service/author/author.service";
                 [toOption]="toOption"
                 [shownOption]="toOption(authorToShow)"
                 (onOptionSelected)="handleOptionSelected($event)"
-                [canDeselect]="true"
+                [canCreate]="true"
+                [createMethod]="createAuthor"
+                [loadMethod]="loadAuthors"
                 objectName="Author">
         </app-generic-select>
     `,
@@ -37,14 +39,22 @@ export class SelectAuthorComponent implements AfterViewInit {
         this.modal.loadOptions(() => this.authorService.getAuthors());
     }
 
-    toOption(bookStatuses: any): OptionDTO {
-        if (!bookStatuses) return {id: 0, name: ''};
+    toOption(authors: any): OptionDTO {
+        if (!authors) return {id: 0, name: ''};
 
-        let raw = bookStatuses as AuthorIndexViewDTO;
+        let raw = authors as AuthorIndexViewDTO;
         return {
             id: raw.id,
             name: raw.fullName
         };
+    }
+
+    createAuthor = (value: string) => {
+        return this.authorService.createAuthor(value);
+    }
+
+    loadAuthors = () => {
+        return this.authorService.getAuthors();
     }
 
     handleOptionSelected(selectedOption: OptionDTO|null): void {
