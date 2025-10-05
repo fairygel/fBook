@@ -1,9 +1,8 @@
 import {
-    AfterViewInit,
     Component,
     EventEmitter,
     Input,
-    Output, ViewChild
+    Output
 } from '@angular/core';
 import {GenericSelect} from "../../../base/generic-select/generic-select.component";
 import {BookTypeService} from "../../../service/book-type/book-type.service";
@@ -16,34 +15,33 @@ import {BookTypeIndexViewDTO} from "../../../dto/book/type/bookTypeIndexViewDTO"
     imports: [GenericSelect],
     template: `
         <app-generic-select
-                #select
                 [toOption]="toOption"
                 [shownOption]="toOption(bookTypeToShow)"
-                (onOptionSelected)="handleOptionSelected($event)"
-                objectName="Book Type">
+                (optionSelectedEvent)="handleOptionSelected($event)"
+                objectName="Book Type"
+                [loadMethod]="loadTypes">
         </app-generic-select>
     `,
     styles: `* { --label-width: 97px }`
 })
-export class SelectBookTypeComponent implements AfterViewInit {
-    @ViewChild('select') modal!: GenericSelect;
-    @Output() onBookTypeSelected = new EventEmitter<number>();
+export class SelectBookTypeComponent {
+    @Output() bookTypeSelectedEvent = new EventEmitter<number>();
     @Input() bookTypeToShow: BookTypeIndexViewDTO|null = null;
 
     constructor(private readonly bookTypeService: BookTypeService) {}
 
-    ngAfterViewInit(): void {
-        this.modal.loadOptions(() => this.bookTypeService.getBookTypes());
-    }
+    toOption(bookType: any): OptionDTO {
+        if (!bookType) return {id: 0, name: ''};
 
-    toOption(bookStatuses: any): OptionDTO {
-        if (!bookStatuses) return {id: 0, name: ''};
-
-        let raw = bookStatuses as BookTypeIndexViewDTO;
+        let raw = bookType as BookTypeIndexViewDTO;
         return {
             id: raw.id,
             name: raw.type
         };
+    }
+
+    loadTypes = () => {
+        return this.bookTypeService.getBookTypes();
     }
 
     handleOptionSelected(selectedOption: OptionDTO| null): void {
@@ -53,6 +51,6 @@ export class SelectBookTypeComponent implements AfterViewInit {
             id: selectedOption.id,
             type: selectedOption.name
         };
-        this.onBookTypeSelected.emit(selectedOption.id);
+        this.bookTypeSelectedEvent.emit(selectedOption.id);
     }
 }

@@ -14,9 +14,9 @@
         </div>
 
 
-        <app-select-author (onAuthorSelected)="handleSelectedAuthor($event)" />
+        <app-select-author (authorSelectedEvent)="handleSelectedAuthor($event)" />
 
-        <app-select-book-type (onBookTypeSelected)="handleSelectedBookType($event)" />
+        <app-select-book-type (bookTypeSelectedEvent)="handleSelectedBookType($event)" />
 
         <app-select-genre (onGenreSelected)="handleSelectedGenres($event)" />
 

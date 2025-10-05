@@ -1,4 +1,13 @@
-import {Component, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild} from "@angular/core";
+import {
+    AfterViewInit,
+    Component,
+    ElementRef,
+    EventEmitter,
+    HostListener,
+    Input,
+    Output,
+    ViewChild
+} from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {OptionDTO} from "./optionDTO";
@@ -13,7 +22,7 @@ import {GenericCreationModalComponent} from "../generic-create-modal/generic-cre
     templateUrl: 'generic-select.html',
     styleUrl: 'generic-select.scss'
 })
-export class GenericSelect {
+export class GenericSelect implements AfterViewInit {
     @ViewChild('modal') creationModal!: GenericCreationModalComponent;
 
     isLoading: boolean = true;
@@ -21,26 +30,34 @@ export class GenericSelect {
 
     bookStatusControl = new FormControl<number|null>(null);
 
-    @Input() shownOption: OptionDTO|null = null;
-    @Input() toOption!: ((r: any) => OptionDTO);
-    @Input() createMethod!: ((value: string) => Observable<any>);
-    @Input() loadMethod!: (() => Observable<any>);
+    @Input({required: true}) shownOption: OptionDTO|null = null;
+    @Input({required: true}) toOption!: ((r: any) => OptionDTO);
+    @Input({required: true}) loadMethod!: (() => Observable<any>);
 
-    @Input() isOpen: boolean = false;
-    @Input() objectName: string = '';
-    @Input() canCreate: boolean = false;
+    @Input({required: true}) objectName: string = '';
+
+    @Input() createMethod!: ((value: string) => Observable<any>);
+    @Input() isMultiSelect: boolean = false;
 
     // returns selected option id
-    @Output() onOptionSelected = new EventEmitter<OptionDTO|null>();
-    @Output() closeModalEvent = new EventEmitter<boolean>();
-    isDropdownOpened: boolean = false;
+    @Output() optionSelectedEvent = new EventEmitter<OptionDTO|null>();
 
-    added: boolean = false;
+    isDropdownOpened: boolean = false;
+    isOpen: boolean = false;
+
+    get canCreate(): boolean {
+        return !!this.createMethod;
+    }
 
     constructor(private readonly elementRef: ElementRef) {}
 
-    loadOptions<T>(action: () => Observable<T>): void {
-        action().subscribe({
+    ngAfterViewInit() {
+        this.loadOptions()
+        this.changeLoading(true);
+    }
+
+    loadOptions(): void {
+        this.loadMethod().subscribe({
             next: (response: any) => {
                 this.allOptions = (response as any[]).map(r => this.toOption(r));
                 this.sortOptions();
@@ -89,13 +106,13 @@ export class GenericSelect {
 
     onOptionChange(option: OptionDTO) {
         if (this.isSelected(option)) {
-            if (!this.canCreate) return;
+            if (!this.createMethod) return;
 
             this.shownOption = null;
-            this.onOptionSelected.emit(null);
+            this.optionSelectedEvent.emit(null);
         } else {
             this.shownOption = option
-            this.onOptionSelected.emit(this.shownOption)
+            this.optionSelectedEvent.emit(this.shownOption)
         }
     }
 
@@ -115,7 +132,6 @@ export class GenericSelect {
     newOption(value: string) {
         if (!this.creationModal) return;
         this.creationModal.handleSubmit(() => this.createMethod(value));
-
     }
 
     openCreateModal() {
@@ -124,11 +140,10 @@ export class GenericSelect {
 
     handleClose(added: boolean) {
         this.isOpen = false;
-        this.closeModalEvent.emit(added);
 
         if (added) {
             this.changeLoading(true);
-            this.loadOptions(() => this.loadMethod());
+            this.loadOptions();
         }
     }
 }

@@ -1,9 +1,8 @@
 import {
-    AfterViewInit,
     Component,
     EventEmitter,
     Input,
-    Output, ViewChild
+    Output
 } from '@angular/core';
 import {GenericSelect} from "../../../base/generic-select/generic-select.component";
 import {OptionDTO} from "../../../base/generic-select/optionDTO";
@@ -16,11 +15,9 @@ import {AuthorService} from "../../../service/author/author.service";
     imports: [GenericSelect],
     template: `
         <app-generic-select
-                #select
                 [toOption]="toOption"
                 [shownOption]="toOption(authorToShow)"
-                (onOptionSelected)="handleOptionSelected($event)"
-                [canCreate]="true"
+                (optionSelectedEvent)="handleOptionSelected($event)"
                 [createMethod]="createAuthor"
                 [loadMethod]="loadAuthors"
                 objectName="Author">
@@ -28,16 +25,11 @@ import {AuthorService} from "../../../service/author/author.service";
     `,
     styles: `* { --label-width: 64px }`
 })
-export class SelectAuthorComponent implements AfterViewInit {
-    @ViewChild('select') modal!: GenericSelect;
-    @Output() onAuthorSelected = new EventEmitter<number>();
+export class SelectAuthorComponent {
+    @Output() authorSelectedEvent = new EventEmitter<number>();
     @Input() authorToShow: AuthorIndexViewDTO|null = null;
 
     constructor(private readonly authorService: AuthorService) {}
-
-    ngAfterViewInit(): void {
-        this.modal.loadOptions(() => this.authorService.getAuthors());
-    }
 
     toOption(authors: any): OptionDTO {
         if (!authors) return {id: 0, name: ''};
@@ -60,7 +52,7 @@ export class SelectAuthorComponent implements AfterViewInit {
     handleOptionSelected(selectedOption: OptionDTO|null): void {
         if (!selectedOption) {
             this.authorToShow = null;
-            this.onAuthorSelected.emit(0);
+            this.authorSelectedEvent.emit(0);
             return;
         }
 
@@ -68,6 +60,6 @@ export class SelectAuthorComponent implements AfterViewInit {
             id: selectedOption.id,
             fullName: selectedOption.name
         };
-        this.onAuthorSelected.emit(selectedOption.id);
+        this.authorSelectedEvent.emit(selectedOption.id);
     }
 }

@@ -27,7 +27,7 @@
                     <input (input)="onFormChange()" type="text" formControlName="name" id="name">
                 </div>
 
-                <app-select-author (onAuthorSelected)="handleSelectedAuthor($event)" [authorToShow]="author"/>
+                <app-select-author (authorSelectedEvent)="handleSelectedAuthor($event)" [authorToShow]="author"/>
 
                 <div class="dates-group">
                     <div class="form-group started-date">
@@ -59,10 +59,10 @@
             <div class="separator"></div>
 
             <div class="right-group">
-                <app-select-book-type (onBookTypeSelected)="handleSelectedBookType($event)"
+                <app-select-book-type (bookTypeSelectedEvent)="handleSelectedBookType($event)"
                                       [bookTypeToShow]="bookType"/>
 
-                <app-select-book-status (onBookStatusSelected)="handleSelectedBookStatus($event)"
+                <app-select-book-status (bookStatusSelectedEvent)="handleSelectedBookStatus($event)"
                                         [bookStatusToShow]="bookStatus"/>
 
                 <app-select-genre (onGenreSelected)="handleSelectedGenres($event)" [genresToShow]="bookGenres"/>
