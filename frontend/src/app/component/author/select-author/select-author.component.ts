@@ -31,10 +31,10 @@ export class SelectAuthorComponent {
 
     constructor(private readonly authorService: AuthorService) {}
 
-    toOption(authors: any): OptionDTO {
-        if (!authors) return {id: 0, name: ''};
+    toOption(author: any): OptionDTO {
+        if (!author) return {id: 0, name: ''};
 
-        let raw = authors as AuthorIndexViewDTO;
+        let raw = author as AuthorIndexViewDTO;
         return {
             id: raw.id,
             name: raw.fullName

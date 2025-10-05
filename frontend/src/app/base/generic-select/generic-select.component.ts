@@ -28,9 +28,13 @@ export class GenericSelect implements AfterViewInit {
     isLoading: boolean = true;
     allOptions: OptionDTO[] = [];
 
-    bookStatusControl = new FormControl<number|null>(null);
+    formControl = new FormControl<number|null>(null);
 
-    @Input({required: true}) shownOption: OptionDTO|null = null;
+    // either shownOption or shownOptionArray should be set, not both
+    // shownOption is for single select, shownOptionArray is for multi select
+    @Input() shownOption!: OptionDTO|null;
+    @Input() shownOptionArray!: OptionDTO[]|null;
+
     @Input({required: true}) toOption!: ((r: any) => OptionDTO);
     @Input({required: true}) loadMethod!: (() => Observable<any>);
 
@@ -39,19 +43,36 @@ export class GenericSelect implements AfterViewInit {
     @Input() createMethod!: ((value: string) => Observable<any>);
     @Input() isMultiSelect: boolean = false;
 
-    // returns selected option id
+    // returns selected option
     @Output() optionSelectedEvent = new EventEmitter<OptionDTO|null>();
+    // returns selected options
+    @Output() optionArraySelectedEvent = new EventEmitter<OptionDTO[]|null>();
 
     isDropdownOpened: boolean = false;
     isOpen: boolean = false;
+
+    get displayInDropdown(): string {
+        if (this.shownOption != null && this.shownOptionArray == null)
+            return this.shownOption?.name
+        else if (this.shownOptionArray != null)
+            return this.shownOptionArray.map(o => o.name).join(', ')
+        else return ''
+    }
 
     get canCreate(): boolean {
         return !!this.createMethod;
     }
 
-    constructor(private readonly elementRef: ElementRef) {}
+    constructor(private readonly elementRef: ElementRef) {
+    }
 
     ngAfterViewInit() {
+        if (this.shownOption == null && this.shownOptionArray == null) {
+            throw new Error('Either shownOption or shownOptionArray input must be set.');
+        }
+        if (this.shownOption != null && this.shownOptionArray != null) {
+            throw new Error('Either shownOption or shownOptionArray should be set, not both');
+        }
         this.loadOptions()
         this.changeLoading(true);
     }
@@ -77,9 +98,9 @@ export class GenericSelect implements AfterViewInit {
         this.isLoading = value;
 
         if (this.isLoading) {
-            this.bookStatusControl.disable();
+            this.formControl.disable();
         } else {
-            this.bookStatusControl.enable();
+            this.formControl.enable();
         }
     }
 
@@ -93,26 +114,42 @@ export class GenericSelect implements AfterViewInit {
 
     sortOptions() {
         this.allOptions.sort((a, b) => {
-            if (this.shownOption && a.id === this.shownOption.id) return -1;
-            if (this.shownOption && b.id === this.shownOption.id) return 1;
+            const aSelected = this.isSelected(a);
+            const bSelected = this.isSelected(b);
 
-            return a.id - b.id;
+            if (aSelected && !bSelected) return -1;
+            if (!aSelected && bSelected) return 1;
+
+            return a.name.localeCompare(b.name);
         });
     }
 
     isSelected(option: OptionDTO): boolean {
-        return option.id === this.shownOption?.id
+        if (this.shownOptionArray == null)
+            return option.id === this.shownOption?.id
+        else
+            return this.shownOptionArray.some(o => o.id===option.id);
     }
 
     onOptionChange(option: OptionDTO) {
         if (this.isSelected(option)) {
             if (!this.createMethod) return;
 
-            this.shownOption = null;
-            this.optionSelectedEvent.emit(null);
+            if (this.shownOptionArray == null) {
+                this.shownOption = null;
+                this.optionSelectedEvent.emit(null);
+            } else {
+                this.shownOptionArray = this.shownOptionArray.filter(o => o.id !== option.id)
+                this.optionArraySelectedEvent.emit(this.shownOptionArray)
+            }
         } else {
-            this.shownOption = option
-            this.optionSelectedEvent.emit(this.shownOption)
+            if (this.shownOptionArray == null) {
+                this.shownOption = option
+                this.optionSelectedEvent.emit(this.shownOption)
+            } else {
+                this.shownOptionArray.push(option)
+                this.optionArraySelectedEvent.emit(this.shownOptionArray)
+            }
         }
     }
 

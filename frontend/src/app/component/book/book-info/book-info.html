@@ -65,7 +65,7 @@
                 <app-select-book-status (bookStatusSelectedEvent)="handleSelectedBookStatus($event)"
                                         [bookStatusToShow]="bookStatus"/>
 
-                <app-select-genre (onGenreSelected)="handleSelectedGenres($event)" [genresToShow]="bookGenres"/>
+                <app-select-genre (genreSelectedEvent)="handleSelectedGenres($event)" [genresToShow]="bookGenres"/>
 
                 <div class="form-group stretching-form annotation">
                     <label for="annotation">annotation</label>

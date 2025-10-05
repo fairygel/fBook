@@ -1,138 +1,69 @@
 import {
     Component,
-    ElementRef,
     EventEmitter,
-    HostListener,
     Input,
-    OnInit,
     Output
 } from '@angular/core';
 import {GenreService} from "../../../service/genre/genre.service";
 import {GenreIndexViewDTO} from "../../../dto/genre/genreIndexViewDTO";
-import {CreateGenreComponent} from "../create-genre/create-genre.component";
-import {FormControl, ReactiveFormsModule} from "@angular/forms";
-import {NgClass} from "@angular/common";
+import {GenericSelect} from "../../../base/generic-select/generic-select.component";
+import {OptionDTO} from "../../../base/generic-select/optionDTO";
 
 @Component({
     selector: 'app-select-genre',
     standalone: true,
-    imports: [
-        CreateGenreComponent,
-        ReactiveFormsModule,
-        NgClass
-    ],
-    templateUrl: 'select-genre.html',
-    styleUrl: `select-genre.scss`
+    imports: [GenericSelect],
+    template: `
+        <app-generic-select
+                [toOption]="toOption"
+                [shownOptionArray]="mappedGenres"
+                (optionArraySelectedEvent)="handleOptionSelected($event)"
+                [createMethod]="createGenre"
+                [loadMethod]="loadGenres"
+                objectName="Genres">
+        </app-generic-select>
+    `,
+    styles: `* { --label-width: 68px }`
 })
-export class SelectGenreComponent implements OnInit {
-    isLoading = false;
-    allGenres: GenreIndexViewDTO[] = [];
-
-    isDropdownOpened: boolean = false;
-    isModalOpened: boolean = false;
-
-    genresControl = new FormControl<number[]>([]);
-
-    // at the input field, not on the dropdown
+export class SelectGenreComponent {
+    @Output() genreSelectedEvent = new EventEmitter<number[]>();
     @Input() genresToShow: GenreIndexViewDTO[] = [];
-    @Output() onGenreSelected = new EventEmitter<number[]>();
 
-    constructor(private readonly genreService: GenreService,
-                private readonly elementRef: ElementRef) {
-        this.changeLoading(true);
+    constructor(private readonly genreService: GenreService) {}
+
+    get mappedGenres(): OptionDTO[] {
+        return this.genresToShow.map(g => this.toOption(g));
     }
 
-    ngOnInit(): void {
-        this.fetchGenres();
+    toOption(genre: any): OptionDTO {
+        if (!genre) return {id: 0, name: ''};
+
+        let raw = genre as GenreIndexViewDTO;
+        return {
+            id: raw.id,
+            name: raw.genre
+        };
     }
 
-    fetchGenres() {
-        this.genreService.getGenres().subscribe({
-            next: (response) => {
-                this.allGenres = response;
-                this.sortOptions()
-                this.changeLoading(false);
-            },
-            error: (error) => {
-                console.error(error);
-                this.changeLoading(false);
-            }
-        });
+    createGenre = (value: string) => {
+        return this.genreService.createGenre(value);
     }
 
-    toggleDropdown() {
-        this.isDropdownOpened = !this.isDropdownOpened;
+    loadGenres = () => {
+        return this.genreService.getGenres();
+    }
 
-        if (!this.isDropdownOpened) {
-            this.sortOptions();
+    handleOptionSelected(selectedOptions: OptionDTO[]| null): void {
+        if (!selectedOptions) {
+            this.genresToShow = [];
+            this.genreSelectedEvent.emit([]);
+            return;
         }
-    }
 
-    changeLoading(value: boolean) {
-        if (value === this.isLoading) return;
-        this.isLoading = value;
-
-        if (this.isLoading) {
-            this.genresControl.disable();
-        } else {
-            this.genresControl.enable();
-        }
-    }
-
-    onGenreChange(genre: GenreIndexViewDTO) {
-        if (this.isSelected(genre)) {
-            this.genresToShow = this.genresToShow.filter(g => g.id !== genre.id)
-        } else {
-            this.genresToShow.push(genre)
-        }
-        this.onGenreSelected.emit(this.genresToShow.map(g => g.id))
-    }
-
-    get shownGenres(): string {
-        return this.genresToShow.map(g => g.genre).join(', ')
-    }
-
-    sortOptions() {
-        return this.allGenres.sort((a, b) => {
-            const aSelected = this.isSelected(a);
-            const bSelected = this.isSelected(b);
-
-            if (aSelected && !bSelected) return -1;
-            if (!aSelected && bSelected) return 1;
-
-            return a.genre.localeCompare(b.genre);
-        });
-    }
-    isSelected(genre: GenreIndexViewDTO) {
-        return this.genresToShow.some(g => g.id===genre.id)
-    }
-
-    openCreateModal() {
-        this.isModalOpened = true;
-    }
-
-    closeCreateModal(isAdded: boolean) {
-        this.isModalOpened = false;
-
-        if (!isAdded) return;
-        this.changeLoading(true);
-        this.fetchGenres();
-    }
-
-    @HostListener('document:click', ['$event'])
-    onDocumentClick(event: Event) {
-        if (this.isModalOpened) return;
-
-        if (!this.elementRef.nativeElement.contains(event.target))
-            if (this.isDropdownOpened) this.toggleDropdown();
-    }
-
-    @HostListener('document:keydown.escape', ['$event'])
-    onEscapePress() {
-        if (this.isModalOpened) return;
-
-        if (this.isDropdownOpened) {
-            this.toggleDropdown();
-        }
+        this.genresToShow = selectedOptions.map(o => ({
+            id: o.id,
+            genre: o.name
+        }));
+        this.genreSelectedEvent.emit(selectedOptions.map(o => o.id));
     }
 }

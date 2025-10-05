@@ -1,5 +1,5 @@
 <div class="form-group">
-    <label>{{objectName}}</label>
+    <label for="dropdown-option">{{objectName}}</label>
     @if (isLoading) {
         <span>loading..</span>
     } @else if (allOptions.length === 0) {
@@ -7,7 +7,7 @@
     } @else {
         <div class="custom-select" [class.open]="isDropdownOpened">
             <button id="option" class="dropdown-toggle" (click)="toggleDropdown()">
-                {{ shownOption?.name }}
+                {{ displayInDropdown }}
             </button>
             @if (isDropdownOpened) {
                 <div class="dropdown-menu">
