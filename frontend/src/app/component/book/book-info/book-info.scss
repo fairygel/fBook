@@ -4,17 +4,52 @@
 
 .modal {
 	position: relative;
-	padding: 48px;
+	padding: 0;
 	min-width: calc(410px + 96px);
-	min-height: 300px;
 	box-sizing: border-box;
+	overflow: visible !important;
+	display: flex;
+	flex-direction: column;
 
 	@media (max-width: 1080px) {
-		min-width: calc(410px + 96px);
+		min-width: calc(410px + 100px);
 		width: 100%;
+	}
+
+	@media (max-width: calc(410px + 96px)) {
+		margin: 0;
+	}
+
+	&:has(h1.loading),
+	&:has(h1:not(.loading):only-child) {
+		min-height: 300px;
+		padding: 48px;
+	}
+
+	margin: 96px;
+}
+
+form {
+	overflow-y: auto;
+	max-height: calc(100vh - 40px);
+	padding: 48px;
+
+	@media (max-width: 1080px) {
 		padding: 48px;
 	}
 }
+
+.modal-actions {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	pointer-events: none;
+
+	button {
+		pointer-events: all;
+	}
+}
+
 
 .modal-backdrop {
 	justify-content: flex-start !important;
