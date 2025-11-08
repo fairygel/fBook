@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {BookService} from "../../../service/book/book.service";
 import {IndexBookViewDTO} from "../../../dto/book/indexBookViewDTO";
 import {CreateBookComponent} from "../create-book/create-book.component";
@@ -54,6 +54,7 @@ export class BookComponent implements OnInit {
         this.isMenuOpened = !this.isMenuOpened;
     }
 
+
     fetchBooks() {
         this.bookService.getBooks()
             .subscribe({
@@ -98,4 +99,28 @@ export class BookComponent implements OnInit {
         this.isLoading = value;
     }
 
+    @HostListener('document:keydown.escape')
+    onEscapePress() {
+        if (!this.isMenuOpened) return;
+
+        const dropdownOpen = document.querySelector('.custom-select.open');
+        if (dropdownOpen) return;
+
+        const creationModalOpen = document.querySelector('app-generic-create-modal .modal-backdrop');
+        if (creationModalOpen) return;
+
+        this.toggleMenu();
+    }
+
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: Event) {
+        if (!this.isMenuOpened) return;
+
+        const target = event.target as HTMLElement;
+        const panel = document.querySelector('.book-create-container.toggled');
+
+        if (panel && !panel.contains(target)) {
+            this.toggleMenu();
+        }
+    }
 }
