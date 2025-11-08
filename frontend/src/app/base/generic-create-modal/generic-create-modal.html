@@ -1,6 +1,6 @@
 @if (isOpen) {
-    <div class="modal-backdrop">
-        <div class="modal">
+    <div class="modal-backdrop" (click)="onBackdropClick($event)" (keydown.escape)="onEscapePress($event)">
+        <div class="modal" (click)="$event.stopPropagation()">
             <h3>New {{objectName}}</h3>
 
             <form [formGroup]="objectForm" (ngSubmit)="createObject()" autocomplete="off">

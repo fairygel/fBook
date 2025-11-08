@@ -151,9 +151,17 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
         this.closeModalEvent.emit();
     }
 
-    @HostListener('document:keydown.escape', ['$event'])
+    @HostListener('document:keydown.escape')
     onEscapePress() {
-        if (this.isOpen) this.closeModal();
+        if (!this.isOpen) return;
+
+        const dropdownOpen = document.querySelector('.custom-select.open');
+        if (dropdownOpen) return;
+
+        const creationModalOpen = document.querySelector('app-generic-create-modal .modal-backdrop');
+        if (creationModalOpen) return;
+
+        this.closeModal();
     }
 
     @HostListener('document:click', ['$event'])

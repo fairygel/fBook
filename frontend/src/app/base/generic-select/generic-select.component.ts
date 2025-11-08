@@ -159,10 +159,10 @@ export class GenericSelect implements AfterViewInit {
             if (this.isDropdownOpened) this.toggleDropdown()
     }
 
-    @HostListener('document:keydown.escape', ['$event'])
+    @HostListener('document:keydown.escape')
     onEscapePress() {
         if (this.isDropdownOpened) {
-            this.toggleDropdown()
+            this.toggleDropdown();
         }
     }
 

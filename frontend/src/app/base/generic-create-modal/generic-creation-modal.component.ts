@@ -2,7 +2,6 @@ import {
     Component,
     ElementRef,
     EventEmitter,
-    HostListener,
     Input, OnChanges, OnDestroy, OnInit,
     Output,
     QueryList, SimpleChanges,
@@ -73,16 +72,19 @@ export class GenericCreationModalComponent implements OnInit, OnDestroy, OnChang
         this.isObjectAdded = false;
     }
 
-    @HostListener('document:keydown.escape', ['$event'])
-    onEscapePress() {
-        if (this.isOpen) this.closeModal();
+    onBackdropClick(event: MouseEvent) {
+        event.stopPropagation();
+        const target = event.target as HTMLElement;
+        if (target.classList.contains('modal-backdrop')) {
+            this.closeModal();
+        }
     }
 
-    @HostListener('document:click', ['$event'])
-    onDocumentClick(event: Event) {
-        const target = event.target as HTMLElement;
-        if (target.classList.contains('modal-backdrop'))
+    onEscapePress(event: Event) {
+        event.stopPropagation();
+        if (this.isOpen) {
             this.closeModal();
+        }
     }
 
     createObject(): void {
