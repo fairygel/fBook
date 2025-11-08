@@ -1,144 +1,146 @@
 @use '../../../../assets/form-styles';
 @use '../../../../assets/colors';
+@use '../../../../assets/form-modal';
+
+.modal {
+	padding: 48px;
+}
 
 .clickable {
-  cursor: pointer;
+	cursor: pointer;
 }
 
 .name {
-  --label-width: 53px;
+	--label-width: 53px;
 }
 
 .annotation {
-  --label-width: 93px;
+	--label-width: 93px;
 }
 
 .form-for-image {
-  --label-width: 52px;
+	--label-width: 52px;
 }
 
 .started-date {
-  --label-width: 63px;
+	--label-width: 63px;
 }
 
 .ended-date {
-  --label-width: 58px;
+	--label-width: 58px;
 }
 
 h1 {
-  position: absolute;
+	position: absolute;
 
-  top: 50%;
-  left: 50%;
+	top: 50%;
+	left: 50%;
 
-  transform: translate(-50%, -100%);
+	transform: translate(-50%, -100%);
 
-  color: colors.$font-color;
+	color: colors.$font-color;
 
-  text-align: center;
+	text-align: center;
 }
 
 body {
-  background-color: colors.$panel-color;
-  margin: 30px;
+	background-color: colors.$panel-color;
+	margin: 30px;
 }
 
 .add-image-file-button {
-  z-index: 3;
+	z-index: 3;
 }
 
 .image-center-wrapper {
-  display: grid;
-  place-items: center;
+	display: grid;
+	place-items: center;
 }
 
 .form-container {
-  transition: all 1s ease;
+	transition: all 1s ease;
 }
 
 .two-columns {
-  display: grid !important;
-  grid-template-columns: 4fr 1fr 5fr;
-  min-width: 900px;
+	display: grid !important;
+	grid-template-columns: 4fr 1fr 5fr;
+	min-width: 900px;
 }
 
 .two-columns > .right-group {
-  left: -20px;
-  transform: translateX(20px);
-  transition: transform 1s ease;
+	left: -20px;
+	transform: translateX(20px);
+	transition: transform 1s ease;
 
-  margin-right: 28px;
+	margin-right: 28px;
 }
 
 .one-column {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px !important;
-  flex-direction: column;
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 8px !important;
+	flex-direction: column;
 
-  min-width: 410px;
+	min-width: 410px;
 }
 
 .dates-group {
-  display: flex;
+	display: flex;
 }
+
 .dates-group > .form-group:last-child {
-  margin-right: 12px !important;
-  margin-left: 8px !important;
+	margin-right: 12px !important;
+	margin-left: 8px !important;
 }
 
 .dates-group > .form-group:first-child {
-  margin-right: 8px !important;
-  margin-left: 12px !important;
+	margin-right: 8px !important;
+	margin-left: 12px !important;
 }
+
 .dates-group > .form-group {
-  flex: 1;
+	flex: 1;
 }
 
 .left-group {
-  min-width: 410px;
+	min-width: 410px;
 }
 
 .left-group, .right-group {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
 }
 
 .stretching-form {
-  flex: 1;
+	flex: 1;
 }
 
 .back-image {
-  background-color: colors.$font-color;
-  border-radius: 100%;
-  width: 32px;
-  height: 32px;
-  padding: 8px;
+	background-color: colors.$font-color;
+	border-radius: 100%;
+	width: 32px;
+	height: 32px;
+	padding: 8px;
 
-  transform: translateX(12px);
+	transform: translateX(12px);
 }
 
 .trash-image {
-  width: 48px;
-  height: 48px;
-  border-radius: 100%;
-}
-
-.trash-container {
-  transform: translateX(-12px);
-  text-align: right;
+	filter: invert(100%);
+	top: -3px;
+	position: relative;
 }
 
 .loading {
-  position: absolute;
+	position: absolute;
 
-  top: 50%;
-  left: 50%;
+	top: 50%;
+	left: 50%;
 
-  transform: translate(-50%, -100%);
+	transform: translate(-50%, -100%);
 
-  color: colors.$font-color;
+	color: colors.$font-color;
 
-  text-align: center;
+	text-align: center;
 }

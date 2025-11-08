@@ -1,1 +1,9 @@
 @use '../../../assets/form-modal';
+
+.form-group {
+	--label-width: 0;
+}
+
+.form-group > input {
+	top: 8px;
+}

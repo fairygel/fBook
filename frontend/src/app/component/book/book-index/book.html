@@ -4,22 +4,20 @@
 @else if (books && books.length > 0) {
     <ul class="books-preview">
         @for (book of books; track book.id) {
-            <li class="book-cover-preview">
-                <a routerLink="/books/{{book.id}}">
-                    <div class="book-image-wrapper">
-                        @if (book.coverUrl) {
-                            <img [src]="book.coverUrl"
-                                 [alt]="book.name"
-                                 width="228"
-                                 height="361"/>
-                        } @else {
-                            <div class="no-cover">
-                                <span class="no-cover-title"> {{book.name}} </span>
-                            </div>
-                        }
-                        <div class="book-title">{{ book.name }}</div>
-                    </div>
-                </a>
+            <li class="book-cover-preview" (click)="openBookInfoModal(book)">
+                <div class="book-image-wrapper">
+                    @if (book.coverUrl) {
+                        <img [src]="book.coverUrl"
+                             [alt]="book.name"
+                             width="228"
+                             height="361"/>
+                    } @else {
+                        <div class="no-cover">
+                            <span class="no-cover-title"> {{book.name}} </span>
+                        </div>
+                    }
+                    <div class="book-title">{{ book.name }}</div>
+                </div>
             </li>
         }
     </ul>
@@ -41,3 +39,11 @@
 
     <app-create-book (onBookCreated)="createBook()"/>
 </div>
+
+<app-book-info
+    [isOpen]="isBookInfoModalOpen"
+    [bookToShow]="selectedBook"
+    (closeModalEvent)="closeBookInfoModal()"
+    (bookDeletedEvent)="handleBookDeleted($event)"
+    (bookUpdatedEvent)="handleBookUpdated()">
+</app-book-info>

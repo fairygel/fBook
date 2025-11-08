@@ -14,7 +14,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 1001;
 }
 
 .modal {
@@ -28,14 +28,6 @@
   min-width: 300px;
   max-width: 90%;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-}
-
-.form-group {
-  --label-width: 0;
-}
-
-.form-group > input {
-  top: 8px;
 }
 
 .modal-actions {

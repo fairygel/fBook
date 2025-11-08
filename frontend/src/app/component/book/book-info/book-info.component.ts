@@ -1,7 +1,10 @@
-import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+    Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges,
+    ViewChild
+} from '@angular/core';
 import {Title} from "@angular/platform-browser";
-import { HttpErrorResponse } from "@angular/common/http";
-import {ActivatedRoute, Router, RouterLink} from "@angular/router";
+import {HttpErrorResponse} from "@angular/common/http";
+import {Router, RouterLink} from "@angular/router";
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {ApiError} from "../../../error/api-error";
@@ -18,10 +21,11 @@ import {GenreIndexViewDTO} from "../../../dto/genre/genreIndexViewDTO";
 import {AuthorIndexViewDTO} from "../../../dto/author/authorIndexViewDTO";
 import {BookTypeIndexViewDTO} from "../../../dto/book/type/bookTypeIndexViewDTO";
 import {BookStatusIndexViewDTO} from "../../../dto/book/status/bookStatusIndexViewDTO";
-import {NgClass, NgOptimizedImage} from "@angular/common";
+import {CommonModule, NgClass, NgOptimizedImage} from "@angular/common";
 
-import { Subject } from "rxjs";
-import { debounceTime } from "rxjs/operators";
+import {Subject} from "rxjs";
+import {debounceTime} from "rxjs/operators";
+import {IndexBookViewDTO} from "../../../dto/book/indexBookViewDTO";
 
 @Component({
     selector: 'app-book-info',
@@ -35,12 +39,20 @@ import { debounceTime } from "rxjs/operators";
         SelectBookTypeComponent,
         SelectBookStatusComponent,
         NgOptimizedImage,
-        NgClass
+        NgClass,
+        CommonModule
     ],
     templateUrl: 'book-info.html',
     styleUrl: `book-info.scss`
 })
-export class BookInfoComponent implements OnInit, OnDestroy {
+export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
+    @Input() bookToShow: IndexBookViewDTO | null = null;
+    @Input() isOpen: boolean = false;
+
+    @Output() closeModalEvent = new EventEmitter<void>();
+    @Output() bookDeletedEvent = new EventEmitter<number>();
+    @Output() bookUpdatedEvent = new EventEmitter<void>();
+
     formChangeSubject = new Subject<void>();
 
     isLoading: boolean = false;
@@ -49,47 +61,50 @@ export class BookInfoComponent implements OnInit, OnDestroy {
     isShrank = false;
 
     coverUrl: string = "";
-    cover: File|null = null;
+    cover: File | null = null;
 
     genresToUpdate: number[] = [];
-    authorToUpdate: number|null = null;
-    bookTypeToUpdate: number|null = null;
-    bookStatusToUpdate: number|null = null;
+    authorToUpdate: number | null = null;
+    bookTypeToUpdate: number | null = null;
+    bookStatusToUpdate: number | null = null;
 
-    book: BookFullViewDTO|null = null;
+    book: BookFullViewDTO | null = null;
 
     bookGenres: GenreIndexViewDTO[] = [];
-    author: AuthorIndexViewDTO|null = null;
-    bookType: BookTypeIndexViewDTO|null = null;
-    bookStatus: BookStatusIndexViewDTO|null = null;
+    author: AuthorIndexViewDTO | null = null;
+    bookType: BookTypeIndexViewDTO | null = null;
+    bookStatus: BookStatusIndexViewDTO | null = null;
 
     bookForm = new FormGroup({
         name: new FormControl(''),
         annotation: new FormControl(''),
-        startedReadDate: new FormControl<string|null>(null),
-        endedReadDate: new FormControl<string|null>(null)
+        startedReadDate: new FormControl<string | null>(null),
+        endedReadDate: new FormControl<string | null>(null)
     });
 
     @ViewChild('startedDate') startedDate!: ElementRef;
     @ViewChild('endedDate') endedDate!: ElementRef;
 
     constructor(private readonly bookService: BookService,
-                private readonly route: ActivatedRoute,
                 private readonly router: Router,
                 private readonly pageTitle: Title) {
-        this.changeLoading(true);
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['isOpen'] && this.isOpen && this.bookToShow) {
+            this.fetchBook(this.bookToShow.id, true);
+        }
     }
 
     fetchBook(id: number, isFirstLoading?: boolean) {
+        this.changeLoading(true);
         this.id = id;
 
         this.bookService.getBook(id)
             .subscribe({
                 next: (response) => {
-                    if (isFirstLoading) {
-                        this.fillBookWithData(response);
-                        this.changeLoading(false);
-                    }
+                    this.fillBookWithData(response);
+                    this.changeLoading(false);
                 },
                 error: (error) => {
                     console.error(error)
@@ -114,10 +129,7 @@ export class BookInfoComponent implements OnInit, OnDestroy {
         ).subscribe(() => {
             this.handleUpdateBookSubmit();
         })
-
-        const bookId = +this.route.snapshot.paramMap.get('id')!;
         this.onResize();
-        this.fetchBook(bookId, true);
     }
 
     onFormChange() {
@@ -131,6 +143,26 @@ export class BookInfoComponent implements OnInit, OnDestroy {
         this.formChangeSubject.complete();
     }
 
+    closeModal() {
+        this.handleUpdateBookSubmit();
+        this.isOpen = false;
+        this.book = null;
+        this.coverUrl = '';
+        this.closeModalEvent.emit();
+    }
+
+    @HostListener('document:keydown.escape', ['$event'])
+    onEscapePress() {
+        if (this.isOpen) this.closeModal();
+    }
+
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: Event) {
+        const target = event.target as HTMLElement;
+        if (target.classList.contains('modal-backdrop'))
+            this.closeModal();
+    }
+
     deleteBook() {
         if (this.isLoading) return;
         if (!confirm('are you sure you want to delete this book?')) return;
@@ -140,7 +172,8 @@ export class BookInfoComponent implements OnInit, OnDestroy {
         this.bookService.deleteBook(this.id)
             .subscribe({
                 next: () => {
-                    this.router.navigate(['/']).then();
+                    this.bookDeletedEvent.emit(this.id);
+                    this.closeModal();
                 },
                 error: (error) => {
                     console.error(error)
@@ -149,13 +182,14 @@ export class BookInfoComponent implements OnInit, OnDestroy {
     }
 
     handleUpdateBookSubmit() {
-        if (this.isLoading) return;
+        if (this.isLoading || !this.bookForm.dirty) return;
 
         const book = this.parseBookFromForm();
 
         this.bookService.updateBook(this.id, book, this.cover).subscribe({
             next: () => {
                 this.cover = null;
+                this.bookUpdatedEvent.emit();
                 this.fetchBook(this.id);
             },
             error: (error: HttpErrorResponse) => {
@@ -163,7 +197,6 @@ export class BookInfoComponent implements OnInit, OnDestroy {
                 alert(apiError.description);
             }
         });
-
     }
 
     private fillBookWithData(response: BookFullViewDTO) {
@@ -182,7 +215,7 @@ export class BookInfoComponent implements OnInit, OnDestroy {
         })
     }
 
-    private parseBookFromForm() : UpdateBookDTO {
+    private parseBookFromForm(): UpdateBookDTO {
         return {
             name: this.bookForm.get('name')?.value ?? '',
             annotation: this.bookForm.get('annotation')?.value ?? null,
