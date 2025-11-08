@@ -3,8 +3,10 @@
 @use '../../../../assets/form-modal';
 
 .modal {
+	position: relative;
 	padding: 48px;
 	min-width: calc(410px + 96px);
+	min-height: 300px;
 	box-sizing: border-box;
 
 	@media (max-width: 1080px) {
@@ -54,11 +56,15 @@ h1 {
 	top: 50%;
 	left: 50%;
 
-	transform: translate(-50%, -100%);
+	transform: translate(-50%, -50%);
 
 	color: colors.$font-color;
 
 	text-align: center;
+
+	min-width: 300px;
+	padding: 32px 48px;
+	margin: 0;
 }
 
 body {
@@ -161,9 +167,13 @@ body {
 	top: 50%;
 	left: 50%;
 
-	transform: translate(-50%, -100%);
+	transform: translate(-50%, -50%);
 
 	color: colors.$font-color;
 
 	text-align: center;
+
+	min-width: 300px;
+	padding: 32px 48px;
+	margin: 0;
 }
