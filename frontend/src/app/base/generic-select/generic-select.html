@@ -2,8 +2,6 @@
     <label for="dropdown-option">{{objectName}}</label>
     @if (isLoading) {
         <span>loading..</span>
-    } @else if (allOptions.length === 0) {
-        <span>no book statuses found:(</span>
     } @else {
         <div class="custom-select" [class.open]="isDropdownOpened">
             <button id="option" class="dropdown-toggle" (click)="toggleDropdown()">
