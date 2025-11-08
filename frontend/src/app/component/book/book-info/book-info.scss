@@ -4,19 +4,7 @@
 
 .modal {
 	padding: 48px;
-	min-width: calc(410px + 96px);
-	box-sizing: border-box;
 }
-
-.modal-backdrop {
-	justify-content: flex-start !important;
-	padding-left: 0;
-
-	@media (min-width: calc(410px + 96px)) {
-		justify-content: center !important;
-	}
-}
-
 
 .clickable {
 	cursor: pointer;
@@ -92,7 +80,7 @@ body {
 	grid-template-columns: 1fr;
 	gap: 8px !important;
 	flex-direction: column;
-	width: 410px;
+
 	min-width: 410px;
 }
 
@@ -116,11 +104,6 @@ body {
 
 .left-group {
 	min-width: 410px;
-
-	@container (max-width: calc(410px + 96px + 40px)) {
-		min-width: auto;
-		width: 100%;
-	}
 }
 
 .left-group, .right-group {
