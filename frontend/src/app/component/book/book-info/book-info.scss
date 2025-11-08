@@ -116,16 +116,6 @@ body {
 	flex: 1;
 }
 
-.back-image {
-	background-color: colors.$font-color;
-	border-radius: 100%;
-	width: 32px;
-	height: 32px;
-	padding: 8px;
-
-	transform: translateX(12px);
-}
-
 .trash-image {
 	filter: invert(100%);
 	top: -3px;
