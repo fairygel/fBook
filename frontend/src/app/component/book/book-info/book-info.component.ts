@@ -317,7 +317,7 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
 
     @HostListener('window:resize', ['$event'])
     onResize() {
-        this.isShrank = window.innerWidth <= 950;
+        this.isShrank = window.innerWidth <= 1080;
     }
 
     handleDrag(event: DragEvent) {

@@ -4,7 +4,25 @@
 
 .modal {
 	padding: 48px;
+	min-width: calc(410px + 96px);
+	box-sizing: border-box;
+
+	@media (max-width: 1080px) {
+		min-width: calc(410px + 96px);
+		width: 100%;
+		padding: 48px;
+	}
 }
+
+.modal-backdrop {
+	justify-content: flex-start !important;
+	padding-left: 0;
+
+	@media (min-width: calc(410px + 96px)) {
+		justify-content: center !important;
+	}
+}
+
 
 .clickable {
 	cursor: pointer;
@@ -69,19 +87,27 @@ body {
 
 .two-columns > .right-group {
 	left: -20px;
-	transform: translateX(20px);
 	transition: transform 1s ease;
 
 	margin-right: 28px;
+
+	transform: scale(1);
+	opacity: 1;
 }
 
 .one-column {
-	display: grid;
-	grid-template-columns: 1fr;
-	gap: 8px !important;
+	display: flex;
 	flex-direction: column;
-
+	width: 100%;
 	min-width: 410px;
+
+	.separator {
+		display: none;
+	}
+
+
+	transform: scale(0.97);
+	opacity: 0.95;
 }
 
 .dates-group {
@@ -102,8 +128,15 @@ body {
 	flex: 1;
 }
 
+@media (min-width: 1080px) {
+	.left-group {
+		min-width: 410px;
+	}
+}
+
 .left-group {
-	min-width: 410px;
+	min-width: auto;
+	width: 100%;
 }
 
 .left-group, .right-group {
