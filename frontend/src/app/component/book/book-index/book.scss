@@ -70,6 +70,8 @@
 .book-image-wrapper {
     width: 228px;
     height: 361px;
+    background: colors.$panel-color;
+    border-radius: 12px;
 }
 
 .book-image-wrapper:hover .book-title {

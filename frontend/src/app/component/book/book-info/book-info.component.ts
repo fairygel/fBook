@@ -4,7 +4,6 @@ import {
 } from '@angular/core';
 import {Title} from "@angular/platform-browser";
 import {HttpErrorResponse} from "@angular/common/http";
-import {Router, RouterLink} from "@angular/router";
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import {ApiError} from "../../../error/api-error";
@@ -21,7 +20,7 @@ import {GenreIndexViewDTO} from "../../../dto/genre/genreIndexViewDTO";
 import {AuthorIndexViewDTO} from "../../../dto/author/authorIndexViewDTO";
 import {BookTypeIndexViewDTO} from "../../../dto/book/type/bookTypeIndexViewDTO";
 import {BookStatusIndexViewDTO} from "../../../dto/book/status/bookStatusIndexViewDTO";
-import {CommonModule, NgClass, NgOptimizedImage} from "@angular/common";
+import {CommonModule, NgClass} from "@angular/common";
 
 import {Subject} from "rxjs";
 import {debounceTime} from "rxjs/operators";
@@ -31,14 +30,12 @@ import {IndexBookViewDTO} from "../../../dto/book/indexBookViewDTO";
     selector: 'app-book-info',
     standalone: true,
     imports: [
-        RouterLink,
         FormsModule,
         ReactiveFormsModule,
         SelectGenreComponent,
         SelectAuthorComponent,
         SelectBookTypeComponent,
         SelectBookStatusComponent,
-        NgOptimizedImage,
         NgClass,
         CommonModule
     ],
@@ -54,6 +51,7 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
     @Output() bookUpdatedEvent = new EventEmitter<void>();
 
     formChangeSubject = new Subject<void>();
+    wasCoverOrNameUpdated = false;
 
     isLoading: boolean = false;
     id: number = -1;
@@ -86,7 +84,6 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
     @ViewChild('endedDate') endedDate!: ElementRef;
 
     constructor(private readonly bookService: BookService,
-                private readonly router: Router,
                 private readonly pageTitle: Title) {
     }
 
@@ -97,8 +94,11 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     fetchBook(id: number, isFirstLoading?: boolean) {
-        this.changeLoading(true);
-        this.id = id;
+        if (isFirstLoading || this.book === null) {
+            this.changeLoading(true);
+            this.coverUrl = this.bookToShow?.coverUrl || '';
+            this.id = id;
+        }
 
         this.bookService.getBook(id)
             .subscribe({
@@ -112,15 +112,6 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
                 }
             });
 
-        this.bookService.getBookCover(id)
-            .subscribe({
-                next: (response) => {
-                    this.coverUrl = URL.createObjectURL(response);
-                },
-                error: (error) => {
-                    console.error(error);
-                }
-            })
     }
 
     ngOnInit() {
@@ -132,7 +123,12 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
         this.onResize();
     }
 
-    onFormChange() {
+    onFormChange(isNameOrCover = false) {
+        this.wasCoverOrNameUpdated = isNameOrCover;
+
+        if (!this.bookForm.dirty) {
+            this.bookForm.markAsDirty();
+        }
         this.formChangeSubject.next();
     }
 
@@ -196,9 +192,11 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
 
         this.bookService.updateBook(this.id, book, this.cover).subscribe({
             next: () => {
-                this.cover = null;
-                this.bookUpdatedEvent.emit();
                 this.fetchBook(this.id);
+                if (this.wasCoverOrNameUpdated) {
+                    this.bookUpdatedEvent.emit();
+                    this.wasCoverOrNameUpdated = false;
+                }
             },
             error: (error: HttpErrorResponse) => {
                 const apiError: ApiError = error.error;
@@ -302,7 +300,7 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
 
     private generatePreview(file: File): void {
         this.coverUrl = URL.createObjectURL(file);
-        this.onFormChange();
+        this.onFormChange(true);
     }
 
     onDrop(event: DragEvent) {

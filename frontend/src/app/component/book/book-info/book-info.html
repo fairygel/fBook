@@ -30,7 +30,7 @@
 
                             <div class="form-group name">
                                 <label for="name">name</label>
-                                <input (input)="onFormChange()" type="text" formControlName="name" id="name">
+                                <input (input)="onFormChange(true)" type="text" formControlName="name" id="name">
                             </div>
 
                             <app-select-author (authorSelectedEvent)="handleSelectedAuthor($event)"
