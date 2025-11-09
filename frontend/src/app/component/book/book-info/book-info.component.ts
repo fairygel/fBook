@@ -83,6 +83,9 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
     @ViewChild('startedDate') startedDate!: ElementRef;
     @ViewChild('endedDate') endedDate!: ElementRef;
 
+    showDelayedModal = false;
+    private openTimer: ReturnType<typeof setTimeout> | null = null;
+
     constructor(private readonly bookService: BookService,
                 private readonly pageTitle: Title) {
     }
@@ -90,7 +93,16 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
     ngOnChanges(changes: SimpleChanges) {
         if (changes['isOpen'] && this.isOpen && this.bookToShow) {
             this.fetchBook(this.bookToShow.id, true);
+            this.openWithDelay();
         }
+    }
+
+    openWithDelay() {
+        this.showDelayedModal = false;
+        if (this.openTimer !== null) globalThis.clearTimeout(this.openTimer as any);
+        this.openTimer = setTimeout(() => {
+            if (this.isOpen) this.showDelayedModal = true;
+        }, 100);
     }
 
     fetchBook(id: number, isFirstLoading?: boolean) {
@@ -137,6 +149,9 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
 
         if (this.cover) URL.revokeObjectURL(this.coverUrl);
         this.formChangeSubject.complete();
+
+        if (this.openTimer !== null) globalThis.clearTimeout(this.openTimer as any);
+        this.openTimer = null;
     }
 
     closeModal() {
@@ -144,6 +159,10 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
         this.isOpen = false;
         this.book = null;
         this.coverUrl = '';
+
+        if (this.openTimer !== null) globalThis.clearTimeout(this.openTimer as any);
+        this.openTimer = null;
+        this.showDelayedModal = false;
         this.closeModalEvent.emit();
     }
 

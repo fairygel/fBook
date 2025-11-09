@@ -27,6 +27,35 @@
 	}
 
 	margin: 96px;
+
+	animation: modalStretch 0.5s ease-out;
+	animation-fill-mode: forwards;
+}
+
+@keyframes modalStretch {
+	from { transform: scale(0.4); opacity: 0.4; }
+	to { transform: scale(1); opacity: 1; }
+}
+
+.loading-wrapper {
+	display: grid;
+	place-items: center;
+	min-height: 240px;
+	animation: stretch 0.5s ease-out forwards;
+}
+
+@keyframes stretch {
+	from { transform: scale(0.95); opacity: 0.4; }
+	to { transform: scale(1); opacity: 1; }
+}
+
+.modal-content {
+	opacity: 0;
+	transition: opacity 200ms ease-in;
+}
+
+.modal.loaded .modal-content {
+	opacity: 1;
 }
 
 form {

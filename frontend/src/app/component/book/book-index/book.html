@@ -4,7 +4,7 @@
 @else if (books && books.length > 0) {
     <ul class="books-preview">
         @for (book of books; track book.id) {
-            <li class="book-cover-preview" (click)="openBookInfoModal(book)">
+            <li class="book-cover-preview" role="button" tabindex="0" (click)="openBookInfoModal(book)" (keydown)="($event.key === 'Enter' || $event.key === ' ') && openBookInfoModal(book)">
                 <div class="book-image-wrapper">
                     @if (book.coverUrl) {
                         <img [src]="book.coverUrl"
