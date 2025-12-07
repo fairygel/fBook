@@ -1,6 +1,7 @@
 package me.fairygel.fbook.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ValidationException;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import me.fairygel.fbook.dto.book.*;
@@ -17,7 +18,7 @@ import java.util.Set;
 @Service
 @AllArgsConstructor
 public class BookService {
-    private static final String NO_BOOK_WITH_ID = "No book with id = ";
+    private static final String NO_BOOK_WITH_ID = "No book with ID = ";
 
     private final BookMapperImpl bookMapper;
     private final BookCoverService coverService;
@@ -25,10 +26,11 @@ public class BookService {
     private final BookCrudRepository bookRepository;
 
     @SneakyThrows
-    public Book create(CreateBookDTO bookDTO) {
-        Book book = bookMapper.createBookDtoToBook(bookDTO);
-
-        return bookRepository.save(book);
+    public IndexBookViewDTO create(BookDTO bookDTO, MultipartFile cover) {
+        Book book = bookMapper.bookDtoToBook(bookDTO, true);
+        Book savedBook = bookRepository.save(book);
+        coverService.createCover(savedBook, cover);
+        return bookMapper.bookToIndexBookViewDto(savedBook);
     }
     public BookFullViewDTO read(long id) {
         Book book = bookRepository.findById(id)
@@ -38,8 +40,14 @@ public class BookService {
     }
 
     @SneakyThrows
-    public BookFullViewDTO update(long id, UpdateBookDTO bookDTO, MultipartFile cover) {
-        Book book = bookMapper.updateBookDtoToBook(bookDTO);
+    public BookFullViewDTO update(long id, BookDTO bookDTO, MultipartFile cover) {
+        if ( bookDTO.getEndedReadDate() != null && bookDTO.getStartedReadDate() != null ) {
+            if ( bookDTO.getEndedReadDate().isBefore(bookDTO.getStartedReadDate()) ) {
+                throw new ValidationException("Ended read date can't be before started read date.");
+            }
+        }
+
+        Book book = bookMapper.bookDtoToBook(bookDTO, false);
 
         bookAutomation.automate(book);
 

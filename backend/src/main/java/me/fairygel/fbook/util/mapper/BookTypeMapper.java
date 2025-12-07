@@ -1,7 +1,6 @@
 package me.fairygel.fbook.util.mapper;
 
-import me.fairygel.fbook.dto.book.type.BookTypeDTO;
-import me.fairygel.fbook.dto.book.type.BookTypeIndexViewDTO;
+import me.fairygel.fbook.dto.BookTypeDTO;
 import me.fairygel.fbook.entity.BookType;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,8 +18,5 @@ public interface BookTypeMapper {
     @Mapping(target = "type", source = "name")
     BookTypeDTO bookTypeToBookTypeDto(BookType bookType);
 
-    @Mapping(target = "type", source = "name")
-    BookTypeIndexViewDTO bookTypeToBookTypeIndexDto(BookType bookType);
-
-    Set<BookTypeIndexViewDTO> bookTypesToIndex(Set<BookType> bookTypes);
+    Set<BookTypeDTO> bookTypesToIndex(Set<BookType> bookTypes);
 }

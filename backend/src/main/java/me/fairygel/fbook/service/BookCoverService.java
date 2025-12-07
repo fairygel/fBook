@@ -18,11 +18,13 @@ import org.springframework.web.multipart.MultipartFile;
 public class BookCoverService {
     private final BookCoverCrudRepository coverRepository;
     private final BookCoverMapperImpl mapper;
-    private final ImageHelper image;
+    private final ImageHelper imageHelper;
 
     @SneakyThrows
     public void createCover(Book book, MultipartFile cover) {
-        if (!image.isImage(cover)) throw new IllegalArgumentException("file type for cover should be image");
+        if ( cover == null || cover.isEmpty() ) return;
+
+        if (!imageHelper.isImage(cover)) throw new IllegalArgumentException("file type for cover should be image");
 
         BookCover bookCover = mapper.coverFromMultipartFile(book, cover);
 
@@ -31,7 +33,7 @@ public class BookCoverService {
 
     public BookCoverDTO getCover(Long bookId) {
         BookCover cover = coverRepository.findByBookId(bookId)
-                .orElseThrow(() -> new EntityNotFoundException("No cover for book with id = " + bookId));
+                .orElseThrow(() -> new EntityNotFoundException("No cover for book with ID = " + bookId));
 
         return mapper.bookCoverToDTO(cover);
     }
@@ -47,7 +49,7 @@ public class BookCoverService {
 
         if (updatedBook.getCover() == null) createCover(updatedBook, cover);
         else {
-            if (!image.isImage(cover)) throw new IllegalArgumentException("file type for cover should be image");
+            if (!imageHelper.isImage(cover)) throw new IllegalArgumentException("file type for cover should be image");
 
             BookCover bookCover = mapper.coverFromMultipartFile(updatedBook, cover);
             coverRepository.updateById(updatedBook.getId(), bookCover);

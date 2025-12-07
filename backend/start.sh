@@ -63,9 +63,9 @@ run_database() {
         }
     else
         sudo docker run -d --name fbook-db \
-            -e POSTGRES_USER=$db_user \
-            -e POSTGRES_PASSWORD=$db_password \
-            -e POSTGRES_DB=$db_name \
+            -e POSTGRES_USER="$db_user" \
+            -e POSTGRES_PASSWORD="$db_password" \
+            -e POSTGRES_DB="$db_name" \
             -p 5432:5432 \
             postgres:14.15-alpine || {
             echo "failed to start new database container. check your Docker setup."

@@ -18,11 +18,12 @@ public class AuthorService {
     private final AuthorCrudRepository authorRepository;
     private final AuthorMapperImpl mapper;
 
-    private static final String NO_AUTHOR = "No author with id = ";
+    private static final String NO_AUTHOR = "No author with ID = ";
 
-    public void create(AuthorDTO authorDTO) {
+    public AuthorIndexViewDTO create(AuthorDTO authorDTO) {
         Author author = mapper.authorDtoToAuthor(authorDTO);
-        authorRepository.save(author);
+        Author savedAuthor = authorRepository.save(author);
+        return mapper.authorToAuthorIndexDto(savedAuthor);
     }
 
     public AuthorDTO read(Long id) {

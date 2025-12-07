@@ -2,13 +2,12 @@ package me.fairygel.fbook.util.mapper.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import me.fairygel.fbook.dto.author.AuthorIndexViewDTO;
 import me.fairygel.fbook.dto.book.*;
-import me.fairygel.fbook.dto.book.status.BookStatusIndexViewDTO;
-import me.fairygel.fbook.dto.book.type.BookTypeIndexViewDTO;
-import me.fairygel.fbook.dto.genre.GenreIndexViewDTO;
+import me.fairygel.fbook.dto.BookStatusDTO;
+import me.fairygel.fbook.dto.BookTypeDTO;
+import me.fairygel.fbook.dto.GenreDTO;
 import me.fairygel.fbook.dto.grade.GradePreviewDTO;
 import me.fairygel.fbook.entity.*;
 import me.fairygel.fbook.util.mapper.*;
@@ -19,188 +18,151 @@ import me.fairygel.fbook.repository.GenreCrudRepository;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.zip.DataFormatException;
 
 @Slf4j
 @Component
 @AllArgsConstructor
 public class BookMapperImpl implements BookMapper {
-    private final AuthorMapper authorMapper;
-    private final GenreMapper genreMapper;
-    private final BookStatusMapper bookStatusMapper;
-    private final BookTypeMapper bookTypeMapper;
-    private final GradeMapper gradeMapper;
+	private final AuthorMapper authorMapper;
+	private final GenreMapper genreMapper;
+	private final BookStatusMapper bookStatusMapper;
+	private final BookTypeMapper bookTypeMapper;
+	private final GradeMapper gradeMapper;
 
-    private AuthorCrudRepository authorRepository;
-    private BookStatusReadOnlyRepository bookStatusRepository;
-    private BookTypeReadOnlyRepository bookTypeRepository;
-    private GenreCrudRepository genreRepository;
+	private AuthorCrudRepository authorRepository;
+	private BookStatusReadOnlyRepository bookStatusRepository;
+	private BookTypeReadOnlyRepository bookTypeRepository;
+	private GenreCrudRepository genreRepository;
 
-    // --- DTO To Book ---
+	// --- DTO To Book ---
 
-    @Override
-    public Book createBookDtoToBook(CreateBookDTO bookDTO) {
-        Book book = new Book();
+	@Override
+	public Book bookDtoToBook (BookDTO bookDTO, Boolean isCreating) {
+		Book book = new Book();
 
-        Author author = authorRepository.findById(bookDTO.getAuthorId())
-                .orElseThrow(() -> new EntityNotFoundException("No author with id = " + bookDTO.getAuthorId()));
+		Author author = getAuthor(bookDTO.getAuthorId(), isCreating);
+		Set<Genre> genres = getGenres(bookDTO.getGenreIds(), isCreating);
+		BookStatus bookStatus = getBookStatus(bookDTO.getBookStatusId(), isCreating);
+		BookType bookType = getBookType(bookDTO.getBookTypeId(), isCreating);
 
-        Set<Genre> genres = new HashSet<>();
+		book.setName(bookDTO.getName());
+		book.setAuthor(author);
+		book.setGenres(genres);
+		book.setBookStatus(bookStatus);
+		book.setStartedReadDate(bookDTO.getStartedReadDate());
+		book.setEndedReadDate(bookDTO.getEndedReadDate());
+		book.setAnnotation(bookDTO.getAnnotation());
+		book.setBookType(bookType);
 
-        for (Long genreId : bookDTO.getGenreIds()) {
-            Genre genre = genreRepository.findById(genreId)
-                    .orElseThrow(() -> new EntityNotFoundException("No genre with id = " + genreId));
-            genres.add(genre);
-        }
+		return book;
+	}
 
-        BookStatus bookStatus = bookStatusRepository.findById((short) 0).orElseThrow(IllegalAccessError::new);
-        BookType bookType = bookTypeRepository.findById(bookDTO.getBookTypeId())
-                .orElseThrow(() -> new EntityNotFoundException("No book type with id = " + bookDTO.getBookTypeId()));
+	// --- Book To DTO ---
 
-        book.setName(bookDTO.getName());
-        book.setAuthor(author);
-        book.setGenres(genres);
-        book.setBookStatus(bookStatus);
-        book.setAnnotation(bookDTO.getAnnotation());
-        book.setBookType(bookType);
+	@Override
+	public BookFullViewDTO bookToBookFullViewDto (Book book) {
+		BookFullViewDTO bookDTO = new BookFullViewDTO();
 
-        return book;
-    }
+		Grade bookGrade = getSingleGrade(book.getGrades());
 
-    @Override
-    public Book updateBookDtoToBook(UpdateBookDTO bookDTO) {
-        Book book = new Book();
+		AuthorIndexViewDTO authorDTO = authorMapper.authorToAuthorIndexDto(book.getAuthor());
+		Set<GenreDTO> genreDTOs = genreMapper.genresToIndex(book.getGenres());
+		BookStatusDTO bookStatusDTO = bookStatusMapper.bookStatusToBookStatusDto(book.getBookStatus());
+		BookTypeDTO bookTypeDTO = bookTypeMapper.bookTypeToBookTypeDto(book.getBookType());
+		GradePreviewDTO gradeDTO = gradeMapper.gradeToGradePreviewDTO(bookGrade);
 
-        Author author = getAuthor(bookDTO);
-        Set<Genre> genres = getGenres(bookDTO);
-        BookStatus bookStatus = getBookStatus(bookDTO);
-        BookType bookType = getBookType(bookDTO);
-        LocalDate startedDate = stringToDate(bookDTO.getStartedReadDate());
-        LocalDate endedDate = stringToDate(bookDTO.getEndedReadDate());
+		bookDTO.setId(book.getId());
+		bookDTO.setName(book.getName());
+		bookDTO.setAuthor(authorDTO);
+		bookDTO.setGenres(genreDTOs);
+		bookDTO.setBookStatus(bookStatusDTO);
+		bookDTO.setBookType(bookTypeDTO);
+		bookDTO.setStartedReadDate(dateToString(book.getStartedReadDate()));
+		bookDTO.setEndedReadDate(dateToString(book.getEndedReadDate()));
+		bookDTO.setAnnotation(book.getAnnotation());
+		bookDTO.setGrade(gradeDTO);
 
-        book.setName(bookDTO.getName());
-        book.setAuthor(author);
-        book.setGenres(genres.isEmpty() ? null : genres);
-        book.setBookStatus(bookStatus);
-        book.setStartedReadDate(startedDate);
-        book.setEndedReadDate(endedDate);
-        book.setAnnotation(bookDTO.getAnnotation());
-        book.setBookType(bookType);
+		return bookDTO;
+	}
 
-        return book;
-    }
+	public BookCoverDTO bookToBookCoverDto (Book book) {
+		BookCoverDTO bookDTO = new BookCoverDTO();
 
-    // --- Book To DTO ---
+		//bookDTO.setCover(book.getCover());
 
-    @Override
-    public BookFullViewDTO bookToBookFullViewDto(Book book) {
-        BookFullViewDTO bookDTO = new BookFullViewDTO();
+		return bookDTO;
+	}
 
-        Grade bookGrade = getSingleGrade(book.getGrades());
+	@Override
+	public IndexBookViewDTO bookToIndexBookViewDto (Book book) {
+		IndexBookViewDTO bookDTO = new IndexBookViewDTO();
 
-        AuthorIndexViewDTO authorDTO = authorMapper.authorToAuthorIndexDto(book.getAuthor());
-        Set<GenreIndexViewDTO> genreDTOs = genreMapper.genresToIndex(book.getGenres());
-        BookStatusIndexViewDTO bookStatusDTO = bookStatusMapper.bookStatusToBookStatusIndexDto(book.getBookStatus());
-        BookTypeIndexViewDTO bookTypeDTO = bookTypeMapper.bookTypeToBookTypeIndexDto(book.getBookType());
-        GradePreviewDTO gradeDTO = gradeMapper.gradeToGradePreviewDTO(bookGrade);
+		bookDTO.setId(book.getId());
+		bookDTO.setName(book.getName());
 
-        bookDTO.setId(book.getId());
-        bookDTO.setName(book.getName());
-        bookDTO.setAuthor(authorDTO);
-        bookDTO.setGenres(genreDTOs);
-        bookDTO.setBookStatus(bookStatusDTO);
-        bookDTO.setBookType(bookTypeDTO);
-        bookDTO.setStartedReadDate(dateToString(book.getStartedReadDate()));
-        bookDTO.setEndedReadDate(dateToString(book.getEndedReadDate()));
-        bookDTO.setAnnotation(book.getAnnotation());
-        bookDTO.setGrade(gradeDTO);
+		return bookDTO;
+	}
 
-        return bookDTO;
-    }
-    public BookCoverDTO bookToBookCoverDto(Book book) {
-        BookCoverDTO bookDTO = new BookCoverDTO();
+	// --- Helpful Stuff ---
+	private Grade getSingleGrade (Set<Grade> grades) {
+		if ( grades.isEmpty() ) return null;
 
-        //bookDTO.setCover(book.getCover());
+		return grades.iterator().next();
+	}
 
-        return bookDTO;
-    }
-    @Override
-    public IndexBookViewDTO bookToIndexBookViewDto(Book book) {
-        IndexBookViewDTO bookDTO = new IndexBookViewDTO();
+	private Author getAuthor (Long authorId, Boolean zeroOnNull) {
+		if ( authorId == null && zeroOnNull ) return authorRepository.findById(0L)
+				.orElseThrow(() -> new EntityNotFoundException("No author with ID = 0"));
+		else if ( authorId == null ) return null;
 
-        bookDTO.setId(book.getId());
-        bookDTO.setName(book.getName());
+		return authorRepository.findById(authorId)
+				.orElseThrow(() -> new EntityNotFoundException("No author with ID = " + authorId));
+	}
 
-        return bookDTO;
-    }
+	private Set<Genre> getGenres (Set<Long> genreIds, Boolean zeroOnNull) {
+		if ( genreIds == null && zeroOnNull ) return genreRepository.findById(0L)
+                .map(Collections::singleton)
+                .orElseThrow(() -> new EntityNotFoundException("No genre with ID = 0"));
+		else if ( genreIds == null ) return null;
 
-    // --- Helpful Stuff ---
-    private Grade getSingleGrade(Set<Grade> grades) {
-        if (grades.isEmpty()) return null;
+		Set<Genre> genres = new HashSet<>();
 
-        return grades.iterator().next();
-    }
+		for ( Long genreId : genreIds ) {
+			Genre genre = genreRepository.findById(genreId)
+					.orElseThrow(() -> new EntityNotFoundException("No genre with ID = " + genreId));
+			genres.add(genre);
+		}
 
-    private Author getAuthor(UpdateBookDTO bookDTO) {
-        Long authorId = bookDTO.getAuthorId();
+		if ( genres.size() > 1 ) {
+			genres.removeIf(g -> g.getId() == 0);
+		}
 
-        if (authorId == null) return null;
+		return genres;
+	}
 
-        else return authorRepository.findById(authorId)
-                .orElseThrow(() -> new EntityNotFoundException("No author with id = " + authorId));
-    }
+	private BookStatus getBookStatus (Short statusId, Boolean zeroOnNull) {
+		if ( statusId == null && zeroOnNull ) return bookStatusRepository.findById((short) 0)
+				.orElseThrow(() -> new EntityNotFoundException("No book status with ID = 0"));
+		else if (statusId == null) return null;
 
-    private Set<Genre> getGenres(UpdateBookDTO bookDTO) {
-        if (bookDTO.getGenreIds() == null) return Collections.emptySet();
+		return bookStatusRepository.findById(statusId)
+				.orElseThrow(() -> new EntityNotFoundException("No book status with ID = " + statusId));
+	}
 
-        Set<Genre> genres = new HashSet<>();
+	private BookType getBookType (Short typeId, Boolean zeroOnNull) {
+		if ( typeId == null && zeroOnNull ) return bookTypeRepository.findById((short) 0)
+				.orElseThrow(() -> new EntityNotFoundException("No book status with ID = 0"));
+		else if (typeId == null) return null;
 
-        for (Long genreId : bookDTO.getGenreIds()) {
-            Genre genre = genreRepository.findById(genreId)
-                    .orElseThrow(() -> new EntityNotFoundException("No genre with id = " + genreId));
-            genres.add(genre);
-        }
+		return bookTypeRepository.findById(typeId)
+				.orElseThrow(() -> new EntityNotFoundException("No book type with ID = " + typeId));
+	}
 
-        if (genres.size() > 1) {
-            genres.removeIf(g -> g.getId() == 0);
-        }
-
-        return genres;
-    }
-
-    private BookStatus getBookStatus(UpdateBookDTO bookDTO) {
-        Short statusId = bookDTO.getBookStatusId();
-
-        if (statusId == null) return null;
-
-        else return bookStatusRepository.findById(statusId)
-                .orElseThrow(() -> new EntityNotFoundException("No book status with id = " + statusId));
-    }
-
-    private BookType getBookType(UpdateBookDTO bookDTO) {
-        Short typeId = bookDTO.getBookTypeId();
-
-        if (typeId == null) return null;
-
-        else return bookTypeRepository.findById(typeId)
-                .orElseThrow(() -> new EntityNotFoundException("No book type with id = " + typeId));
-    }
-
-    @SneakyThrows
-    private LocalDate stringToDate(String str) {
-        if (str == null || str.isEmpty()) return null;
-        try {
-            return LocalDate.parse(str);
-        } catch (DateTimeParseException e) {
-            throw new DataFormatException(e.getMessage());
-        }
-    }
-    private String dateToString(LocalDate date) {
-        if (date == null) return "";
-        return date.toString();
-    }
+	private String dateToString (LocalDate date) {
+		if ( date == null ) return "";
+		return date.toString();
+	}
 }
