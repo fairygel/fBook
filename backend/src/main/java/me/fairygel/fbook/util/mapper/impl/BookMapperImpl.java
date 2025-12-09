@@ -41,6 +41,11 @@ public class BookMapperImpl implements BookMapper {
 
 	@Override
 	public Book bookDtoToBook (BookDTO bookDTO, Boolean isCreating) {
+		return bookDtoToBook(bookDTO, null, isCreating);
+	}
+
+	@Override
+	public Book bookDtoToBook (BookDTO bookDTO, Book existingBook, Boolean isCreating) {
 		Book book = new Book();
 
 		Author author = getAuthor(bookDTO.getAuthorId(), isCreating);
@@ -52,8 +57,13 @@ public class BookMapperImpl implements BookMapper {
 		book.setAuthor(author);
 		book.setGenres(genres);
 		book.setBookStatus(bookStatus);
-		book.setStartedReadDate(bookDTO.getStartedReadDate());
-		book.setEndedReadDate(bookDTO.getEndedReadDate());
+		if ( existingBook != null ) {
+			LocalDate startedDate = getDate(bookDTO.getStartedReadDate(), existingBook.getStartedReadDate());
+			LocalDate endedDate = getDate(bookDTO.getEndedReadDate(), existingBook.getEndedReadDate());
+
+			book.setStartedReadDate(startedDate);
+			book.setEndedReadDate(endedDate);
+		}
 		book.setAnnotation(bookDTO.getAnnotation());
 		book.setBookType(bookType);
 
@@ -80,8 +90,8 @@ public class BookMapperImpl implements BookMapper {
 		bookDTO.setGenres(genreDTOs);
 		bookDTO.setBookStatus(bookStatusDTO);
 		bookDTO.setBookType(bookTypeDTO);
-		bookDTO.setStartedReadDate(dateToString(book.getStartedReadDate()));
-		bookDTO.setEndedReadDate(dateToString(book.getEndedReadDate()));
+		bookDTO.setStartedReadDate(book.getStartedReadDate());
+		bookDTO.setEndedReadDate(book.getEndedReadDate());
 		bookDTO.setAnnotation(book.getAnnotation());
 		bookDTO.setGrade(gradeDTO);
 
@@ -107,6 +117,12 @@ public class BookMapperImpl implements BookMapper {
 	}
 
 	// --- Helpful Stuff ---
+	private LocalDate getDate(String dateStr, LocalDate existingDate) {
+		if ( dateStr == null ) return existingDate;
+		if ( dateStr.isEmpty() ) return null;
+		return LocalDate.parse(dateStr);
+	}
+
 	private Grade getSingleGrade (Set<Grade> grades) {
 		if ( grades.isEmpty() ) return null;
 
@@ -159,10 +175,5 @@ public class BookMapperImpl implements BookMapper {
 
 		return bookTypeRepository.findById(typeId)
 				.orElseThrow(() -> new EntityNotFoundException("No book type with ID = " + typeId));
-	}
-
-	private String dateToString (LocalDate date) {
-		if ( date == null ) return "";
-		return date.toString();
 	}
 }

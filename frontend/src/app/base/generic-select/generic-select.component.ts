@@ -80,7 +80,9 @@ export class GenericSelect implements AfterViewInit {
     loadOptions(): void {
         this.loadMethod().subscribe({
             next: (response: any) => {
-                this.allOptions = (response as any[]).map(r => this.toOption(r));
+                this.allOptions = (response as any[])
+                    .map(r => this.toOption(r))
+                    .filter(option => option.id !== 0);
                 this.sortOptions();
             },
             error: (error: ApiError) => {

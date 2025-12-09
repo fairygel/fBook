@@ -1,18 +1,18 @@
 package me.fairygel.fbook.service;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.ValidationException;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import me.fairygel.fbook.dto.book.*;
 import me.fairygel.fbook.entity.Book;
-import me.fairygel.fbook.util.BookAutomation;
+import me.fairygel.fbook.util.BookHelper;
 import me.fairygel.fbook.util.mapper.impl.BookMapperImpl;
 import me.fairygel.fbook.repository.BookCrudRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -22,7 +22,7 @@ public class BookService {
 
     private final BookMapperImpl bookMapper;
     private final BookCoverService coverService;
-    private final BookAutomation bookAutomation;
+    private final BookHelper bookHelper;
     private final BookCrudRepository bookRepository;
 
     @SneakyThrows
@@ -41,17 +41,15 @@ public class BookService {
 
     @SneakyThrows
     public BookFullViewDTO update(long id, BookDTO bookDTO, MultipartFile cover) {
-        if ( bookDTO.getEndedReadDate() != null && bookDTO.getStartedReadDate() != null ) {
-            if ( bookDTO.getEndedReadDate().isBefore(bookDTO.getStartedReadDate()) ) {
-                throw new ValidationException("Ended read date can't be before started read date.");
-            }
-        }
+        Book existingBook = bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(NO_BOOK_WITH_ID + id));
 
-        Book book = bookMapper.bookDtoToBook(bookDTO, false);
+        Book book = bookMapper.bookDtoToBook(bookDTO, existingBook, false);
 
-        bookAutomation.automate(book);
+        bookHelper.automate(book, existingBook.getBookStatus());
+        bookHelper.validate(book);
 
-        Book updatedBook = bookRepository.updateById(id, book)
+        Book updatedBook = bookRepository.updateById(id, book, List.of("startedReadDate", "endedReadDate"))
                 .orElseThrow(() -> new EntityNotFoundException(NO_BOOK_WITH_ID + id));
 
         coverService.updateCover(updatedBook, cover);

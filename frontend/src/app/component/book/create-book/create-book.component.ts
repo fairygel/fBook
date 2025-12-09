@@ -1,8 +1,8 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {BookService} from "../../../service/book/book.service";
-import {CreateBookDTO} from "../../../dto/book/createBookDTO";
-import {ApiError} from "../../../error/api-error";
+import {BookDTO} from "../../../dto/book/bookDTO";
+import {ApiError, isValidationError} from "../../../error/api-error";
 import {HttpErrorResponse} from "@angular/common/http";
 import {SelectGenreComponent} from "../../genre/select-genre/select-genre.component";
 import {SelectAuthorComponent} from "../../author/select-author/select-author.component";
@@ -54,16 +54,27 @@ export class CreateBookComponent {
             },
             error: (error: HttpErrorResponse) => {
                 const apiError: ApiError = error.error;
-                alert(apiError.description);
+                let errorMessage = '';
+
+                if (isValidationError(apiError)) {
+                    errorMessage = `${apiError.message}\n\n`;
+                    apiError.detail.forEach(detail => {
+                        errorMessage += `${detail.field}: ${detail.value}\n`;
+                    });
+                } else {
+                    errorMessage = apiError.message;
+                }
+
+                alert(errorMessage);
                 this.changeLoading(false);
             }
         });
     }
 
-    private parseBookFromForm(): CreateBookDTO {
+    private parseBookFromForm(): BookDTO {
         return {
             name: this.bookForm.get('name')?.value ?? '',
-            annotation: this.bookForm.get('annotation')?.value ?? null,
+            annotation: this.bookForm.get('annotation')?.value ?? undefined,
             authorId: this.authorId,
             genreIds: this.genreIds,
             bookTypeId: this.bookTypeId

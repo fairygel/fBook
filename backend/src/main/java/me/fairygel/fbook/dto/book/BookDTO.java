@@ -5,7 +5,6 @@ import lombok.Data;
 import me.fairygel.fbook.util.validation.OnCreateGroup;
 import me.fairygel.fbook.util.validation.OnUpdateGroup;
 
-import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -24,12 +23,10 @@ public class BookDTO {
     private Short bookStatusId;
 
     @Null(groups = { OnCreateGroup.class }, message = "Started read date cannot be set when creating a book")
-    @PastOrPresent(groups = { OnUpdateGroup.class }, message = "Started read date cannot be in the future")
-    private LocalDate startedReadDate;
+    private String startedReadDate;
 
     @Null(groups = { OnCreateGroup.class }, message = "Ended read date cannot be set when creating a book")
-    @PastOrPresent(groups = { OnUpdateGroup.class }, message = "Ended read date cannot be in the future")
-    private LocalDate endedReadDate;
+    private String endedReadDate;
 
 
 }

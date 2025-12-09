@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 @Component
 public interface BookMapper {
     Book bookDtoToBook (BookDTO bookDTO, Boolean isCreating);
-    BookFullViewDTO bookToBookFullViewDto(Book book);
+
+	Book bookDtoToBook (BookDTO bookDTO, Book existingBook, Boolean isCreating);
+
+	BookFullViewDTO bookToBookFullViewDto(Book book);
     IndexBookViewDTO bookToIndexBookViewDto(Book book);
 }

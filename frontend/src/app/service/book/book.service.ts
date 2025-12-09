@@ -3,8 +3,7 @@ import {Injectable} from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import {IndexBookViewDTO} from "../../dto/book/indexBookViewDTO";
 import {BookFullViewDTO} from "../../dto/book/bookFulViewDTO";
-import {CreateBookDTO} from "../../dto/book/createBookDTO";
-import {UpdateBookDTO} from "../../dto/book/updateBookDTO";
+import {BookDTO} from "../../dto/book/bookDTO";
 
 @Injectable({
   providedIn: 'root'
@@ -25,13 +24,13 @@ export class BookService {
     return this.http.get(`/api/books/${id}/cover`, { responseType: 'blob' });
   }
 
-  createBook(book: CreateBookDTO, cover: File|null) {
+  createBook(book: BookDTO, cover: File|null) {
     const formData = new FormData();
 
     formData.append('book', this.bookToBlob(book));
     if (cover) formData.append('cover', cover);
 
-    return this.http.post('/api/books', formData);
+    return this.http.post<IndexBookViewDTO>('/api/books', formData);
   }
 
   private bookToBlob(bookDTO: any): Blob {
@@ -42,7 +41,7 @@ export class BookService {
     return this.http.delete(`/api/books/${id}`);
   }
 
-  updateBook(id: number, book: UpdateBookDTO, cover: File|null) {
+  updateBook(id: number, book: BookDTO, cover: File|null) {
     const formData = new FormData();
 
     formData.append('book', this.bookToBlob(book))

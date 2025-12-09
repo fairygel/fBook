@@ -4,7 +4,7 @@ import {
 import {GenericSelect} from "../../../base/generic-select/generic-select.component";
 import {BookStatusService} from "../../../service/book-status/book-status.service";
 import {OptionDTO} from "../../../base/generic-select/optionDTO";
-import {BookStatusIndexViewDTO} from "../../../dto/book/status/bookStatusIndexViewDTO";
+import {BookStatusDTO} from "../../../dto/book/status/bookStatusDTO";
 
 @Component({
     selector: 'app-select-book-status',
@@ -23,14 +23,14 @@ import {BookStatusIndexViewDTO} from "../../../dto/book/status/bookStatusIndexVi
 })
 export class SelectBookStatusComponent {
     @Output() bookStatusSelectedEvent = new EventEmitter<number>();
-    @Input() bookStatusToShow: BookStatusIndexViewDTO|null = null;
+    @Input() bookStatusToShow: BookStatusDTO|null = null;
 
     constructor(private readonly bookStatusService: BookStatusService) {}
 
     toOption(bookStatus: any): OptionDTO {
         if (!bookStatus) return {id: 0, name: ''};
 
-        let raw = bookStatus as BookStatusIndexViewDTO;
+        let raw = bookStatus as BookStatusDTO;
         return {
             id: raw.id,
             name: raw.status

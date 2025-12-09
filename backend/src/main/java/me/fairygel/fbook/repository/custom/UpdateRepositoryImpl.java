@@ -5,6 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import me.fairygel.fbook.util.PropertyMerger;
 
+import java.util.List;
 import java.util.Optional;
 
 public class UpdateRepositoryImpl<U> implements UpdateRepository<U> {
@@ -20,12 +21,18 @@ public class UpdateRepositoryImpl<U> implements UpdateRepository<U> {
     @Override
     @Transactional
     @SuppressWarnings("unchecked")
-    public Optional<U> updateById(Long id, U entity) {
+    public Optional<U> updateById(Long id, U entity, List<String> fieldsToSkip) {
         U existingEntity = (U) entityManager.find(entity.getClass(), id);
 
         if (existingEntity == null) return Optional.empty();
-        PropertyMerger.merge(entity, existingEntity);
+        PropertyMerger.merge(entity, existingEntity, fieldsToSkip);
 
         return Optional.of(entityManager.merge(existingEntity));
+    }
+
+    @Override
+    @Transactional
+    public Optional<U> updateById(Long id, U entity) {
+        return updateById(id, entity, List.of());
     }
 }

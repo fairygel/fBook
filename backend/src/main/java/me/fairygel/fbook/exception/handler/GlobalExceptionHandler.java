@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -127,6 +128,18 @@ public class GlobalExceptionHandler {
         PartialErrorResponse errorResponse = new PartialErrorResponse(
                 "REFERENCE_EXCEPTION",
                 "Cannot delete or update because of reference constraint."
+        );
+
+        return ResponseEntity.status(status).body(errorResponse);
+    }
+
+    @ExceptionHandler(value = DateTimeParseException.class)
+    public ResponseEntity<PartialErrorResponse> handleHttpMessageNotReadableException(DateTimeParseException e) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        PartialErrorResponse errorResponse = new PartialErrorResponse(
+                "DATE_PARSING_EXCEPTION",
+                e.getMessage()
         );
 
         return ResponseEntity.status(status).body(errorResponse);

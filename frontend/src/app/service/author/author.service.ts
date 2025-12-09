@@ -18,13 +18,13 @@ export class AuthorService {
   getAuthor(id: number): Observable<AuthorDTO> {
     return this.http.get<AuthorDTO>(`/api/authors/${id}`)
   }
-  createAuthor(fullName: string): Observable<AuthorDTO> {
+  createAuthor(fullName: string): Observable<AuthorIndexViewDTO> {
     let splitName = fullName.split(' ', 2);
 
     if (splitName.length < 2) {
-      return this.http.post<AuthorDTO>(`/api/authors`, {firstName: splitName[0]});
+      return this.http.post<AuthorIndexViewDTO>(`/api/authors`, {firstName: splitName[0]});
     }
 
-    return this.http.post<AuthorDTO>(`/api/authors`, {firstName: splitName[0], lastName: splitName[1]});
+    return this.http.post<AuthorIndexViewDTO>(`/api/authors`, {firstName: splitName[0], lastName: splitName[1]});
   }
 }

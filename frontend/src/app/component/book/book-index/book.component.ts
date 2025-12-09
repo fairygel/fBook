@@ -59,7 +59,7 @@ export class BookComponent implements OnInit {
         this.bookService.getBooks()
             .subscribe({
                 next: (response) => {
-                    this.books = response;
+                    this.books = response.filter(book => book.id !== 0);
                     this.changeLoading(false);
                     this.loadCovers();
                 },

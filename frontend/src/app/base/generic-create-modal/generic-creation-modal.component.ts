@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
-import {ApiError} from "../../error/api-error";
+import {ApiError, isValidationError} from "../../error/api-error";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Observable} from "rxjs";
 
@@ -104,7 +104,18 @@ export class GenericCreationModalComponent implements OnInit, OnDestroy, OnChang
             },
             error: (error: HttpErrorResponse) => {
                 const apiError: ApiError = error.error;
-                alert(apiError.description);
+                let errorMessage = '';
+
+                if (isValidationError(apiError)) {
+                    errorMessage = `${apiError.message}\n\n`;
+                    apiError.detail.forEach(detail => {
+                        errorMessage += `${detail.field}: ${detail.value}\n`;
+                    });
+                } else {
+                    errorMessage = apiError.message;
+                }
+
+                alert(errorMessage);
                 this.changeLoading(false);
                 this.focusOnInput();
             }

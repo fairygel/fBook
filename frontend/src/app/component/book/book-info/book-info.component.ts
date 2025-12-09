@@ -6,9 +6,9 @@ import {Title} from "@angular/platform-browser";
 import {HttpErrorResponse} from "@angular/common/http";
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 
-import {ApiError} from "../../../error/api-error";
+import {ApiError, isValidationError} from "../../../error/api-error";
 import {BookService} from "../../../service/book/book.service";
-import {UpdateBookDTO} from "../../../dto/book/updateBookDTO";
+import {BookDTO} from "../../../dto/book/bookDTO";
 import {BookFullViewDTO} from "../../../dto/book/bookFulViewDTO";
 
 import {SelectGenreComponent} from "../../genre/select-genre/select-genre.component";
@@ -16,10 +16,10 @@ import {SelectAuthorComponent} from "../../author/select-author/select-author.co
 import {SelectBookTypeComponent} from "../../book-type/select-book-type/select-book-type.component";
 import {SelectBookStatusComponent} from "../../book-status/select-book-status/select-book-status.component";
 
-import {GenreIndexViewDTO} from "../../../dto/genre/genreIndexViewDTO";
+import {GenreDTO} from "../../../dto/genre/genreDTO";
 import {AuthorIndexViewDTO} from "../../../dto/author/authorIndexViewDTO";
-import {BookTypeIndexViewDTO} from "../../../dto/book/type/bookTypeIndexViewDTO";
-import {BookStatusIndexViewDTO} from "../../../dto/book/status/bookStatusIndexViewDTO";
+import {BookTypeDTO} from "../../../dto/book/type/bookTypeDTO";
+import {BookStatusDTO} from "../../../dto/book/status/bookStatusDTO";
 import {CommonModule, NgClass} from "@angular/common";
 
 import {Subject} from "rxjs";
@@ -68,10 +68,10 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
 
     book: BookFullViewDTO | null = null;
 
-    bookGenres: GenreIndexViewDTO[] = [];
+    bookGenres: GenreDTO[] = [];
     author: AuthorIndexViewDTO | null = null;
-    bookType: BookTypeIndexViewDTO | null = null;
-    bookStatus: BookStatusIndexViewDTO | null = null;
+    bookType: BookTypeDTO | null = null;
+    bookStatus: BookStatusDTO | null = null;
 
     bookForm = new FormGroup({
         name: new FormControl(''),
@@ -219,7 +219,18 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
             },
             error: (error: HttpErrorResponse) => {
                 const apiError: ApiError = error.error;
-                alert(apiError.description);
+                let errorMessage = '';
+
+                if (isValidationError(apiError)) {
+                    errorMessage = `${apiError.message}\n\n`;
+                    apiError.detail.forEach(detail => {
+                        errorMessage += `${detail.field}: ${detail.value}\n`;
+                    });
+                } else {
+                    errorMessage = apiError.message;
+                }
+
+                alert(errorMessage);
             }
         });
     }
@@ -227,10 +238,10 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
     private fillBookWithData(response: BookFullViewDTO) {
         this.book = response;
 
-        this.bookGenres = response.genres;
-        this.author = response.author;
-        this.bookType = response.bookType;
-        this.bookStatus = response.bookStatus;
+        this.bookGenres = response.genres.filter(g => g.id !== 0);
+        this.author = response.author?.id !== 0 ? response.author : null;
+        this.bookType = response.bookType?.id !== 0 ? response.bookType : null;
+        this.bookStatus = response.bookStatus?.id !== 0 ? response.bookStatus : null;
 
         this.bookForm.patchValue({
             name: response.name,
@@ -240,17 +251,17 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
         })
     }
 
-    private parseBookFromForm(): UpdateBookDTO {
+    private parseBookFromForm(): BookDTO {
         return {
             name: this.bookForm.get('name')?.value ?? '',
-            annotation: this.bookForm.get('annotation')?.value ?? null,
-            endedReadDate: this.bookForm.get('endedReadDate')?.value ?? null,
-            startedReadDate: this.bookForm.get('startedReadDate')?.value ?? null,
+            annotation: this.bookForm.get('annotation')?.value ?? '',
+            endedReadDate: this.bookForm.get('endedReadDate')?.value ?? undefined,
+            startedReadDate: this.bookForm.get('startedReadDate')?.value ?? undefined,
 
-            authorId: this.authorToUpdate,
-            genreIds: this.genresToUpdate,
-            bookTypeId: this.bookTypeToUpdate,
-            bookStatusId: this.bookStatusToUpdate,
+            authorId: this.authorToUpdate ?? undefined,
+            genreIds: this.genresToUpdate ?? undefined,
+            bookTypeId: this.bookTypeToUpdate ?? undefined,
+            bookStatusId: this.bookStatusToUpdate ?? undefined,
         }
     }
 

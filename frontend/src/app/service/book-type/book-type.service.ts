@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Observable} from "rxjs";
-import {BookTypeIndexViewDTO} from "../../dto/book/type/bookTypeIndexViewDTO";
+import {BookTypeDTO} from "../../dto/book/type/bookTypeDTO";
 import { HttpClient } from "@angular/common/http";
 
 @Injectable({
@@ -10,7 +10,7 @@ export class BookTypeService {
   constructor(private readonly http: HttpClient) {
   }
 
-  getBookTypes(): Observable<BookTypeIndexViewDTO[]> {
-    return this.http.get<BookTypeIndexViewDTO[]>(`/api/book-types`);
+  getBookTypes(): Observable<BookTypeDTO[]> {
+    return this.http.get<BookTypeDTO[]>(`/api/book-types`);
   }
 }

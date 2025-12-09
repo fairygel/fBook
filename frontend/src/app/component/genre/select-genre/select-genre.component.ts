@@ -8,6 +8,7 @@ import {GenreService} from "../../../service/genre/genre.service";
 import {GenreIndexViewDTO} from "../../../dto/genre/genreIndexViewDTO";
 import {GenericSelect} from "../../../base/generic-select/generic-select.component";
 import {OptionDTO} from "../../../base/generic-select/optionDTO";
+import {GenreDTO} from "../../../dto/genre/genreDTO";
 
 @Component({
     selector: 'app-select-genre',
@@ -27,7 +28,7 @@ import {OptionDTO} from "../../../base/generic-select/optionDTO";
 })
 export class SelectGenreComponent {
     @Output() genreSelectedEvent = new EventEmitter<number[]>();
-    @Input() genresToShow: GenreIndexViewDTO[] = [];
+    @Input() genresToShow: GenreDTO[] = [];
 
     constructor(private readonly genreService: GenreService) {}
 
@@ -63,7 +64,7 @@ export class SelectGenreComponent {
         this.genresToShow = selectedOptions.map(o => ({
             id: o.id,
             genre: o.name
-        }));
+        } as GenreDTO));
         this.genreSelectedEvent.emit(selectedOptions.map(o => o.id));
     }
 }
