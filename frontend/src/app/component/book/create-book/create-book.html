@@ -3,14 +3,14 @@
 <form [formGroup]="bookForm" autocomplete="off">
     <div class="form-container">
 
-        <div class="form-group name">
+        <div class="form-group name" [class.error]="hasFieldError('name')">
             <label for="name">name</label>
-            <input id="name" type="text" formControlName="name">
+            <input id="name" type="text" formControlName="name" (input)="clearFieldError('name')">
         </div>
 
-        <div class="form-group annotation">
+        <div class="form-group annotation" [class.error]="hasFieldError('annotation')">
             <label for="annotation">annotation</label>
-            <input id="annotation" type="text" formControlName="annotation">
+            <input id="annotation" type="text" formControlName="annotation" (input)="clearFieldError('annotation')">
         </div>
 
 

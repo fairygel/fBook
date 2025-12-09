@@ -7,11 +7,13 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {SelectGenreComponent} from "../../genre/select-genre/select-genre.component";
 import {SelectAuthorComponent} from "../../author/select-author/select-author.component";
 import {SelectBookTypeComponent} from "../../book-type/select-book-type/select-book-type.component";
+import {CommonModule} from "@angular/common";
 
 @Component({
     selector: 'app-create-book',
     standalone: true,
     imports: [
+        CommonModule,
         ReactiveFormsModule,
         SelectGenreComponent,
         SelectAuthorComponent,
@@ -30,6 +32,8 @@ export class CreateBookComponent {
     cover: File|null = null;
     coverUrl: string = "";
 
+    fieldErrors: Set<string> = new Set();
+
     @Output() onBookCreated = new EventEmitter();
 
     bookForm = new FormGroup({
@@ -42,6 +46,9 @@ export class CreateBookComponent {
 
     handleSubmit() {
         if (this.isLoading) return;
+
+        this.fieldErrors = new Set();
+
         this.changeLoading(true);
 
         const book = this.parseBookFromForm();
@@ -57,10 +64,16 @@ export class CreateBookComponent {
                 let errorMessage = '';
 
                 if (isValidationError(apiError)) {
+                    const newErrors = new Set<string>();
+
                     errorMessage = `${apiError.message}\n\n`;
+
                     apiError.detail.forEach(detail => {
+                        newErrors.add(detail.field);
                         errorMessage += `${detail.field}: ${detail.value}\n`;
                     });
+
+                    this.fieldErrors = newErrors;
                 } else {
                     errorMessage = apiError.message;
                 }
@@ -123,6 +136,18 @@ export class CreateBookComponent {
             this.cover = event.dataTransfer.files[0];
 
             if (this.cover) this.generatePreview(this.cover);
+        }
+    }
+
+    hasFieldError(fieldName: string): boolean {
+        return this.fieldErrors.has(fieldName);
+    }
+
+    clearFieldError(fieldName: string): void {
+        if (this.fieldErrors.has(fieldName)) {
+            const newErrors = new Set(this.fieldErrors);
+            newErrors.delete(fieldName);
+            this.fieldErrors = newErrors;
         }
     }
 

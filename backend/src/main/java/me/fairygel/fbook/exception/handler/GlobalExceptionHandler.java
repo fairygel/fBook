@@ -1,6 +1,8 @@
 package me.fairygel.fbook.exception.handler;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
 import me.fairygel.fbook.exception.PartialErrorResponse;
 import me.fairygel.fbook.exception.ValidationErrorResponse;
@@ -59,6 +61,33 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(status).body(errorResponse);
+    }
+
+    @ExceptionHandler(value = ConstraintViolationException.class)
+    public ResponseEntity<ValidationErrorResponse> handleConstraintViolationException(ConstraintViolationException e) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        Set<ValidationErrorResponse.Detail> details = e.getConstraintViolations()
+                .stream()
+                .map(violation -> new ValidationErrorResponse.Detail(
+                        getFieldName(violation),
+                        violation.getMessage()
+                ))
+                .collect(Collectors.toSet());
+
+        ValidationErrorResponse errorResponse = new ValidationErrorResponse(
+                "NOT_VALID",
+                "Validation error occurred.",
+                details
+        );
+
+        return ResponseEntity.status(status).body(errorResponse);
+    }
+
+    private String getFieldName(ConstraintViolation<?> violation) {
+        String path = violation.getPropertyPath().toString();
+        int lastDot = path.lastIndexOf('.');
+        return lastDot >= 0 ? path.substring(lastDot + 1) : path;
     }
 
     @ExceptionHandler(value = EntityNotFoundException.class)

@@ -51,6 +51,11 @@
   padding: 0 4px 0 4px;
 
   color: colors.$label-color;
+  transition: color 0.3s ease;
+}
+
+.form-group.error > label {
+  color: colors.$error-color !important;
 }
 
 .form-group > input {

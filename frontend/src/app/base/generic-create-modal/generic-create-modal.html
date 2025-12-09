@@ -4,8 +4,8 @@
             <h3>New {{objectName}}</h3>
 
             <form [formGroup]="objectForm" (ngSubmit)="createObject()" autocomplete="off">
-                <div class="form-group">
-                    <input #create_input id="obj" type="text" formControlName="obj"/>
+                <div class="form-group" [class.error]="hasFieldError('name')">
+                    <input #create_input id="obj" type="text" formControlName="obj" (input)="clearFieldError('name')"/>
                 </div>
 
                 <div class="modal-actions">

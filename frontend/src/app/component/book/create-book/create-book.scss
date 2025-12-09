@@ -1,6 +1,14 @@
 @use '../../../../assets/form-styles';
 @use '../../../../assets/colors';
 
+.form-group.error label {
+  color: colors.$error-color !important;
+}
+
+.form-group.error::before {
+  border-color: colors.$error-color !important;
+}
+
 .name {
   --label-width: 53px;
 }

@@ -31,6 +31,8 @@ export class GenericCreationModalComponent implements OnInit, OnDestroy, OnChang
     isLoading = false;
     isObjectAdded = false;
 
+    fieldErrors: Set<string> = new Set();
+
     objectForm = new FormGroup({
         obj: new FormControl('')
     });
@@ -93,6 +95,8 @@ export class GenericCreationModalComponent implements OnInit, OnDestroy, OnChang
     }
 
     handleSubmit<T>(action: () => Observable<T>): void {
+        this.fieldErrors = new Set();
+
         this.changeLoading(true);
 
         action().subscribe({
@@ -107,10 +111,15 @@ export class GenericCreationModalComponent implements OnInit, OnDestroy, OnChang
                 let errorMessage = '';
 
                 if (isValidationError(apiError)) {
+                    const newErrors = new Set<string>();
+
                     errorMessage = `${apiError.message}\n\n`;
                     apiError.detail.forEach(detail => {
+                        newErrors.add(detail.field);
                         errorMessage += `${detail.field}: ${detail.value}\n`;
                     });
+
+                    this.fieldErrors = newErrors;
                 } else {
                     errorMessage = apiError.message;
                 }
@@ -120,6 +129,18 @@ export class GenericCreationModalComponent implements OnInit, OnDestroy, OnChang
                 this.focusOnInput();
             }
         });
+    }
+
+    hasFieldError(fieldName: string): boolean {
+        return this.fieldErrors.has(fieldName);
+    }
+
+    clearFieldError(fieldName: string): void {
+        if (this.fieldErrors.has(fieldName)) {
+            const newErrors = new Set(this.fieldErrors);
+            newErrors.delete(fieldName);
+            this.fieldErrors = newErrors;
+        }
     }
 
 }

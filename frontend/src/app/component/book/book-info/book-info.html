@@ -31,19 +31,19 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group name">
+                                <div class="form-group name" [class.error]="hasFieldError('name')">
                                     <label for="name">name</label>
-                                    <input (input)="onFormChange(true)" type="text" formControlName="name" id="name">
+                                    <input (input)="onFormChange(true, 'name')" type="text" formControlName="name" id="name">
                                 </div>
 
                                 <app-select-author (authorSelectedEvent)="handleSelectedAuthor($event)"
                                                    [authorToShow]="author"/>
 
                                 <div class="dates-group">
-                                    <div class="form-group started-date">
+                                    <div class="form-group started-date" [class.error]="hasFieldError('startedReadDate')">
                                         <label for="startedReadDate">started</label>
                                         <button (click)="focusOnElement(startedDate)" class="focusable-input"></button>
-                                        <input (change)="onFormChange()" type="date" formControlName="startedReadDate"
+                                        <input (change)="onFormChange(false, 'startedReadDate')" type="date" formControlName="startedReadDate"
                                                #startedDate>
                                         <span class="date-span">{{ startedDateFormatted }}
                                             <svg class="date-icon" viewBox="0 0 24 24">
@@ -52,10 +52,10 @@
                                         </span>
                                     </div>
 
-                                    <div class="form-group ended-date">
+                                    <div class="form-group ended-date" [class.error]="hasFieldError('endedReadDate')">
                                         <label for="endedReadDate">ended</label>
                                         <button (click)="focusOnElement(endedDate)" class="focusable-input"></button>
-                                        <input (change)="onFormChange()" type="date" formControlName="endedReadDate"
+                                        <input (change)="onFormChange(false, 'endedReadDate')" type="date" formControlName="endedReadDate"
                                                id="endedReadDate"
                                                #endedDate>
                                         <span class="date-span">{{ endedDateFormatted }}
@@ -79,9 +79,9 @@
                                 <app-select-genre (genreSelectedEvent)="handleSelectedGenres($event)"
                                                   [genresToShow]="bookGenres"/>
 
-                                <div class="form-group stretching-form annotation">
+                                <div class="form-group stretching-form annotation" [class.error]="hasFieldError('annotation')">
                                     <label for="annotation">annotation</label>
-                                    <textarea (input)="onFormChange()" formControlName="annotation"
+                                    <textarea (input)="onFormChange(false, 'annotation')" formControlName="annotation"
                                               id="annotation"></textarea>
                                 </div>
                             </div>

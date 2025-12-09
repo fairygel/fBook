@@ -3,6 +3,7 @@ package me.fairygel.fbook.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import me.fairygel.fbook.util.validation.ValidBookDates;
 
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
@@ -12,6 +13,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "books", schema = "fbook")
+@ValidBookDates
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_id_seq")

@@ -61,6 +61,9 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
     coverUrl: string = "";
     cover: File | null = null;
 
+    fieldErrors: Set<string> = new Set();
+    private errorAlertTimer: ReturnType<typeof setTimeout> | null = null;
+
     genresToUpdate: number[] = [];
     authorToUpdate: number | null = null;
     bookTypeToUpdate: number | null = null;
@@ -135,12 +138,19 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
         this.onResize();
     }
 
-    onFormChange(isNameOrCover = false) {
+    onFormChange(isNameOrCover = false, fieldName?: string) {
         this.wasCoverOrNameUpdated = isNameOrCover;
 
         if (!this.bookForm.dirty) {
             this.bookForm.markAsDirty();
         }
+
+        if (fieldName && this.fieldErrors.has(fieldName)) {
+            const newErrors = new Set(this.fieldErrors);
+            newErrors.delete(fieldName);
+            this.fieldErrors = newErrors;
+        }
+
         this.formChangeSubject.next();
     }
 
@@ -152,10 +162,20 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
 
         if (this.openTimer !== null) globalThis.clearTimeout(this.openTimer as any);
         this.openTimer = null;
+
+        if (this.errorAlertTimer !== null) globalThis.clearTimeout(this.errorAlertTimer as any);
+        this.errorAlertTimer = null;
     }
 
     closeModal() {
-        this.handleUpdateBookSubmit();
+        if (this.errorAlertTimer !== null) {
+            globalThis.clearTimeout(this.errorAlertTimer as any);
+            this.errorAlertTimer = null;
+        }
+        this.fieldErrors = new Set();
+
+        this.bookForm.markAsPristine();
+
         this.isOpen = false;
         this.book = null;
         this.coverUrl = '';
@@ -222,15 +242,20 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
                 let errorMessage = '';
 
                 if (isValidationError(apiError)) {
+                    const newErrors = new Set<string>();
+
                     errorMessage = `${apiError.message}\n\n`;
                     apiError.detail.forEach(detail => {
+                        newErrors.add(detail.field);
                         errorMessage += `${detail.field}: ${detail.value}\n`;
                     });
+
+                    this.fieldErrors = newErrors;
                 } else {
                     errorMessage = apiError.message;
                 }
 
-                alert(errorMessage);
+                this.errorAlertTimer = setTimeout(() => alert(errorMessage), 0);
             }
         });
     }
@@ -346,6 +371,10 @@ export class BookInfoComponent implements OnInit, OnDestroy, OnChanges {
     @HostListener('window:resize', ['$event'])
     onResize() {
         this.isShrank = window.innerWidth <= 1080;
+    }
+
+    hasFieldError(fieldName: string): boolean {
+        return this.fieldErrors.has(fieldName);
     }
 
     handleDrag(event: DragEvent) {

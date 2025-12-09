@@ -1,6 +1,9 @@
 package me.fairygel.fbook.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import me.fairygel.fbook.dto.book.*;
@@ -12,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -24,6 +26,7 @@ public class BookService {
     private final BookCoverService coverService;
     private final BookHelper bookHelper;
     private final BookCrudRepository bookRepository;
+    private final Validator validator;
 
     @SneakyThrows
     public IndexBookViewDTO create(BookDTO bookDTO, MultipartFile cover) {
@@ -47,9 +50,13 @@ public class BookService {
         Book book = bookMapper.bookDtoToBook(bookDTO, existingBook, false);
 
         bookHelper.automate(book, existingBook.getBookStatus());
-        bookHelper.validate(book);
 
-        Book updatedBook = bookRepository.updateById(id, book, List.of("startedReadDate", "endedReadDate"))
+        Set<ConstraintViolation<Book>> violations = validator.validate(book);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
+
+        Book updatedBook = bookRepository.updateById(id, book)
                 .orElseThrow(() -> new EntityNotFoundException(NO_BOOK_WITH_ID + id));
 
         coverService.updateCover(updatedBook, cover);
