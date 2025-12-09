@@ -1,0 +1,255 @@
+@use './colors';
+
+.form-container {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 16px;
+
+  width: 100%;
+  height: 100%;
+}
+
+.form-group {
+  position: relative;
+  margin: 12px;
+  height: 48px;
+
+  border-radius: 12px;
+
+  background-color: var(--form-color, colors.$panel-color);
+}
+.form-group::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid colors.$form-border-color;
+  border-radius: 12px;
+
+  -webkit-mask:
+          linear-gradient(white, white),
+          linear-gradient(black, black);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+
+  -webkit-mask-position: 0 0, 20px -1px;
+  -webkit-mask-size: 100% 100%, var(--label-width, 0) 4px;
+  -webkit-mask-repeat: no-repeat;
+}
+
+.form-group > label {
+
+  user-select: none;
+
+  position: relative;
+  top: -19px;
+  left: 20px;
+
+  font-size-adjust: 0.6;
+  background: transparent;
+  padding: 0 4px 0 4px;
+
+  color: colors.$label-color;
+  transition: color 0.3s ease;
+}
+
+.form-group.error > label {
+  color: colors.$error-color !important;
+}
+
+.form-group > input {
+  border: none;
+  font-size: 14px;
+
+  background-color: var(--form-color, colors.$panel-color);
+  color: colors.$font-color;
+  position: relative;
+  left: 12px;
+  top: -20px;
+
+  width: calc(100% - 24px);
+}
+
+.form-group > input[type="date"] {
+  color: transparent;
+}
+
+.form-group > .date-span {
+  position: absolute;
+
+  color: colors.$font-color;
+
+  width: calc(100% - 24px);
+}
+
+.date-span > .date-icon {
+  position: absolute;
+
+  width: 20px;
+  height: 20px;
+
+  right: 0;
+  top: 2px;
+
+  color: colors.$font-color;
+}
+
+.form-group > textarea {
+  border: none;
+  font-size: 14px;
+
+  background-color: var(--form-color, colors.$panel-color);
+  color: colors.$font-color;
+  position: relative;
+  left: 12px;
+  top: -20px;
+
+  width: calc(100% - 24px);
+  height: calc(100% - 20px);
+  resize: none;
+}
+
+.form-group > span {
+  position: absolute;
+
+  left: 12px;
+  top: 12px;
+  width: 95%;
+
+  font-size: 14px;
+
+  color: colors.$font-color;
+  background-color: var(--form-color, colors.$panel-color);
+}
+
+.form-group > form {
+  position: absolute;
+}
+
+.form-group > .focusable-input {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background-color: transparent;
+  content: "";
+  cursor: pointer;
+  border-radius: 12px;
+  z-index: 1;
+}
+
+.form-for-image {
+  height: 481px;
+  width: 336px;
+}
+
+.form-image-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.form-image-wrapper > button {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+
+  color: colors.$label-color;
+  background-color: transparent;
+
+  font-size-adjust: 3;
+  cursor: pointer;
+}
+
+.form-image-wrapper > button::content {
+  z-index: 2;
+
+  text-shadow: -1px -1px 0 colors.$shadow-color,
+  1px -1px 0 colors.$shadow-color,
+  -1px 1px 0 colors.$shadow-color,
+  1px 1px 0 colors.$shadow-color;
+}
+
+.form-image-wrapper > img {
+  z-index: 1;
+
+  border-radius: 12px;
+}
+
+.custom-select > .dropdown-toggle {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  position: absolute;
+  top: 0;
+  left: 12px;
+
+  font-size: 14px;
+  color: colors.$font-color;
+  text-align: left;
+
+  width: calc(100% - 18px);
+  height: 100%;
+
+  box-sizing: border-box;
+  padding-right: 56px;
+
+  background-color: #ffffff00;
+
+  cursor: pointer;
+}
+
+.custom-select > .dropdown-toggle::after {
+  transform: scale(0.9, 0.45);
+  color: colors.$font-color;
+  position: absolute;
+  top: 25%;
+  right: 11px;
+  pointer-events: none;
+
+  content: '˅';
+}
+
+.custom-select > .dropdown-menu {
+  font-size: 10px;
+
+  position: absolute;
+  top: 80%;
+
+  width: calc(100% - 20px);
+  left: 8px;
+
+  padding: 2px;
+
+  border: colors.$label-color solid 1px;
+  border-radius: 4px;
+
+  background-color: var(--dropdown-bg, colors.$panel-color);
+  backdrop-filter: blur(10px);
+
+  z-index: 3;
+}
+
+.dropdown-menu > .dropdown-option {
+  user-select: none;
+
+  display: inline-flex;
+  flex-wrap: wrap;
+
+  cursor: pointer;
+  border: colors.$label-color solid 1px;
+  background-color: colors.$panel-color;
+  color: colors.$font-color;
+  padding: 1px 4px 1px 4px;
+  margin: 4px;
+  border-radius: 4px;
+}
+
+.dropdown-option-selected {
+  border: colors.$panel-color solid 1px;
+  background-color: colors.$label-color !important;
+  color: colors.$panel-color !important;
+}

@@ -2,11 +2,10 @@ package me.fairygel.fbook.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import me.fairygel.fbook.dto.genre.GenreDTO;
-import me.fairygel.fbook.dto.genre.GenreIndexViewDTO;
+import me.fairygel.fbook.dto.GenreDTO;
 import me.fairygel.fbook.entity.Genre;
-import me.fairygel.fbook.util.mapper.GenreMapper;
 import me.fairygel.fbook.repository.GenreCrudRepository;
+import me.fairygel.fbook.util.mapper.GenreMapperImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -16,13 +15,14 @@ import java.util.Set;
 @AllArgsConstructor
 public class GenreService {
     private final GenreCrudRepository genreCrudRepository;
-    private final GenreMapper mapper;
+    private final GenreMapperImpl mapper;
 
-    private static final String NO_GENRE = "No genre with id = ";
+    private static final String NO_GENRE = "No genre with ID = ";
 
-    public void create(GenreDTO genreDTO) {
+    public GenreDTO create(GenreDTO genreDTO) {
         Genre genre = mapper.genreDtoToGenre(genreDTO);
-        genreCrudRepository.save(genre);
+        Genre savedGenre = genreCrudRepository.save(genre);
+        return mapper.genreToGenreDto(savedGenre);
     }
 
     public GenreDTO read(Long id) {
@@ -50,7 +50,7 @@ public class GenreService {
         genreCrudRepository.deleteById(id);
     }
 
-    public Set<GenreIndexViewDTO> index() {
+    public Set<GenreDTO> index() {
         Set<Genre> genres = new HashSet<>();
         genreCrudRepository.findAll().forEach(g -> {if (g.getId() != 0L) genres.add(g);});
 

@@ -1,0 +1,39 @@
+<div class="form-group">
+    <label for="dropdown-option">{{objectName}}</label>
+    @if (isLoading) {
+        <span>loading..</span>
+    } @else {
+        <div class="custom-select" [class.open]="isDropdownOpened">
+            <button id="option" class="dropdown-toggle" (click)="toggleDropdown()">
+                {{ displayInDropdown }}
+            </button>
+            @if (isDropdownOpened) {
+                <div class="dropdown-menu">
+                    @if (canCreate) {
+                        <span class="dropdown-option" (click)="openCreateModal()">
+                            <b>+ New</b>
+                        </span>
+                    }
+                    @for (option of allOptions; track option.id) {
+                        <label class="dropdown-option"
+                               [ngClass]="{'dropdown-option-selected': isSelected(option)}"
+                               [class.can-deselect]="canCreate">
+                            <input type="checkbox"
+                                   [value]="option.id"
+                                   (change)="onOptionChange(option)"
+                                   hidden
+                            />
+                            {{ option.name }}
+                        </label>
+                    }
+                </div>
+            }
+        </div>
+    }
+    <app-generic-create-modal
+        #modal
+        [isOpen]="isOpen"
+        [objectName]="objectName"
+        (closeModalEvent)="handleClose($event)"
+        (submitEvent)="newOption($event)"/>
+</div>

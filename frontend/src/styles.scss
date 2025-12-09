@@ -1,0 +1,16 @@
+@use './assets/colors';
+
+* {
+  border: none;
+  outline: none;
+
+  font-family: Arial, serif;
+  font-size-adjust: 0.8;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background-color: colors.$bg-color;
+  color: colors.$font-color;
+}

@@ -1,0 +1,22 @@
+@use '../../../assets/form-modal';
+@use '../../../assets/colors';
+
+.modal-backdrop {
+	z-index: 1002 !important;
+}
+
+.form-group.error {
+	border-color: colors.$error-color !important;
+}
+
+.form-group.error::before {
+	border-color: colors.$error-color !important;
+}
+
+.form-group {
+	--label-width: 0;
+}
+
+.form-group > input {
+	top: 8px;
+}

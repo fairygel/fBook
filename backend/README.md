@@ -1,11 +1,31 @@
 # fBook API
 The API will be available at `localhost:8080/api/` after building
 
-## Manual Build
-**at first**, you need to install [git](https://git-scm.com/downloads), [java 21](https://www.oracle.com/cis/java/technologies/downloads/#java21) and [postgresql](https://www.postgresql.org/download/).
-if you want to run tests, you also may need to install and run [docker](https://docs.docker.com/engine/install/).
+## Dependencies
+to build manually or using the script, you need to install the [java 21](https://www.oracle.com/cis/java/technologies/downloads/#java21).
+there is an option to use your [local database](https://www.postgresql.org/download/), or you can use [database with docker](https://docs.docker.com/engine/install/). 
+so, install what you need.
+you can also use [docker](https://docs.docker.com/engine/install/) to run tests.
 <br/>
-now, lets **clone** repository using `git`:
+if you don't care about all of them, you can just install [docker](https://docs.docker.com/engine/install/), and run the project without dependencies.
+<br/>
+to clone a project, you need to install [git](https://git-scm.com/downloads).
+
+## Auto building and running using script
+if you are using linux, you can use `start.sh` to build and run the api server.
+by default, it will build a jar file, if it does not exist, and run backend server.
+you can use different flags, to get the result you need.
+flags:
+* -f, --force-build is used to force the build of the jar file(if you made some changes in source code).
+* -r, --docker-run run project using docker
+* -d, --database run the postgresql database using docker
+* -h, --help only show the help menu.
+
+combination like `./start -f -r` will rebuild the image of the backend server.
+also, you don't need `-d` flag, if you use `-r`. script will run database automatically.
+
+## Manual Build
+let's **clone** repository using `git`:
 
 ```bash
 git clone https://github.com/fairygel/fBook.git
@@ -85,12 +105,19 @@ POST `/books`
 <br/>
 this will create a book with your data.
 <br/>
-the request body needs to be in JSON format, it can include the following properties:
+the request body needs to be in form data.
+form-data contains next properties:
+<br/>
+key - **book**, presents the json string(content-type:`application/json`). this key is required.
+json string should have next values:
 * `name` - string, required
-* `authorId` - int, not required
-* `genreIds` - array of integers, not required
+* `authorId` - int, required
+* `genreIds` - array of integers, required
 * `annotation` - string, not required
-* `bookTypeId` - int, not required
+* `bookTypeId` - int, required
+
+key - **cover**, presents the jpg file. this key is not required.
+you can attach any file(size < 1mb), that have .jpg extension.
 
 author id you can get [here](#list-of-your-authors)
 
@@ -98,7 +125,7 @@ genres are [here](#list-of-your-genres)
 
 book types - [here](#get-book-types)
 
-for example:
+book json example:
 ```json
 {
     "name": "11/22/63",
@@ -115,7 +142,11 @@ delete a book, nothing more
 ### update book:
 PATCH `/books/{id}`
 <br/>
-will update the book and return updated result. you can update book using next properties(all of them are **not required**):
+the request body needs to be in form data.
+form-data contains next properties:
+<br/>
+key - **book**, presents the json string(content-type:`application/json`). this key is required.
+you can update book using next value's(all of them are **not required**):
 * `name` - string
 * `authorId` - int
 * `genreIds` - array of int
@@ -124,6 +155,9 @@ will update the book and return updated result. you can update book using next p
 * `endedReadDate` - date
 * `annotation` - string
 * `bookTypeId` - int
+
+key - **cover**, presents the jpg file. this key is not required.
+you can attach any file(size < 1mb), that have .jpg extension.
 
 author id you can get [here](#list-of-your-authors)
 
@@ -165,8 +199,9 @@ this will create a new author with your data.
 the request body needs to be in JSON format, it can include the following properties:
 * `firstName` - string, required
 * `lastName` - string, not required
-  <br/>
-  for example:
+
+for example:
+
 ```json
 {
   "firstName": "Stephen",
@@ -208,13 +243,15 @@ this will create a new genre with your data.
 <br/>
 the request body needs to be in JSON format, it can include the following properties:
 * `name` - string, required
-  <br/>
-  for example:
+<br/>
+for example:
+
 ```json
 {
     "genre": "detective"
 }
 ```
+
 ### delete genre:
 DELETE `/genres/{id}`
 <br/>
@@ -226,6 +263,7 @@ will update the genre and return updated result. you can update genre using next
 * `name` - string
 <br/>
 example:
+
 ```json
 {
     "genre": "horror"

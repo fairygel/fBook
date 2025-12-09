@@ -1,0 +1,19 @@
+@if (isOpen) {
+    <div class="modal-backdrop" (click)="onBackdropClick($event)" (keydown.escape)="onEscapePress($event)">
+        <div class="modal" (click)="$event.stopPropagation()">
+            <h3>New {{objectName}}</h3>
+
+            <form [formGroup]="objectForm" (ngSubmit)="createObject()" autocomplete="off">
+                <div class="form-group" [class.error]="hasFieldError('name')">
+                    <input #create_input id="obj" type="text" formControlName="obj" (input)="clearFieldError('name')"/>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" [disabled]="isLoading">
+                        +
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+}

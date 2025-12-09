@@ -1,0 +1,134 @@
+@use '../../../../assets/colors';
+
+:host {
+    display: block;
+    height: calc(100vh - 24px);
+    width: calc(100vw - 10px);
+    background-color: colors.$bg-color;
+    color: colors.$font-color;
+    padding-top: 24px;
+    padding-left: 10px;
+}
+
+.create-button-container {
+    position: fixed;
+
+    bottom: 24px;
+    right: 24px;
+
+    z-index: 3;
+}
+
+.books-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(228px, 1fr));
+    gap: 16px;
+    padding: 0;
+    list-style: none;
+}
+
+.book-cover-preview {
+    text-align: center;
+    z-index: 1;
+}
+
+.book-cover-preview .no-cover {
+    width: 228px;
+    height: 361px;
+    background-color: colors.$panel-color;
+    border-radius: 12px;
+}
+
+.book-cover-preview img {
+    position: relative;
+    border-radius: 12px;
+}
+
+.book-cover-preview a {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.no-cover-title {
+    position: relative;
+    top: 20%;
+    color: colors.$font-color;
+    font-size-adjust: 1.2;
+    font-family: "Comic Sans MS", serif;
+}
+
+.book-title {
+    position: relative;
+    transform: translateY(-150%);
+
+    transition: transform 0.2s ease;
+    color: colors.$font-color;
+
+    z-index: -1;
+}
+
+.book-image-wrapper {
+    width: 228px;
+    height: 361px;
+    background: colors.$panel-color;
+    border-radius: 12px;
+}
+
+.book-image-wrapper:hover .book-title {
+    transform: translateY(0);
+}
+
+.create-button {
+    width: 48px;
+    height: 48px;
+
+    background-color: colors.$font-color;
+    color: colors.$bg-color;
+
+    border: none;
+    border-radius: 50%;
+
+    font-size: 26px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cross {
+    transition: transform 0.6s ease;
+    display: inline-block;
+}
+
+.create-button.pressed span {
+    transform: rotate(-225deg);
+}
+
+.loading, .not-found {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -100%);
+
+    color: colors.$font-color;
+
+    text-align: center;
+}
+
+.book-create-container {
+    top: 0;
+    width: min(360px, 100%);
+    height: 100%;
+    position: fixed;
+    right: -100%;
+
+    transition: right 0.6s ease-out;
+
+    z-index: 2;
+}
+
+.book-create-container.toggled {
+    right: 0;
+}

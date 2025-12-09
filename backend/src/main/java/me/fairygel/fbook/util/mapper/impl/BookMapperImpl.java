@@ -2,14 +2,15 @@ package me.fairygel.fbook.util.mapper.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import me.fairygel.fbook.dto.book.BookFullViewDTO;
-import me.fairygel.fbook.dto.book.CreateBookDTO;
-import me.fairygel.fbook.dto.book.IndexBookViewDTO;
-import me.fairygel.fbook.dto.book.UpdateBookDTO;
+import me.fairygel.fbook.dto.author.AuthorIndexViewDTO;
+import me.fairygel.fbook.dto.book.*;
+import me.fairygel.fbook.dto.BookStatusDTO;
+import me.fairygel.fbook.dto.BookTypeDTO;
+import me.fairygel.fbook.dto.GenreDTO;
+import me.fairygel.fbook.dto.grade.GradePreviewDTO;
 import me.fairygel.fbook.entity.*;
-import me.fairygel.fbook.util.mapper.BookMapper;
+import me.fairygel.fbook.util.mapper.*;
 import me.fairygel.fbook.repository.AuthorCrudRepository;
 import me.fairygel.fbook.repository.BookStatusReadOnlyRepository;
 import me.fairygel.fbook.repository.BookTypeReadOnlyRepository;
@@ -17,173 +18,162 @@ import me.fairygel.fbook.repository.GenreCrudRepository;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.zip.DataFormatException;
 
 @Slf4j
 @Component
 @AllArgsConstructor
 public class BookMapperImpl implements BookMapper {
-    private AuthorCrudRepository authorRepository;
-    private BookStatusReadOnlyRepository bookStatusRepository;
-    private BookTypeReadOnlyRepository bookTypeRepository;
-    private GenreCrudRepository genreRepository;
+	private final AuthorMapper authorMapper;
+	private final GenreMapper genreMapper;
+	private final BookStatusMapper bookStatusMapper;
+	private final BookTypeMapper bookTypeMapper;
+	private final GradeMapper gradeMapper;
 
-    // --- DTO To Book ---
+	private AuthorCrudRepository authorRepository;
+	private BookStatusReadOnlyRepository bookStatusRepository;
+	private BookTypeReadOnlyRepository bookTypeRepository;
+	private GenreCrudRepository genreRepository;
 
-    @Override
-    public Book createBookDtoToBook(CreateBookDTO bookDTO) {
-        Book book = new Book();
+	// --- DTO To Book ---
 
-        Author author = authorRepository.findById(bookDTO.getAuthorId())
-                .orElseThrow(() -> new EntityNotFoundException("No author with id = " + bookDTO.getAuthorId()));
+	@Override
+	public Book bookDtoToBook (BookDTO bookDTO, Boolean isCreating) {
+		return bookDtoToBook(bookDTO, null, isCreating);
+	}
 
-        Set<Genre> genres = new HashSet<>();
+	@Override
+	public Book bookDtoToBook (BookDTO bookDTO, Book existingBook, Boolean isCreating) {
+		Book book = new Book();
 
-        for (Long genreId : bookDTO.getGenreIds()) {
-            Genre genre = genreRepository.findById(genreId)
-                    .orElseThrow(() -> new EntityNotFoundException("No genre with id = " + genreId));
-            genres.add(genre);
-        }
+		Author author = getAuthor(bookDTO.getAuthorId(), isCreating);
+		Set<Genre> genres = getGenres(bookDTO.getGenreIds(), isCreating);
+		BookStatus bookStatus = getBookStatus(bookDTO.getBookStatusId(), isCreating);
+		BookType bookType = getBookType(bookDTO.getBookTypeId(), isCreating);
 
-        BookStatus bookStatus = bookStatusRepository.findById((short) 0).orElseThrow(IllegalAccessError::new);
-        BookType bookType = bookTypeRepository.findById(bookDTO.getBookTypeId())
-                .orElseThrow(() -> new EntityNotFoundException("No book type with id = " + bookDTO.getBookTypeId()));
+		book.setName(bookDTO.getName());
+		book.setAuthor(author);
+		book.setGenres(genres);
+		book.setBookStatus(bookStatus);
+		if ( existingBook != null ) {
+			LocalDate startedDate = getDate(bookDTO.getStartedReadDate(), existingBook.getStartedReadDate());
+			LocalDate endedDate = getDate(bookDTO.getEndedReadDate(), existingBook.getEndedReadDate());
 
-        book.setName(bookDTO.getName());
-        book.setAuthor(author);
-        book.setGenres(genres);
-        book.setBookStatus(bookStatus);
-        book.setAnnotation(bookDTO.getAnnotation());
-        book.setBookType(bookType);
+			book.setStartedReadDate(startedDate);
+			book.setEndedReadDate(endedDate);
+		}
+		book.setAnnotation(bookDTO.getAnnotation());
+		book.setBookType(bookType);
 
-        return book;
-    }
+		return book;
+	}
 
-    @Override
-    public Book updateBookDtoToBook(UpdateBookDTO bookDTO) {
-        Book book = new Book();
+	// --- Book To DTO ---
 
-        Author author = getAuthor(bookDTO);
-        Set<Genre> genres = getGenres(bookDTO);
-        BookStatus bookStatus = getBookStatus(bookDTO);
-        BookType bookType = getBookType(bookDTO);
-        LocalDate startedDate = stringToDate(bookDTO.getStartedReadDate());
-        LocalDate endedDate = stringToDate(bookDTO.getEndedReadDate());
+	@Override
+	public BookFullViewDTO bookToBookFullViewDto (Book book) {
+		BookFullViewDTO bookDTO = new BookFullViewDTO();
 
-        book.setName(bookDTO.getName());
-        book.setAuthor(author);
-        book.setGenres(genres.isEmpty() ? null : genres);
-        book.setBookStatus(bookStatus);
-        book.setStartedReadDate(startedDate);
-        book.setEndedReadDate(endedDate);
-        book.setAnnotation(bookDTO.getAnnotation());
-        book.setBookType(bookType);
+		Grade bookGrade = getSingleGrade(book.getGrades());
 
-        return book;
-    }
+		AuthorIndexViewDTO authorDTO = authorMapper.authorToAuthorIndexDto(book.getAuthor());
+		Set<GenreDTO> genreDTOs = genreMapper.genresToIndex(book.getGenres());
+		BookStatusDTO bookStatusDTO = bookStatusMapper.bookStatusToBookStatusDto(book.getBookStatus());
+		BookTypeDTO bookTypeDTO = bookTypeMapper.bookTypeToBookTypeDto(book.getBookType());
+		GradePreviewDTO gradeDTO = gradeMapper.gradeToGradePreviewDTO(bookGrade);
 
-    // --- Book To DTO ---
+		bookDTO.setId(book.getId());
+		bookDTO.setName(book.getName());
+		bookDTO.setAuthor(authorDTO);
+		bookDTO.setGenres(genreDTOs);
+		bookDTO.setBookStatus(bookStatusDTO);
+		bookDTO.setBookType(bookTypeDTO);
+		bookDTO.setStartedReadDate(book.getStartedReadDate());
+		bookDTO.setEndedReadDate(book.getEndedReadDate());
+		bookDTO.setAnnotation(book.getAnnotation());
+		bookDTO.setGrade(gradeDTO);
 
-    @Override
-    public BookFullViewDTO bookToBookFullViewDto(Book book) {
-        BookFullViewDTO bookDTO = new BookFullViewDTO();
+		return bookDTO;
+	}
 
-        bookDTO.setId(book.getId());
-        bookDTO.setName(book.getName());
-        bookDTO.setAuthorFirstName(book.getAuthor().getFirstName());
-        bookDTO.setAuthorLastName(book.getAuthor().getLastName());
-        bookDTO.setGenres(book.getGenres().stream().map(Genre::getName).collect(Collectors.toSet()));
-        bookDTO.setBookStatus(book.getBookStatus().getName());
-        bookDTO.setStartedReadDate(dateToString(book.getStartedReadDate()));
-        bookDTO.setEndedReadDate(dateToString(book.getEndedReadDate()));
-        bookDTO.setAnnotation(book.getAnnotation());
-        bookDTO.setBookType(book.getBookType().getName());
-        setRating(book, bookDTO);
+	public BookCoverDTO bookToBookCoverDto (Book book) {
+		BookCoverDTO bookDTO = new BookCoverDTO();
 
-        return bookDTO;
-    }
+		//bookDTO.setCover(book.getCover());
 
-    @Override
-    public IndexBookViewDTO bookToIndexBookViewDto(Book book) {
-        IndexBookViewDTO bookDTO = new IndexBookViewDTO();
+		return bookDTO;
+	}
 
-        bookDTO.setId(book.getId());
-        bookDTO.setName(book.getName());
+	@Override
+	public IndexBookViewDTO bookToIndexBookViewDto (Book book) {
+		IndexBookViewDTO bookDTO = new IndexBookViewDTO();
 
-        return bookDTO;
-    }
+		bookDTO.setId(book.getId());
+		bookDTO.setName(book.getName());
 
-    // --- Helpful Stuff ---
+		return bookDTO;
+	}
 
-    private void setRating(Book book, BookFullViewDTO bookDTO) {
-        if (book.getGrades().isEmpty()) return;
+	// --- Helpful Stuff ---
+	private LocalDate getDate(String dateStr, LocalDate existingDate) {
+		if ( dateStr == null ) return existingDate;
+		if ( dateStr.isEmpty() ) return null;
+		return LocalDate.parse(dateStr);
+	}
 
-        Grade grade = book.getGrades().stream().toList().getFirst();
+	private Grade getSingleGrade (Set<Grade> grades) {
+		if ( grades.isEmpty() ) return null;
 
-        bookDTO.setGradeRating(grade.getRating());
-        bookDTO.setGradeComment(grade.getComment());
-    }
-    private Author getAuthor(UpdateBookDTO bookDTO) {
-        Long authorId = bookDTO.getAuthorId();
+		return grades.iterator().next();
+	}
 
-        if (authorId == null) return null;
+	private Author getAuthor (Long authorId, Boolean zeroOnNull) {
+		if ( authorId == null && zeroOnNull ) return authorRepository.findById(0L)
+				.orElseThrow(() -> new EntityNotFoundException("No author with ID = 0"));
+		else if ( authorId == null ) return null;
 
-        else return authorRepository.findById(authorId)
-                .orElseThrow(() -> new EntityNotFoundException("No author with id = " + authorId));
-    }
+		return authorRepository.findById(authorId)
+				.orElseThrow(() -> new EntityNotFoundException("No author with ID = " + authorId));
+	}
 
-    private Set<Genre> getGenres(UpdateBookDTO bookDTO) {
-        if (bookDTO.getGenreIds() == null) return Collections.emptySet();
+	private Set<Genre> getGenres (Set<Long> genreIds, Boolean zeroOnNull) {
+		if ( genreIds == null && zeroOnNull ) return genreRepository.findById(0L)
+                .map(Collections::singleton)
+                .orElseThrow(() -> new EntityNotFoundException("No genre with ID = 0"));
+		else if ( genreIds == null ) return null;
 
-        Set<Genre> genres = new HashSet<>();
+		Set<Genre> genres = new HashSet<>();
 
-        for (Long genreId : bookDTO.getGenreIds()) {
-            Genre genre = genreRepository.findById(genreId)
-                    .orElseThrow(() -> new EntityNotFoundException("No genre with id = " + genreId));
-            genres.add(genre);
-        }
+		for ( Long genreId : genreIds ) {
+			Genre genre = genreRepository.findById(genreId)
+					.orElseThrow(() -> new EntityNotFoundException("No genre with ID = " + genreId));
+			genres.add(genre);
+		}
 
-        if (genres.size() > 1) {
-            genres.removeIf(g -> g.getId() == 0);
-        }
+		if ( genres.size() > 1 ) {
+			genres.removeIf(g -> g.getId() == 0);
+		}
 
-        return genres;
-    }
+		return genres;
+	}
 
-    private BookStatus getBookStatus(UpdateBookDTO bookDTO) {
-        Short statusId = bookDTO.getBookStatusId();
+	private BookStatus getBookStatus (Short statusId, Boolean zeroOnNull) {
+		if ( statusId == null && zeroOnNull ) return bookStatusRepository.findById((short) 0)
+				.orElseThrow(() -> new EntityNotFoundException("No book status with ID = 0"));
+		else if (statusId == null) return null;
 
-        if (statusId == null) return null;
+		return bookStatusRepository.findById(statusId)
+				.orElseThrow(() -> new EntityNotFoundException("No book status with ID = " + statusId));
+	}
 
-        else return bookStatusRepository.findById(statusId)
-                .orElseThrow(() -> new EntityNotFoundException("No book status with id = " + statusId));
-    }
+	private BookType getBookType (Short typeId, Boolean zeroOnNull) {
+		if ( typeId == null && zeroOnNull ) return bookTypeRepository.findById((short) 0)
+				.orElseThrow(() -> new EntityNotFoundException("No book status with ID = 0"));
+		else if (typeId == null) return null;
 
-    private BookType getBookType(UpdateBookDTO bookDTO) {
-        Short typeId = bookDTO.getBookTypeId();
-
-        if (typeId == null) return null;
-
-        else return bookTypeRepository.findById(typeId)
-                .orElseThrow(() -> new EntityNotFoundException("No book type with id = " + typeId));
-    }
-
-    @SneakyThrows
-    private LocalDate stringToDate(String str) {
-        if (str == null || str.isEmpty()) return null;
-        try {
-            return LocalDate.parse(str);
-        } catch (DateTimeParseException e) {
-            throw new DataFormatException(e.getMessage());
-        }
-    }
-    private String dateToString(LocalDate date) {
-        if (date == null) return "";
-        return date.toString();
-    }
+		return bookTypeRepository.findById(typeId)
+				.orElseThrow(() -> new EntityNotFoundException("No book type with ID = " + typeId));
+	}
 }

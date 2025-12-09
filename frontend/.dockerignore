@@ -1,0 +1,11 @@
+.angular/
+
+dist/
+node_modules/
+
+.gitignore
+
+tsconfig.spec.json
+
+start.sh
+README.md

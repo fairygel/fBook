@@ -6,6 +6,7 @@ import me.fairygel.fbook.dto.author.AuthorIndexViewDTO;
 import me.fairygel.fbook.service.AuthorService;
 import me.fairygel.fbook.util.validation.OnCreateGroup;
 import me.fairygel.fbook.util.validation.OnUpdateGroup;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +20,9 @@ public class AuthorController {
     private final AuthorService authorService;
 
     @PostMapping(value = {"/", ""})
-    public void create(@RequestBody @Validated(OnCreateGroup.class) AuthorDTO authorDTO) {
-        authorService.create(authorDTO);
+    @ResponseStatus(HttpStatus.CREATED)
+    public AuthorIndexViewDTO create(@RequestBody @Validated(OnCreateGroup.class) AuthorDTO authorDTO) {
+        return authorService.create(authorDTO);
     }
     @GetMapping(value = {"/{id}/", "/{id}"})
     public AuthorDTO read(@PathVariable Long id) {
@@ -31,6 +33,7 @@ public class AuthorController {
         return authorService.update(id, authorDTO);
     }
     @DeleteMapping(value = {"/{id}/", "/{id}"})
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         authorService.delete(id);
     }

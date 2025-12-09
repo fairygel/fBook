@@ -1,7 +1,6 @@
 package me.fairygel.fbook.util.mapper;
 
-import me.fairygel.fbook.dto.genre.GenreDTO;
-import me.fairygel.fbook.dto.genre.GenreIndexViewDTO;
+import me.fairygel.fbook.dto.GenreDTO;
 import me.fairygel.fbook.entity.Genre;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,8 +18,5 @@ public interface GenreMapper {
     @Mapping(target = "genre", source = "name")
     GenreDTO genreToGenreDto(Genre genre);
 
-    @Mapping(target = "genre", source = "name")
-    GenreIndexViewDTO genreToGenreIndex(Genre genre);
-
-    Set<GenreIndexViewDTO> genresToIndex(Set<Genre> genre);
+    Set<GenreDTO> genresToIndex(Set<Genre> genre);
 }

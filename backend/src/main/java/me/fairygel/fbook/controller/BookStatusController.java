@@ -1,8 +1,7 @@
 package me.fairygel.fbook.controller;
 
 import lombok.AllArgsConstructor;
-import me.fairygel.fbook.dto.book.status.BookStatusDTO;
-import me.fairygel.fbook.dto.book.status.BookStatusIndexViewDTO;
+import me.fairygel.fbook.dto.BookStatusDTO;
 import me.fairygel.fbook.service.BookStatusService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +22,7 @@ public class BookStatusController {
     }
 
     @GetMapping(value = {"/", ""})
-    public Set<BookStatusIndexViewDTO> index() {
+    public Set<BookStatusDTO> index() {
         return bookStatusService.index();
     }
 }

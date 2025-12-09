@@ -1,21 +1,26 @@
 package me.fairygel.fbook.dto.book;
 
 import lombok.Data;
+import me.fairygel.fbook.dto.BookStatusDTO;
+import me.fairygel.fbook.dto.BookTypeDTO;
+import me.fairygel.fbook.dto.GenreDTO;
+import me.fairygel.fbook.dto.author.AuthorIndexViewDTO;
+import me.fairygel.fbook.dto.grade.GradePreviewDTO;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Data
 public class BookFullViewDTO {
     private Long id;
     private String name;
-    private String authorFirstName;
-    private String authorLastName;
-    private Set<String> genres;
-    private String bookStatus;
-    private String startedReadDate;
-    private String endedReadDate;
+    private AuthorIndexViewDTO author;
+    private Set<GenreDTO> genres;
+    private BookStatusDTO bookStatus;
+    private LocalDate startedReadDate;
+    private LocalDate endedReadDate;
     private String annotation;
-    private String bookType;
-    private Short gradeRating;
-    private String gradeComment;
+    private BookTypeDTO bookType;
+    private GradePreviewDTO grade;
 }
