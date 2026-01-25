@@ -2,12 +2,11 @@ package me.fairygel.fbook.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import me.fairygel.fbook.dto.grade.CreateGradeDTO;
+import me.fairygel.fbook.dto.grade.GradeDTO;
 import me.fairygel.fbook.dto.grade.GradePreviewDTO;
-import me.fairygel.fbook.dto.grade.UpdateGradeDTO;
 import me.fairygel.fbook.entity.Grade;
-import me.fairygel.fbook.util.mapper.GradeMapper;
 import me.fairygel.fbook.repository.GradeCrudRepository;
+import me.fairygel.fbook.util.mapper.GradeMapperImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -17,26 +16,27 @@ import java.util.Set;
 @AllArgsConstructor
 public class GradeService {
     private final GradeCrudRepository gradeCrudRepository;
-    private final GradeMapper mapper;
+    private final GradeMapperImpl mapper;
 
-    public void create(CreateGradeDTO gradeDTO) {
-        Grade grade = mapper.createGradeDtoToGrade(gradeDTO);
-        gradeCrudRepository.save(grade);
+    public GradePreviewDTO create(GradeDTO gradeDTO) {
+        Grade grade = mapper.gradeDtoToGrade(gradeDTO, true);
+        Grade savedGrade = gradeCrudRepository.save(grade);
+        return mapper.gradeToGradePreviewDTO(savedGrade);
     }
 
     public GradePreviewDTO read(Long id) {
         Grade grade = gradeCrudRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("No grade with id = " + id));
-        return mapper.gradeToGradePreviewDto(grade);
+                .orElseThrow(() -> new EntityNotFoundException("No grade with ID = " + id));
+        return mapper.gradeToGradePreviewDTO(grade);
     }
 
-    public GradePreviewDTO update(Long id, UpdateGradeDTO updateGradeDTO) {
-        Grade grade = mapper.updateGradeDtoToGrade(updateGradeDTO);
+    public GradePreviewDTO update(Long id, GradeDTO gradeDTO) {
+        Grade grade = mapper.gradeDtoToGrade(gradeDTO, false);
 
         Grade updatedGrade = gradeCrudRepository.updateById(id, grade)
-                .orElseThrow(() -> new EntityNotFoundException("No grade with id = " + id));
+                .orElseThrow(() -> new EntityNotFoundException("No grade with ID = " + id));
 
-        return mapper.gradeToGradePreviewDto(updatedGrade);
+        return mapper.gradeToGradePreviewDTO(updatedGrade);
     }
 
     public void delete(Long id) {
@@ -47,6 +47,6 @@ public class GradeService {
         Set<Grade> grades = new HashSet<>();
         gradeCrudRepository.findAll().forEach(grades::add);
 
-        return mapper.gradesToGradePreviews(grades);
+        return mapper.gradesToGradePreviewDTOs(grades);
     }
 }

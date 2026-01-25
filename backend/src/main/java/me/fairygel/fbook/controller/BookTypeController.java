@@ -1,8 +1,7 @@
 package me.fairygel.fbook.controller;
 
 import lombok.AllArgsConstructor;
-import me.fairygel.fbook.dto.book.type.BookTypeDTO;
-import me.fairygel.fbook.dto.book.type.BookTypeIndexViewDTO;
+import me.fairygel.fbook.dto.BookTypeDTO;
 import me.fairygel.fbook.service.BookTypeService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +21,7 @@ public class BookTypeController {
         return bookTypeService.read(id);
     }
     @GetMapping(value = {"/", ""})
-    public Set<BookTypeIndexViewDTO> index() {
+    public Set<BookTypeDTO> index() {
         return bookTypeService.index();
     }
 }

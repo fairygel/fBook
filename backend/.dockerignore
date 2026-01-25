@@ -1,0 +1,16 @@
+.gradle/
+build/
+
+gradle/
+
+.gitignore
+docker-compose.yml
+Dockerfile
+fBook.jar
+
+gradlew.bat
+gradlew
+
+README.md
+
+start.sh

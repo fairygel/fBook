@@ -1,11 +1,8 @@
 FROM gradle:jdk21-alpine AS build
 
-COPY build.gradle /app/
-COPY settings.gradle /app/
-
-COPY src /app/src
-
 WORKDIR /app
+
+COPY . .
 
 RUN gradle clean build -x test
 

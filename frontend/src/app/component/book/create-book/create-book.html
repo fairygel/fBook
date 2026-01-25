@@ -1,0 +1,41 @@
+<div class="panel">
+
+<form [formGroup]="bookForm" autocomplete="off">
+    <div class="form-container">
+
+        <div class="form-group name" [class.error]="hasFieldError('name')">
+            <label for="name">name</label>
+            <input id="name" type="text" formControlName="name" (input)="clearFieldError('name')">
+        </div>
+
+        <div class="form-group annotation" [class.error]="hasFieldError('annotation')">
+            <label for="annotation">annotation</label>
+            <input id="annotation" type="text" formControlName="annotation" (input)="clearFieldError('annotation')">
+        </div>
+
+
+        <app-select-author (authorSelectedEvent)="handleSelectedAuthor($event)" />
+
+        <app-select-book-type (bookTypeSelectedEvent)="handleSelectedBookType($event)" />
+
+        <app-select-genre (genreSelectedEvent)="handleSelectedGenres($event)" />
+
+        <div class="form-group form-for-image">
+            <label for="cover">cover</label>
+            <div class="form-image-wrapper"
+                 (dragover)="handleDrag($event)"
+                 (dragleave)="handleDrag($event)"
+                 (drop)="onDrop($event)">
+
+                <button type="button" class="add-image-file-button" (click)="fileInput.click()">+</button>
+                <input #fileInput id="cover" type="file" accept="image/*" (change)="onFileSelected($event)" hidden>
+                @if (coverUrl) {
+                    <img [src]="coverUrl" [alt]="" width="264" height="418" />
+                }
+            </div>
+        </div>
+    </div>
+</form>
+<button class="submit-creation-button" (click)="handleSubmit()">new</button>
+
+</div>

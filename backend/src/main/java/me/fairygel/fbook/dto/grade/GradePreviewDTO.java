@@ -5,6 +5,7 @@ import me.fairygel.fbook.dto.book.IndexBookViewDTO;
 
 @Data
 public class GradePreviewDTO {
+    private Long id;
     private IndexBookViewDTO book;
     private Byte rating;
     private String comment;

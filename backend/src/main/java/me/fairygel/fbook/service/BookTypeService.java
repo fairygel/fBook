@@ -2,11 +2,10 @@ package me.fairygel.fbook.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import me.fairygel.fbook.dto.book.type.BookTypeDTO;
-import me.fairygel.fbook.dto.book.type.BookTypeIndexViewDTO;
+import me.fairygel.fbook.dto.BookTypeDTO;
 import me.fairygel.fbook.entity.BookType;
-import me.fairygel.fbook.util.mapper.BookTypeMapper;
 import me.fairygel.fbook.repository.BookTypeReadOnlyRepository;
+import me.fairygel.fbook.util.mapper.BookTypeMapperImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -15,18 +14,18 @@ import java.util.*;
 @AllArgsConstructor
 public class BookTypeService {
     private final BookTypeReadOnlyRepository bookTypeRepository;
-    private final BookTypeMapper mapper;
+    private final BookTypeMapperImpl mapper;
 
     public BookTypeDTO read(Short id) {
         BookType bookType = bookTypeRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("No book type with id = " + id));
+                .orElseThrow(() -> new EntityNotFoundException("No book type with ID = " + id));
         return mapper.bookTypeToBookTypeDto(bookType);
     }
 
-    public Set<BookTypeIndexViewDTO> index() {
+    public Set<BookTypeDTO> index() {
         Set<BookType> bookTypes = new HashSet<>();
 
-        bookTypeRepository.findAll().forEach(bookTypes::add);
+        bookTypeRepository.findAll().forEach(bt -> {if (bt.getId() != 0L) bookTypes.add(bt);});
         return mapper.bookTypesToIndex(bookTypes);
     }
 }

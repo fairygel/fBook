@@ -6,7 +6,7 @@ import me.fairygel.fbook.dto.author.AuthorDTO;
 import me.fairygel.fbook.dto.author.AuthorIndexViewDTO;
 import me.fairygel.fbook.entity.Author;
 import me.fairygel.fbook.repository.AuthorCrudRepository;
-import me.fairygel.fbook.util.mapper.AuthorMapper;
+import me.fairygel.fbook.util.mapper.AuthorMapperImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -16,13 +16,14 @@ import java.util.Set;
 @AllArgsConstructor
 public class AuthorService {
     private final AuthorCrudRepository authorRepository;
-    private final AuthorMapper mapper;
+    private final AuthorMapperImpl mapper;
 
-    private static final String NO_AUTHOR = "No author with id = ";
+    private static final String NO_AUTHOR = "No author with ID = ";
 
-    public void create(AuthorDTO authorDTO) {
+    public AuthorIndexViewDTO create(AuthorDTO authorDTO) {
         Author author = mapper.authorDtoToAuthor(authorDTO);
-        authorRepository.save(author);
+        Author savedAuthor = authorRepository.save(author);
+        return mapper.authorToAuthorIndexDto(savedAuthor);
     }
 
     public AuthorDTO read(Long id) {

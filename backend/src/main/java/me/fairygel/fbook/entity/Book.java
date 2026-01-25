@@ -3,6 +3,7 @@ package me.fairygel.fbook.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import me.fairygel.fbook.util.validation.ValidBookDates;
 
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
@@ -12,6 +13,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "books", schema = "fbook")
+@ValidBookDates
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_id_seq")
@@ -38,6 +40,9 @@ public class Book {
 
     @Column(name = "annotation", length = Integer.MAX_VALUE)
     private String annotation;
+
+    @OneToOne(mappedBy = "book")
+    private BookCover cover;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "book_type_id", nullable = false)

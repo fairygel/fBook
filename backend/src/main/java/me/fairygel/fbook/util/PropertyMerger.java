@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.List;
 
 public class PropertyMerger {
 
@@ -22,7 +23,7 @@ public class PropertyMerger {
      */
     // TODO: use getters and setters instead of field access
     @SneakyThrows
-    public static void merge(Object source, Object destination) {
+    public static void merge(Object source, Object destination, List<String> nullableFields) {
         if (source == null || destination == null) return;
         if (source.getClass() != destination.getClass()) return;
 
@@ -30,17 +31,25 @@ public class PropertyMerger {
 
         for (Field field : fields) {
             if (Arrays.asList(field.getClass().getInterfaces()).contains(Serializable.class)) {
-                merge(field, destination.getClass().getField(field.getName()));
+                merge(field, destination.getClass().getField(field.getName()), nullableFields);
             }
 
             field.setAccessible(true);
 
             Object value = field.get(source);
 
-            if (value != null) {
+
+            if ( nullableFields.contains(field.getName()) ) {
+                field.set(destination, value);
+            } else if (value != null) {
                 field.set(destination, value);
             }
         }
     }
+
+    public static void merge(Object source, Object destination) {
+        merge(source, destination, List.of());
+    }
+
     private PropertyMerger(){}
 }

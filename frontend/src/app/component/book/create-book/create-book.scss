@@ -1,0 +1,56 @@
+@use '../../../../assets/form-styles';
+@use '../../../../assets/colors';
+
+.form-group.error label {
+  color: colors.$error-color !important;
+}
+
+.form-group.error::before {
+  border-color: colors.$error-color !important;
+}
+
+.name {
+  --label-width: 53px;
+}
+
+.annotation {
+  --label-width: 93px;
+}
+
+.form-for-image {
+  --label-width: 52px;
+}
+
+.panel {
+  padding-top: 24px;
+  padding-left: 4px;
+  padding-right: 4px;
+
+  height: 100vh;
+  overflow-y: auto;
+
+  background-color: rgba(colors.$panel-color, 0.4);
+  backdrop-filter: blur(10px);
+}
+
+.panel > form {
+  position: relative;
+}
+
+* {
+  --form-color: #{rgba(colors.$panel-color, 0.0)};
+  --dropdown-bg: #{rgba(colors.$panel-color, 0.4)};
+}
+
+.submit-creation-button {
+  position: absolute;
+  bottom: 48px;
+  left: 24px;
+
+  width: 96px;
+  height: 48px;
+
+  border-radius: 48px;
+
+  z-index: 3;
+}

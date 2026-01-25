@@ -1,0 +1,58 @@
+@use './form-styles';
+@use './colors';
+
+* {
+  --form-color: transparent;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  z-index: 1001;
+}
+
+.modal {
+  position: relative;
+
+  background: colors.$bg-color;
+  border-radius: 24px;
+  border: 2px solid colors.$font-color;
+  padding: 20px;
+
+  min-width: 300px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  margin: 20px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modal-actions > button {
+  border: 2px solid colors.$font-color;
+  background-color: colors.$bg-color;
+  color: colors.$font-color;
+  cursor: pointer;
+
+  position: absolute;
+  right: -14px;
+  bottom: -14px;
+  border-radius: 50%;
+  font-size: 26px;
+  width: 54px;
+  height: 54px;
+
+  box-shadow:
+          -4px 0 6px rgba(0, 0, 0, 1),
+          0 -4px 6px rgba(0, 0, 0, 1);
+}

@@ -1,0 +1,49 @@
+@if (isLoading) {
+    <h1 class="loading">loading your books...</h1>
+}
+@else if (books && books.length > 0) {
+    <ul class="books-preview">
+        @for (book of books; track book.id) {
+            <li class="book-cover-preview" role="button" tabindex="0" (click)="openBookInfoModal(book)" (keydown)="($event.key === 'Enter' || $event.key === ' ') && openBookInfoModal(book)">
+                <div class="book-image-wrapper">
+                    @if (book.coverUrl) {
+                        <img [src]="book.coverUrl"
+                             [alt]="book.name"
+                             width="228"
+                             height="361"/>
+                    } @else {
+                        <div class="no-cover">
+                            <span class="no-cover-title"> {{book.name}} </span>
+                        </div>
+                    }
+                    <div class="book-title">{{ book.name }}</div>
+                </div>
+            </li>
+        }
+    </ul>
+} @else {
+    <div class="not-found">
+        <h1>no books found..</h1>
+        <p>to create book, click the button below!</p>
+    </div>
+}
+
+<div class="book-create-container" [class.toggled]="isMenuOpened">
+    <div class="create-button-container">
+        <button class="create-button"
+                (click)="toggleMenu()"
+                [class.pressed]="isMenuOpened">
+            <span class="cross">+</span>
+        </button>
+    </div>
+
+    <app-create-book (onBookCreated)="createBook()"/>
+</div>
+
+<app-book-info
+    [isOpen]="isBookInfoModalOpen"
+    [bookToShow]="selectedBook"
+    (closeModalEvent)="closeBookInfoModal()"
+    (bookDeletedEvent)="handleBookDeleted($event)"
+    (bookUpdatedEvent)="handleBookUpdated()">
+</app-book-info>
